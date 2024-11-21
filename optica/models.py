@@ -176,7 +176,12 @@ class OrdenTrabajo(models.Model):
     tipoPago = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Pago") 
     numeroVoucherOrdenTrabajo = models.IntegerField(null=True, blank=True, verbose_name="Número de Voucher")
     observacionOrdenTrabajo = models.CharField(max_length=300, null=True, blank=True, verbose_name="Observaciones")
+    #esAbono = models.BooleanField(default=False, null=True, blank=True, verbose_name="Es Abono")
+    #esPagoTotal = models.BooleanField(default=False, null=True, blank=True, verbose_name="Es Pago Total")
+    estadoDelPago = models.CharField(max_length=20, verbose_name="Estado del Pago")
+    estadoOrdenTrabajo = models.CharField(max_length=20, verbose_name="Estado Orden de Trabajo")
 
+    # Otros campos existentes...
 
     def __str__(self):
         return f"{self.idOrdenTrabajo}"
@@ -205,7 +210,7 @@ class OrdenTrabajo(models.Model):
         
 
 class Abono(models.Model): 
-    idAbono = models.AutoField(primary_key=True, default=1, verbose_name="ID Abono")
+    idAbono = models.AutoField(primary_key=True, verbose_name="ID Abono")
     idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, verbose_name="ID Orden de Trabajo")
     rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
    
@@ -216,7 +221,7 @@ class Abono(models.Model):
     fechaAbono = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Abono")
     valorAbono = models.IntegerField(null=True, blank=True, verbose_name="Valor Abono")
     saldo = models.IntegerField(null=True, blank=True, verbose_name="Saldo")
-    formaPagoAbono = models.CharField(max_length=10, null=True, blank=True, verbose_name="Forma de pago")
+    tipoPagoAbono = models.CharField(max_length=10, null=True, blank=True, verbose_name="Forma de pago")
     numeroVoucherAbono = models.IntegerField(null=True, blank=True, verbose_name="Número de Voucher")
     numeroAbono = models.IntegerField(null=True, blank=True, verbose_name="Abono Número")
     

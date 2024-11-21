@@ -33,13 +33,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-md-8">
-                    <h1 class="font-weight-bold mb-0">Recetas</h1>
-                    <p class="lead text-muted">Listado de recetas registradas en sistema</p>
+                    <h1 class="font-weight-bold mb-0">Abonos</h1>
+                    <p class="lead text-muted">Listado de los abonos registradas en sistema</p>
                 </div>
                 <div class="col-lg-3 col-md-4 d-flex">
 
-                    <a href="{% url 'receta_new' %}" class="btn btn-primary w-100 align-self-center">
-                        Ingresar nueva Receta</a>
+                    <a href="{% url 'abono_new' %}" class="btn btn-primary w-100 align-self-center">
+                        Ingresar Abono a Orden de Trabajo</a>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
 
                 <br>
 
-                <!-- Tabla de Recetas -->
+                <!-- Tabla de Abonos -->
 
                 <style>
                     .table-condensed {
@@ -82,118 +82,99 @@
                 <table class="table table-condensed table-striped mb-0">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
+                            <!-- idAbono',
+                            'idOrdenTrabajo',
+                            'rutCliente',
+                            'fechaAbono',
+                            'valorAbono',
+                            'saldo',
+                            'tipoPagoAbono',
+                            'numeroVoucherAbono',
+                            'numeroAbono' -->
+                            <th scope="col">Orden de Trabajo</th>
+                            <th scope="col">Número de Abono</th>
                             <th scope="col">RUN</th>
                             <th scope="col">Nombre Cliente</th>
-                            <th scope="col">Numero de Receta</th>
-                            <th scope="col">Fecha Receta</th>
-                            <th scope="col">Tipo Lente</th>
-                            <th scope="col">Institucion</th>
-                            <th scope="col">Doctor Oftalmologo</th>
-                            <th scope="col">Imagen</th>
+                            <th scope="col">Fecha Abono</th>
+                            <th scope="col">Tipo de Pago del abono</th>
+                            <th scope="col">Valor Total</th>
+                            <th scope="col">Monto Abonado</th>
+                            <th scope="col">Saldo</th>
+                            <th scope="col">Voucher</th>
+
                         </tr>
                     </thead>
                     <tbody>
 
-                        {% for receta in object_list %}
+                        {% for abono in object_list %}
                         <tr>
-                            <td>{{ receta.idReceta |default:'-' }}</td>
-                            <td>{{ receta.rutCliente }}-{{ receta.dvRutCliente }}</td>
-                            <td class="text-uppercase">{{ receta.nombreCliente }} {{ receta.apPaternoCliente }}
-                                {{ receta.apMaternoCliente |default:'' }}</td>
-                            <td>{{ receta.numeroReceta |default:'-' }}</td>
-                            <td>{{ receta.fechaReceta |date:'d/m/Y' }}</td>
+                            <td>{{ abono.idOrdenTrabajo.numeroOrdenTrabajo |default:'-' }}</td>
+                            <td>{{ abono.numeroAbono }}</td>
+                            <td>{{ abono.rutCliente.rutCliente }}-{{ abono.rutCliente.dvRutCliente }}</td>
+                            <td class="text-uppercase">{{ abono.rutCliente.nombreCliente }} {{
+                                abono.rutCliente.apPaternoCliente }}
+                                {{ abono.rutCliente.apMaternoCliente |default:'' }}</td>
+                            <td>{{ abono.fechaAbono |date:'d/m/Y' }}</td>
+                            <td class="text-uppercase">{{ abono.tipoPagoAbono |default:'-' }}</td>
+                            <td>{{ abono.idOrdenTrabajo.totalOrdenTrabajo |default:'-' }}</td>
+                            <td>{{ abono.valorAbono |default:'-' }}</td>
+                            <td>{{ abono.saldo |default:'-' }}</td>
+                            <td>{{ abono.numeroVoucherAbono |default:'-' }}</td>
 
-                            <td class="text-uppercase">{{ receta.tipoLente |default:'-' }}</td>
-                            <td class="text-uppercase">{{ receta.institucion |default:'-' }}</td>
-                            <td class="text-uppercase">{{ receta.doctorOftalmologo |default:'-' }}</td>
 
-                            <!-- Imagen en la tabla con enlace para abrir el modal -->
-                            <td>
-                                {% if receta.imagenReceta %}
-                                <!-- Al hacer clic en la imagen, se activa el modal -->
-                                <img src="{{ receta.imagenReceta.url }}" height="40" data-bs-toggle="modal"
-                                    data-bs-target="#imagenModal-{{ receta.idReceta }}" style="cursor: pointer;" />
-                                {% else %}
-                                <span>IMAGEN NO DISPONIBLE</span>
-                                {% endif %}
-                            </td>
-
-                            <!-- Modal de Bootstrap para mostrar la imagen en tamaño completo -->
-                            <div class="modal fade" id="imagenModal-{{ receta.idReceta }}" tabindex="-1"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Detalle de la imagen</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body text-center">
-                                            {% if receta.imagenReceta %}
-                                            <img src="{{ receta.imagenReceta.url }}" alt="Imagen de receta"
-                                                style="max-height: 60%; max-width: 80%; height: auto; width: auto;">
-                                            {% endif %}
-                                            <!-- Ajusta el tamaño de la imagen -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                        data-bs-target="#recetaModal{{ receta.idReceta }}">
+                                        data-bs-target="#abonoModal{{ abono.idAbono }}">
                                         <i class="bi bi-eye"></i><!-- Icono de OJO para ver detalle -->
                                     </button>
 
-                                    <a href="{% url 'receta_edit' receta.pk %}" class="btn btn-primary">
+                                    <a href="{% url 'abono_edit' abono.pk %}" class="btn btn-primary">
                                         <i class="bi bi-pencil"></i> <!-- Icono de lápiz para editar -->
                                     </a>
 
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#eliminarRecetaModal{{ receta.idReceta }}">
+                                        data-bs-target="#eliminarAbonoModal{{ receta.idAbono }}">
                                         <i class="bi bi-trash"></i> <!-- Icono de basura para eliminar -->
                                     </button>
 
 
                                 </div>
-                                <!-- --MODAL PARA ELIMINAR RECETA -->
-                                <a data-bs-toggle="modal" data-bs-target="#eliminarRecetaModal{{ receta.idReceta }}">
+                                <!-- --MODAL PARA ELIMINAR ABONO -->
+                                <a data-bs-toggle="modal" data-bs-target="#eliminarAbonoModal{{ receta.idAbono }}">
 
-                                    <div class="modal fade" id="eliminarRecetaModal{{ receta.idReceta  }}" tabindex="-1"
-                                        aria-labelledby="eliminarRecetaModal{{ receta.idReceta  }}" aria-hidden="true">
+                                    <div class="modal fade" id="eliminarAbonoModal{{ abono.idAbono  }}" tabindex="-1"
+                                        aria-labelledby="eliminarAbonoModal{{ abono.idAbono  }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title font-weight-bold"
-                                                        id="eliminarRecetaModalLabel{{ receta.idReceta  }}">
-                                                        Eliminar Receta</h5>
+                                                        id="eliminarAbonoModalLabel{{ abono.idAbono  }}">
+                                                        Eliminar Abono</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <span class="font-weight-bold text-center">
                                                         <h5>
-                                                            ¿Está seguro de eliminar la Receta
+                                                            ¿Está seguro de eliminar el abono
+                                                            {{ abono.idAbono}}
+                                                            de Orden de Trabajo Número
                                                             <br>
-                                                            {% if receta.numeroReceta %} Número
-                                                            {{ receta.numeroReceta }}
-                                                            {% else %}ID {{ receta.idReceta }}
-                                                            {% endif %}
-                                                            ?
+                                                            {{ abono.idOrdenTrabajo.numeroOrdenTrabajo }}?
                                                         </h5>
                                                     </span>
                                                     <form method="post" class="mt-3 text-center"
-                                                        action="{% url 'receta_delete' receta.idReceta %}">
+                                                        action="{% url 'abono_delete' abono.idAbono %}">
                                                         {% csrf_token %}
-                                                        <a href="{% url 'receta_list' %}"
+                                                        <a href="{% url 'abono_list' %}"
                                                             class="btn btn-secondary me-1">Cancelar</a>
 
 
                                                         <button type="submit" class="btn btn-danger"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#eliminarRecetaModal{{ receta.idReceta }}">
+                                                            data-bs-target="#eliminarAbonoModal{{ abono.idAbono }}">
                                                             Eliminar
                                                         </button>
                                                     </form>
@@ -206,17 +187,20 @@
                             </td>
                         </tr>
 
-                        <!-- --MODAL PARA MOSTRAR EL DETALLE de la Receta -->
+                        <!-- --MODAL PARA MOSTRAR EL DETALLE del Abono-->
                         <div class="modal-condensed">
-                            <div class="modal fade" id="recetaModal{{ receta.idReceta }}" tabindex="-1"
-                                aria-labelledby="recetaModalLabel{{ receta.idReceta }}" aria-hidden="true">
+                            <div class="modal fade" id="abonoModal{{ abono.idAbono }}" tabindex="-1"
+                                aria-labelledby="abonoModalLabel{{ abono.idAbono }}" aria-hidden="true">
 
                                 <div class="modal-dialog" style=" max-width: 40%;">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" style="font-weight: bold;"
-                                                id="recetaModalLabel{{ receta.idReceta }} ">
-                                                Detalle de la Receta - ID {{ receta.idReceta |default:'' }}</h5>
+                                                id="abonoModalLabel{{ abono.idAbono }} ">
+                                                Detalle del Abono - {{ abono.idAbono |default:'' }} de la Orden de
+                                                Trabajo
+
+                                                {{ abono.idOrdenTrabajo.numeroOrdenTrabajo |default:'' }}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -226,30 +210,32 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">RUN:</span>
-                                                        {{ receta.rutCliente }}-{{ receta.dvRutCliente }}
+                                                        {{ abono.rutCliente.rutCliente }}-{{
+                                                        abono.rutCliente.dvRutCliente }}
                                                     </p>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">Cliente:</span>
-                                                        <span id="letras-modal">{{ receta.nombreCliente |upper }}
-                                                            {{ receta.apPaternoCliente |upper }}
-                                                            {{ receta.apMaternoCliente|default:'' |upper }}</span>
+                                                        <span id="letras-modal">{{ abono.rutCliente.nombreCliente |upper
+                                                            }}
+                                                            {{ abono.rutCliente.apPaternoCliente |upper }}
+                                                            {{ abono.rutCliente.apMaternoCliente |default:'' |upper
+                                                            }}</span>
                                                     </p>
                                                 </div>
                                             </div>
 
-
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Celular:</span>
-                                                        {{ receta.celularCliente |default:'' }}</p>
+                                                    <p><span class="font-weight-bold" id="texto-modal">Fecha
+                                                            Abono:</span>
+                                                        {{ abono.fechaAbono |date:'d/m/Y' }}</p>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">Teléfono:</span>
                                                         {{ receta.telefonoCliente |default:'' }}</p>
                                                 </div>
                                             </div>
-
 
                                             <div class="row">
                                                 <div class="col-md-6">

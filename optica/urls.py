@@ -40,7 +40,13 @@ urlpatterns = [
     path('<int:pk>/ordenTrabajo_edit/', views.EditarOrdenTrabajoView.as_view(), name='ordenTrabajo_edit'),
     path('<int:pk>/ordenTrabajo_delete/', views.EliminarOrdenTrabajoView.as_view(), name='ordenTrabajo_delete'),
     
-]
+    path('abono_list', views.ListarAbonoView.as_view(), name='abono_list'),
+    path('abono_new/', views.CrearAbonoView.as_view(), name='abono_new'),    
+    path('<int:pk>/abono_edit/', views.EditarAbonoView.as_view(), name='abono_edit'),
+    path('<int:pk>/abono_delete/', views.EliminarAbonoView.as_view(), name='abono_delete'),
+
+    
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

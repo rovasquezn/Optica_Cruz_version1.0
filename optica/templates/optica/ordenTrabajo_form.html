@@ -506,12 +506,81 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-3 ml-1">
+                            <div class="col-md-3 ml-1 mr-5">
                                 <label for="totalOrdenTrabajo">Valor Total</label>
                                 <input type="number" id="totalOrdenTrabajo" name="totalOrdenTrabajo"
                                     class="form-control form-control-sm" readonly>
                             </div>
 
+                            <div class="col-md-2">
+                                <label for="estadoDelPago" class="form-label" style="width: 200px;">Opciones de
+                                    Pago</label>
+                                <br>
+                                <select class="form-select" id="estadoDelPago" name="estadoDelPago" required
+                                    style="width: 200px; height: 32px;">
+                                    <option value="Pago pendiente">Pago pendiente</option>
+                                    <option value="Pagado">Pagado</option>
+                                    <option value="Abono">Abono</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="tipoPago" class="form-label ml-4" style="width: 200px;">Tipo de
+                                    Pago</label>
+                                <br>
+                                <select class="form-select ml-4" id="tipoPago" name="tipoPago"
+                                    style="width: 200px; height: 32px;">
+
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Debito">Débito</option>
+                                    <option value="Credito">Crédito</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+
+                            </div>
+                            <script>
+                                function toggleTipoPago() {
+                                    var estadoDelPago = document.getElementById('estadoDelPago');
+                                    var tipoPago = document.getElementById('tipoPago');
+                                    if (estadoDelPago.value === 'Pago pendiente' || estadoDelPago.value === 'Abono') {
+                                        tipoPago.disabled = true;
+                                    } else {
+                                        tipoPago.disabled = false;
+                                    }
+                                }
+
+                                document.getElementById('estadoDelPago').addEventListener('change', toggleTipoPago);
+
+                                // Llama a la función al cargar la página para deshabilitar el campo si es necesario
+                                window.onload = toggleTipoPago;
+
+                            </script>
+
+                            <div class="col-md-3 ml-5 ">
+                                <label for="numeroVoucherOrdenTrabajo">Número de documento de
+                                    pago</label>
+                                {{ form.numeroVoucherOrdenTrabajo }}
+                            </div>
+                            <script>
+                                const selectTipoPago = document.getElementById("tipoPago");
+                                const inputNumeroVoucher = document.getElementById("id_numeroVoucherOrdenTrabajo");
+
+                                function toggleVoucherInput() {
+                                    if (selectTipoPago.value === "Efectivo") {
+                                        inputNumeroVoucher.disabled = true;
+                                    } else {
+                                        inputNumeroVoucher.disabled = false;
+                                    }
+                                }
+
+                                // Set initial state on page load
+                                document.addEventListener("DOMContentLoaded", toggleVoucherInput);
+
+                                // Update state on change
+                                selectTipoPago.addEventListener("change", toggleVoucherInput);
+                            </script>
 
                             <script>
                                 // Selecciona los campos de los valores
@@ -541,33 +610,41 @@
                                 inputMarco4.addEventListener("input", actualizarTotal);
                             </script>
 
-
-
-
-
-
-
-
-
-
-
-
-                            <div class="col-md-3 ">
-                                <label for="tipoPago">Tipo de Pago</label>
-                                {{ form.tipoPago }}
-                            </div>
-                            <div class="col-md-3 ">
-                                <label for="numeroVoucherOrdenTrabajo">Número de Voucher</label>
-                                {{ form.numeroVoucherOrdenTrabajo }}
-                            </div>
                         </div>
+
 
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="observacionOrdenTrabajo">Observaciones Orden de Trabajo</label>
+                                <label for="observacionOrdenTrabajo">Observaciones Orden de
+                                    Trabajo</label>
                                 {{ form.observacionOrdenTrabajo }}
                             </div>
                         </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <hr style="width: 50%; border: 1px solid #5eb9a4;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <label for="estadoOrdenTrabajo" class="form-label"
+                                    style="font-weight: bold; width: 300px;">ESTADO ORDEN DE
+                                    TRABAJO</label>
+                                <br>
+                                <select class="form-select" id="estadoOrdenTrabajo" name="estadoOrdenTrabajo" required
+                                    style="width: 330px; height: 32px;">
+                                    <option value="OT CREADA">ORDEN DE TRABAJO CREADA</option>
+                                    <option value="OT EN PROCESO">ORDEN DE TRABAJO EN PROCESO</option>
+                                    <option value="OT PARA RETIRO">ORDEN DE TRABAJO LISTA PARA RETIRO</option>
+                                    <option value="OT ENTREGADA">ORDEN DE TRABAJO ENTREGADA</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+
 
                         {{ form.fechaOrdenTrabajo.as_hidden }}
                         {{ form.rutAtendedor.as_hidden }}
@@ -725,12 +802,14 @@
                                     value="{{ form.tipoCristalLejos.value|default:'' }}">
                             </div>
                             <div style="max-width:10%;" class="form-group">
-                                <label for="colorCristalLejos" class="form-label">Color de Cristal</label>
+                                <label for="colorCristalLejos" class="form-label">Color de
+                                    Cristal</label>
                                 <input type="text" name="colorCristalLejos" class="form-control"
                                     value="{{ form.colorCristalLejos.value|default:'' }}">
                             </div>
                             <div class="ml-3 mr-4" style="max-width:10%;" class="form-group">
-                                <label for="valorCristalesLejos" class="form-label">Valor de Cristal</label>
+                                <label for="valorCristalesLejos" class="form-label">Valor de
+                                    Cristal</label>
                                 <input type="text" name="valorCristalesLejos" class="form-control"
                                     value="{{ form.valorCristalesLejos.value|default:'' }}">
                             </div>
@@ -742,12 +821,14 @@
                                     value="{{ form.tipoCristalCerca.value|default:'' }}">
                             </div>
                             <div style="max-width:10%;" class="form-group">
-                                <label for="colorCristalCerca" class="form-label">Color de Cristal</label>
+                                <label for="colorCristalCerca" class="form-label">Color de
+                                    Cristal</label>
                                 <input type="text" name="colorCristalCerca" class="form-control"
                                     value="{{ form.colorCristalCerca.value|default:'' }}">
                             </div>
                             <div class="ml-3" style="max-width:10%;" class="form-group">
-                                <label for="valorCristalesCerca" class="form-label">Valor de Cristal</label>
+                                <label for="valorCristalesCerca" class="form-label">Valor de
+                                    Cristal</label>
                                 <input type="text" name="valorCristalesCerca" class="form-control"
                                     value="{{ form.valorCristalesCerca.value|default:'' }}">
                             </div>
@@ -803,26 +884,176 @@
                         </div>
 
                         <div class="row">
+                            <div class="col-md-3 ml-1 mr-5">
+                                <label for="totalOrdenTrabajo">Valor Total</label>
+                                <input type="number" id="totalOrdenTrabajo" name="totalOrdenTrabajo"
+                                    class="form-control form-control-sm" readonly>
+                            </div>
 
-                            <div class="col-md-3 form-group">
-                                <label for="tipoPago" class="form-label">Tipo de Pago</label>
-                                <input type="text" name="tipoPago" class="form-control"
-                                    value="{{ form.tipoPago.value|default:'' }}">
+                            <div class="col-md-2">
+                                <label for="estadoDelPago" class="form-label" style="width: 200px;">Opciones de
+                                    Pago</label>
+                                <br>
+                                <select class="form-select" id="estadoDelPago" name="estadoDelPago" required
+                                    style="width: 200px; height: 32px;">
+                                    <option value="Pago pendiente">Pago pendiente</option>
+                                    <option value="Pagado">Pagado</option>
+                                    <option value="Abono">Abono</option>
+                                </select>
                             </div>
-                            <div class="col-md-3 form-group">
-                                <label for="numeroVoucherOrdenTrabajo">Número de Voucher</label>
-                                <input type="text" name="numeroVoucherOrdenTrabajo" class="form-control"
-                                    value="{{ form.numeroVoucherOrdenTrabajo.value|default:'' }}">
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var estadoDelPago = document.getElementById('estadoDelPago');
+                                    var valorGuardado = "{{ form.instance.estadoDelPago }}";  // Obtén el valor guardado desde el servidor
+
+                                    // Establece el valor seleccionado en el campo select
+                                    for (var i = 0; i < estadoDelPago.options.length; i++) {
+                                        if (estadoDelPago.options[i].value === valorGuardado) {
+                                            estadoDelPago.options[i].selected = true;
+                                            break;
+                                        }
+                                    }
+                                });
+                            </script>
+
+
+
+                            <div class="col-md-2">
+                                <label for="tipoPago" class="form-label ml-4" style="width: 200px;">Tipo de
+                                    Pago</label>
+                                <br>
+                                <select class="form-select ml-4" id="tipoPago" name="tipoPago"
+                                    style="width: 200px; height: 32px;">
+
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Debito">Débito</option>
+                                    <option value="Credito">Crédito</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+
                             </div>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var estadoDelPago = document.getElementById('estadoDelPago');
+                                    var valorGuardadoEstado = "{{ form.instance.estadoDelPago }}";  // Obtén el valor guardado desde el servidor
+
+                                    // Establece el valor seleccionado en el campo select estadoDelPago
+                                    for (var i = 0; i < estadoDelPago.options.length; i++) {
+                                        if (estadoDelPago.options[i].value === valorGuardadoEstado) {
+                                            estadoDelPago.options[i].selected = true;
+                                            break;
+                                        }
+                                    }
+
+                                    var tipoPago = document.getElementById('tipoPago');
+                                    var valorGuardadoTipo = "{{ form.instance.tipoPago }}";  // Obtén el valor guardado desde el servidor
+
+                                    // Establece el valor seleccionado en el campo select tipoPago
+                                    for (var i = 0; i < tipoPago.options.length; i++) {
+                                        if (tipoPago.options[i].value === valorGuardadoTipo) {
+                                            tipoPago.options[i].selected = true;
+                                            break;
+                                        }
+                                    }
+                                });
+                            </script>
+
+                            <script>
+                                function toggleTipoPago() {
+                                    var estadoDelPago = document.getElementById('estadoDelPago');
+                                    var tipoPago = document.getElementById('tipoPago');
+                                    if (estadoDelPago.value === 'Pago pendiente' || estadoDelPago.value === 'Abono') {
+                                        tipoPago.disabled = true;
+                                    } else {
+                                        tipoPago.disabled = false;
+                                    }
+                                }
+
+                                document.getElementById('estadoDelPago').addEventListener('change', toggleTipoPago);
+
+                                // Llama a la función al cargar la página para deshabilitar el campo si es necesario
+                                window.onload = toggleTipoPago;
+
+                            </script>
+
+
+                            <div class="col-md-3 ml-5 ">
+                                <label for="numeroVoucherOrdenTrabajo">Número de documento de
+                                    pago</label>
+                                {{ form.numeroVoucherOrdenTrabajo }}
+                            </div>
+                            <script>
+                                const selectTipoPago2 = document.getElementById("tipoPago");
+                                const inputNumeroVoucher2 = document.getElementById("id_numeroVoucherOrdenTrabajo");
+
+                                function toggleVoucherInput() {
+                                    if (selectTipoPago2.value === "Efectivo") {
+                                        inputNumeroVoucher.disabled = true;
+                                    } else {
+                                        inputNumeroVoucher.disabled = false;
+                                    }
+                                }
+
+                                // Set initial state on page load
+                                // document.addEventListener("DOMContentLoaded", toggleVoucherInput);
+
+                                // Update state on change
+                                selectTipoPago.addEventListener("change", toggleVoucherInput);
+                            </script>
+
+
+
                         </div>
 
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                <label for="observacionOrdenTrabajo">Observaciones Orden de Trabajo</label>
+                                <label for="observacionOrdenTrabajo">Observaciones Orden de
+                                    Trabajo</label>
                                 <input type="text" name="observacionOrdenTrabajo" class="form-control"
                                     value=" {{ form.observacionOrdenTrabajo.value|default:''}}">
                             </div>
                         </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <hr style="width: 50%; border: 1px solid #5eb9a4;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <label for="estadoOrdenTrabajo" class="form-label"
+                                    style="font-weight: bold; width: 300px;">ESTADO ORDEN DE
+                                    TRABAJO</label>
+                                <br>
+                                <select class="form-select" id="estadoOrdenTrabajo" name="estadoOrdenTrabajo" required
+                                    style="width: 330px; height: 32px;">
+                                    <option value="OT CREADA">ORDEN DE TRABAJO CREADA</option>
+                                    <option value="OT EN PROCESO">ORDEN DE TRABAJO EN PROCESO</option>
+                                    <option value="OT PARA RETIRO">ORDEN DE TRABAJO LISTA PARA RETIRO</option>
+                                    <option value="OT ENTREGADA">ORDEN DE TRABAJO ENTREGADA</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var estadoOrdenTrabajo = document.getElementById('estadoOrdenTrabajo');
+                                var valorGuardadoEstadoOT = "{{ form.instance.estadoOrdenTrabajo }}";  // Obtén el valor guardado desde el servidor
+
+                                // Establece el valor seleccionado en el campo select estadoDelPago
+                                for (var i = 0; i < estadoOrdenTrabajo.options.length; i++) {
+                                    if (estadoOrdenTrabajo.options[i].value === valorGuardadoEstadoOT) {
+                                        estadoOrdenTrabajo.options[i].selected = true;
+                                        break;
+                                    }
+                                }
+
+                            });
+                        </script>
+
 
                         <!-- {{ form.fechaOrdenTrabajo.as_hidden }} -->
                         <!-- {{ form.rutAtendedor.as_hidden }}
@@ -834,7 +1065,8 @@
 
                         <div class="mt-3 mb-3">
                             <a href="{% url 'ordenTrabajo_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
-                            <button class="btn btn-success">Guardar Orden de Trabajo</button>
+                            <button type="submit" class="btn btn-success">Guardar Orden de
+                                Trabajo</button>
                         </div>
                     </form>
                 </div>

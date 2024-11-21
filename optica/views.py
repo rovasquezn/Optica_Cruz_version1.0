@@ -4,7 +4,7 @@ from rest_framework import viewsets
 # from .serializer import OrdenTrabajoSerializer
 
 # from .serializer import AdministradorSerializer
-from .models import Cliente, Receta, OrdenTrabajo, Administrador
+from .models import Cliente, Receta, OrdenTrabajo, Abono, Administrador
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -28,7 +28,6 @@ from django.http import FileResponse
 from django.conf import settings
 from datetime import datetime
 from django.db.models import Max
-
 # from .serializer import AtendedorSerializer
 # from .serializer import TecnicoSerializer
 # from .serializer import RecetaSerializer
@@ -96,11 +95,21 @@ def index(request):
     # Devolver el archivo como respuesta
     return FileResponse(open(file_path, 'rb'), content_type='text/html')
 
+def editar_orden_trabajo(request, pk):
+    orden_trabajo = get_object_or_404(OrdenTrabajo, pk=pk)
+    if request.method == "POST":
+        form = OrdenTrabajoForm(request.POST, instance=orden_trabajo)
+        if form.is_valid():
+            form.save()
+            return redirect('orden_trabajo_list')
+    else:
+        form = OrdenTrabajoForm(instance=orden_trabajo)
+    return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
 
 # Create your views here.
 class ListarClienteView(generic.ListView):
     model = Cliente
-    paginate_by = 8
+    paginate_by = 10
     ordering = ['-creacionCliente']  # Ordena por el campo 'creacionCliente' en orden descendente
 
     # def get_queryset(self) -> QuerySet[Any]:
@@ -170,7 +179,7 @@ class EliminarClienteView(SuccessMessageMixin, generic.DeleteView):
 
 class ListarRecetaView(generic.ListView):
     model = Receta
-    paginate_by = 8
+    paginate_by = 10
     ordering = ['-creacionReceta']
     
     
@@ -306,7 +315,7 @@ class EliminarRecetaView(SuccessMessageMixin, generic.DeleteView):
 
 class ListarOrdenTrabajoView(generic.ListView):
     model = OrdenTrabajo
-    paginate_by = 8
+    paginate_by = 10
     ordering = ['-fechaOrdenTrabajo']
     
     def get_queryset(self) -> QuerySet[Any]:
@@ -371,8 +380,10 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
     'totalCerca',
     'totalOrdenTrabajo',
     'tipoPago',
+    'estadoDelPago',
     'numeroVoucherOrdenTrabajo',
-    'observacionOrdenTrabajo'
+    'observacionOrdenTrabajo',
+    'estadoOrdenTrabajo',
     )
     
     success_url = reverse_lazy('ordenTrabajo_list')
@@ -398,20 +409,6 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
 
         numero_orden = self.generar_numero_orden()
 
-
-
-        # # Inicializa el formulario con el número de orden y la receta si está presente
-        # form = OrdenTrabajoForm(initial={
-        #     'numeroOrdenTrabajo': numero_orden,
-        #     'idReceta': receta.idReceta if receta else None
-        # })
-
-        # return render(request, self.template_name, {
-        #     'form': form,
-        #     'receta': receta
-        # })
-    
-    
     
     
         form = OrdenTrabajoForm(initial={  
@@ -452,8 +449,6 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
     
         return render(request, self.template_name, {'form': form, 'receta': receta})
     
-    
-
     def post(self, request):
         form = OrdenTrabajoForm(request.POST)
         receta = None 
@@ -467,10 +462,24 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
                 if form.is_valid():
                     orden_trabajo = form.save(commit=False)
                     orden_trabajo.idReceta = receta  # Asigna la receta a la orden de trabajo
-                    orden_trabajo.save()  # Guarda la orden de trabajo
                     
-                    messages.success(request, "Orden de Trabajo creada con éxito.")
-                    return redirect(self.success_url)  # Redirige tras guardar
+                    # Manejo de los campos booleanos
+                    tipo_pago = request.POST.get('tipoDePago')
+                    if tipo_pago == 'esAbono':
+                        orden_trabajo.esAbono = True
+                        orden_trabajo.esPagoTotal = False
+                    elif tipo_pago == 'esPagoTotal':
+                        orden_trabajo.esAbono = False
+                        orden_trabajo.esPagoTotal = True
+
+                # Manejo del campo estadoDelPago
+                estado_del_pago = form.cleaned_data['estadoDelPago']
+                orden_trabajo.estadoDelPago = estado_del_pago
+                    
+                orden_trabajo.save()  # Guarda la orden de trabajo
+                    
+                messages.success(request, "Orden de Trabajo creada con éxito.")
+                return redirect(self.success_url)  # Redirige tras guardar
                     
             except Receta.DoesNotExist:
                 messages.error(request, "Receta no encontrada.")
@@ -480,7 +489,7 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
         # Si no es válido, muestra el formulario de nuevo con los mensajes de error
         return render(request, self.template_name, {'form': form, 'receta': receta})
 
-
+ 
 class EditarOrdenTrabajoView(SuccessMessageMixin, generic.UpdateView):
     model = OrdenTrabajo
     fields = (
@@ -511,9 +520,13 @@ class EditarOrdenTrabajoView(SuccessMessageMixin, generic.UpdateView):
     'marcoCerca',
     'valorMarcoCerca',
     'valorCristalesCerca', 
+    # 'esAbono',
+    # 'esPagoTotal',
+    'estadoDelPago',
     'tipoPago',
     'numeroVoucherOrdenTrabajo',
-    'observacionOrdenTrabajo'
+    'observacionOrdenTrabajo',
+    'estadoOrdenTrabajo'
     )
     success_url = reverse_lazy('ordenTrabajo_list')
     success_message = "La Orden de Trabajo se ha editado exitosamente."
@@ -523,6 +536,18 @@ def get_initial(self):
         initial['numeroOrdenTrabajo'] = self.object.numeroOrdenTrabajo  # Valor del modelo
         return initial
 
+
+def editar_orden_trabajo(request, pk):
+    orden_trabajo = get_object_or_404(OrdenTrabajo, pk=pk)
+    if request.method == "POST":
+        form = OrdenTrabajoForm(request.POST, instance=orden_trabajo)
+        if form.is_valid():
+            form.save()
+            return redirect('orden_trabajo_list')
+    else:
+        form = OrdenTrabajoForm(instance=orden_trabajo)
+    return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
+
 def form_valid(self, form):
         # Aquí puedes agregar lógica si necesitas procesar el formulario
         return super().form_valid(form) 
@@ -531,3 +556,51 @@ class EliminarOrdenTrabajoView(SuccessMessageMixin, generic.DeleteView):
     # template_name = 'ordenTrabajo_delete'
     success_url = reverse_lazy('ordenTrabajo_list')
     success_message = "La Orden de Trabajo se ha eliminado exitosamente."
+
+
+class ListarAbonoView(generic.ListView):
+    model = Abono
+    paginate_by = 10
+    ordering = ['-fechaAbono']
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        q = self.request.GET.get('q')
+        if q:
+            return Abono.objects.filter(
+                Q(idReceta__rutCliente__nombreCliente__icontains=q) | 
+                Q(idReceta__rutCliente__apPaternoCliente__icontains=q) | 
+                Q(idReceta__rutCliente__rutCliente__icontains=q)
+            )
+        return super().get_queryset()
+    
+    
+class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
+    model = Abono
+    fields = ('idAbono',
+    'idOrdenTrabajo',
+    'rutCliente',
+    'fechaAbono', 
+    'valorAbono', 
+    'saldo', 
+    'tipoPagoAbono', 
+    'numeroVoucherAbono',
+    'numeroAbono'    
+    )
+    success_url = reverse_lazy('abono_list')
+    success_message = "El abono se ha creado exitosamente."
+
+
+class EditarAbonoView(SuccessMessageMixin, generic.UpdateView):
+    model = Abono
+    fields = ( 'fechaAbono', 
+    'valorAbono', 
+    'tipoPagoAbono', 
+    'numeroVoucherAbono',)
+    success_url = reverse_lazy('abono_list')
+    success_message = "El abono se ha editado exitosamente."
+
+class EliminarAbonoView(SuccessMessageMixin, generic.DeleteView):
+    model = Abono
+    success_url = reverse_lazy('abono_list')
+    success_message = "El abono se ha eliminado exitosamente."
+
