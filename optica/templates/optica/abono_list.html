@@ -32,14 +32,14 @@
     <section class="bg-light py-3">
         <div class="container">
             <div class="row">
-                <div class="col-lg-9 col-md-8">
+                <div class="col-lg-8 col-md-5">
                     <h1 class="font-weight-bold mb-0">Abonos</h1>
                     <p class="lead text-muted">Listado de los abonos registradas en sistema</p>
                 </div>
-                <div class="col-lg-3 col-md-4 d-flex">
 
+                <div class="col-lg-3 col-md-4 d-flex">
                     <a href="{% url 'abono_new' %}" class="btn btn-primary w-100 align-self-center">
-                        Ingresar Abono a Orden de Trabajo</a>
+                        Registrar Abono</a>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                             placeholder="Buscar por Nombre, Apellido o RUN (Sin guión)" name="q"
                             value="{{ request.GET.q }}">
                         <button class="btn btn-primary">
-                            Buscar Receta
+                            Buscar Abono
                         </button>
                     </div>
                 </form>
@@ -99,6 +99,7 @@
                             <th scope="col">Tipo de Pago del abono</th>
                             <th scope="col">Valor Total</th>
                             <th scope="col">Monto Abonado</th>
+                            <!-- <th scope="col">Saldo Anterior</th> -->
                             <th scope="col">Saldo</th>
                             <th scope="col">Voucher</th>
 
@@ -111,13 +112,14 @@
                             <td>{{ abono.idOrdenTrabajo.numeroOrdenTrabajo |default:'-' }}</td>
                             <td>{{ abono.numeroAbono }}</td>
                             <td>{{ abono.rutCliente.rutCliente }}-{{ abono.rutCliente.dvRutCliente }}</td>
-                            <td class="text-uppercase">{{ abono.rutCliente.nombreCliente }} {{
-                                abono.rutCliente.apPaternoCliente }}
+                            <td class="text-uppercase">{{ abono.rutCliente.nombreCliente }}
+                                {{ abono.rutCliente.apPaternoCliente }}
                                 {{ abono.rutCliente.apMaternoCliente |default:'' }}</td>
                             <td>{{ abono.fechaAbono |date:'d/m/Y' }}</td>
                             <td class="text-uppercase">{{ abono.tipoPagoAbono |default:'-' }}</td>
                             <td>{{ abono.idOrdenTrabajo.totalOrdenTrabajo |default:'-' }}</td>
                             <td>{{ abono.valorAbono |default:'-' }}</td>
+                            <!-- <td>{{ abono.saldoAnterior |default:'-' }}</td> -->
                             <td>{{ abono.saldo |default:'-' }}</td>
                             <td>{{ abono.numeroVoucherAbono |default:'-' }}</td>
 
@@ -135,14 +137,14 @@
                                     </a>
 
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#eliminarAbonoModal{{ receta.idAbono }}">
+                                        data-bs-target="#eliminarAbonoModal{{ abono.idAbono }}">
                                         <i class="bi bi-trash"></i> <!-- Icono de basura para eliminar -->
                                     </button>
 
 
                                 </div>
                                 <!-- --MODAL PARA ELIMINAR ABONO -->
-                                <a data-bs-toggle="modal" data-bs-target="#eliminarAbonoModal{{ receta.idAbono }}">
+                                <a data-bs-toggle="modal" data-bs-target="#eliminarAbonoModal{{ abono.idAbono }}">
 
                                     <div class="modal fade" id="eliminarAbonoModal{{ abono.idAbono  }}" tabindex="-1"
                                         aria-labelledby="eliminarAbonoModal{{ abono.idAbono  }}" aria-hidden="true">
@@ -159,9 +161,9 @@
                                                     <span class="font-weight-bold text-center">
                                                         <h5>
                                                             ¿Está seguro de eliminar el abono
-                                                            {{ abono.idAbono}}
+                                                            {{ abono.numeroAbono}} <br>
                                                             de Orden de Trabajo Número
-                                                            <br>
+
                                                             {{ abono.idOrdenTrabajo.numeroOrdenTrabajo }}?
                                                         </h5>
                                                     </span>
@@ -192,13 +194,13 @@
                             <div class="modal fade" id="abonoModal{{ abono.idAbono }}" tabindex="-1"
                                 aria-labelledby="abonoModalLabel{{ abono.idAbono }}" aria-hidden="true">
 
-                                <div class="modal-dialog" style=" max-width: 40%;">
+                                <div class="modal-dialog" style=" max-width: 30%;">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" style="font-weight: bold;"
-                                                id="abonoModalLabel{{ abono.idAbono }} ">
-                                                Detalle del Abono - {{ abono.idAbono |default:'' }} de la Orden de
-                                                Trabajo
+                                                id="abonoModalLabel{{ abono.numeroAbono }} ">
+                                                ABONO {{ abono.numeroAbono |default:'' }} <br>
+                                                ORDEN DE TRABAJO N°
 
                                                 {{ abono.idOrdenTrabajo.numeroOrdenTrabajo |default:'' }}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -208,249 +210,83 @@
                                         <div class="modal-body">
 
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">RUN:</span>
-                                                        {{ abono.rutCliente.rutCliente }}-{{
-                                                        abono.rutCliente.dvRutCliente }}
+                                                <div class="col-md-12">
+                                                    <p><span class="font-weight-bold" id="texto-modal">Cliente:</span>
+                                                        <span id="letras-modal">
+                                                            {{ abono.rutCliente.nombreCliente |upper }}
+                                                            {{ abono.rutCliente.apPaternoCliente |upper }}
+                                                            {{abono.rutCliente.apMaternoCliente|default:''|upper}}</span>
                                                     </p>
                                                 </div>
+
+
+
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Cliente:</span>
-                                                        <span id="letras-modal">{{ abono.rutCliente.nombreCliente |upper
-                                                            }}
-                                                            {{ abono.rutCliente.apPaternoCliente |upper }}
-                                                            {{ abono.rutCliente.apMaternoCliente |default:'' |upper
-                                                            }}</span>
+                                                    <p><span class="font-weight-bold" id="texto-modal">RUN:</span>
+                                                        {{abono.rutCliente.rutCliente}}-{{abono.rutCliente.dvRutCliente}}
                                                     </p>
                                                 </div>
                                             </div>
-
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <p><span class="font-weight-bold" id="texto-modal">Fecha
                                                             Abono:</span>
                                                         {{ abono.fechaAbono |date:'d/m/Y' }}</p>
                                                 </div>
+
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <p><span class="font-weight-bold" id="texto-modal">Tipo de Pago del
+                                                            Abono:</span>
+                                                        {{ abono.tipoPagoAbono |default:'' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <p><span class="font-weight-bold" id="texto-modal">Numero de
+                                                            Voucher:</span>
+                                                        {{ abono.numeroVoucherAbono |default:'' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Teléfono:</span>
-                                                        {{ receta.telefonoCliente |default:'' }}</p>
+                                                    <p><span class="font-weight-bold" id="texto-modal">Monto
+                                                            Total:</span>
+                                                        {{ abono.idOrdenTrabajo.totalOrdenTrabajo |default:'' }}</p>
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Número de
-                                                            Receta:</span>
-                                                        {{ receta.numeroReceta |default:'' }}</p>
+                                                    <p><span class="font-weight-bold" id="texto-modal">Monto
+                                                            Abonado:</span>
+                                                        {{ abono.valorAbono |default:'' }}</p>
                                                 </div>
+                                            </div>
+
+                                            <div class="row">
                                                 <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Fecha:</span>
-                                                        {{ receta.fechaReceta | date:'d/m/Y' |default:'' }}</p>
+                                                    <p><span class="font-weight-bold" id="texto-modal">Saldo
+                                                            Anterior:</span>
+                                                        {{ abono.saldoAnterior |default:'' }}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p><span class="font-weight-bold" id="texto-modal">Saldo
+                                                            Pendiente:</span>
+                                                        {{ abono.saldo |default:'' }}</p>
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-12 text-center">
                                                     <hr style="width: 100%; border: 1px solid #06818e;">
-                                                </div>
-                                            </div>
-
-
-
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="font-weight-bold" id="texto-modal">Lejos</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 10%;">
-                                                    <p>---</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Esfera</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Cilindro</span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Eje</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">DP</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OD</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOdEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOdCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOdEje |default:'' }}</p>
-                                                </div>
-
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.dpLejos |default:'' }}</p>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OI</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOiEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOiCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOiEje |default:'' }}</p>
-                                                </div>
-
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p></p>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="col-md-12 text-center">
-                                                    <hr style="width: 100%; border: 1px solid #06818e;">
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="font-weight-bold" id="texto-modal">Cerca</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p>---</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Esfera</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Cilindro</span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Eje</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">DP</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OD</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOdEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOdCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOdEje |default:'' }}</p>
-                                                </div>
-
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.dpCerca |default:'' }}</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OI</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOiEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOiCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOiEje |default:'' }}</p>
-                                                </div>
-
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12 text-center">
-                                                    <hr style="width: 100%; border: 1px solid #06818e;">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Tipo de
-                                                            lente:</span>
-                                                        {{ receta.tipoLente|default:""|upper }}</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p><span class="font-weight-bold"
-                                                            id="texto-modal">Institución:</span>
-                                                        {{ receta.institucion|default:""|upper }}</p>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">
-                                                            Doctor(a) Oftalmología:</span>
-                                                        {{ receta.doctorOftalmologo |default:""|upper }}</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <p><span class="font-weight-bold"
-                                                            id="texto-modal">Observaciones:</span>
-                                                        {{ receta.observacionReceta |default:""|upper }}</p>
                                                 </div>
                                             </div>
 

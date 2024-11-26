@@ -61,9 +61,6 @@ class Administrador(models.Model):
 class Receta(models.Model):
     idReceta = models.BigAutoField(primary_key=True, verbose_name="ID receta")
     rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente")
-    rutAdministrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Administrador")
-    rutTecnico = models.ForeignKey(Tecnico, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Técnico")
-    rutAtendedor = models.ForeignKey(Atendedor, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Atendedor") 
 
     dvRutCliente = models.CharField(max_length=1, null=True, blank=True, verbose_name="Dígito")
     nombreCliente = models.CharField(max_length=20, null=True, blank=True, verbose_name="Nombre")
@@ -137,9 +134,6 @@ class Receta(models.Model):
 class OrdenTrabajo(models.Model): 
     idReceta = models.ForeignKey(Receta, null=True, blank=True, on_delete=models.CASCADE, verbose_name="ID Receta")
     # rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
-    rutAtendedor = models.ForeignKey(Atendedor, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Atendedor") 
-    rutTecnico = models.ForeignKey(Tecnico, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Técnico")
-    rutAdministrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Administrador")
     idOrdenTrabajo = models.BigAutoField(primary_key=True, verbose_name="ID Orden de Trabajo")
     numeroOrdenTrabajo = models.IntegerField(verbose_name="Número de Orden de Trabajo") 
     fechaOrdenTrabajo = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Fecha Orden de Trabajo")
@@ -176,8 +170,6 @@ class OrdenTrabajo(models.Model):
     tipoPago = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Pago") 
     numeroVoucherOrdenTrabajo = models.IntegerField(null=True, blank=True, verbose_name="Número de Voucher")
     observacionOrdenTrabajo = models.CharField(max_length=300, null=True, blank=True, verbose_name="Observaciones")
-    #esAbono = models.BooleanField(default=False, null=True, blank=True, verbose_name="Es Abono")
-    #esPagoTotal = models.BooleanField(default=False, null=True, blank=True, verbose_name="Es Pago Total")
     estadoDelPago = models.CharField(max_length=20, verbose_name="Estado del Pago")
     estadoOrdenTrabajo = models.CharField(max_length=20, verbose_name="Estado Orden de Trabajo")
 
@@ -212,37 +204,30 @@ class OrdenTrabajo(models.Model):
 class Abono(models.Model): 
     idAbono = models.AutoField(primary_key=True, verbose_name="ID Abono")
     idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, verbose_name="ID Orden de Trabajo")
-    rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
-   
-    rutAdministrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Administrador")
-    rutTecnico = models.ForeignKey(Tecnico, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Técnico")
-    rutAtendedor = models.ForeignKey(Atendedor, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Atendedor") 
-
+    rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Cliente") 
     fechaAbono = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Abono")
     valorAbono = models.IntegerField(null=True, blank=True, verbose_name="Valor Abono")
+    saldoAnterior = models.IntegerField(null=True, blank=True, verbose_name="Saldo Anterior")
     saldo = models.IntegerField(null=True, blank=True, verbose_name="Saldo")
     tipoPagoAbono = models.CharField(max_length=10, null=True, blank=True, verbose_name="Forma de pago")
     numeroVoucherAbono = models.IntegerField(null=True, blank=True, verbose_name="Número de Voucher")
     numeroAbono = models.IntegerField(null=True, blank=True, verbose_name="Abono Número")
     
-
     def __str__(self):
-        return f"{self.fechaAbono} {self.valorAbono}"
-
+        return f"{self.fechaAbono} {self.tipoPagoAbono}"
+    
+    def delete_abono(self, idabono):
+        Abono.objects.filter(idAbono=idabono).delete()
 
 class Certificado(models.Model): 
-    idCertificado = models.AutoField(primary_key=True, default=1, verbose_name="ID Certificado")
+    numeroCertificado = models.AutoField(primary_key=True, verbose_name="ID Certificado")
     idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, verbose_name="ID Orden de Trabajo") 
-    rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
-
-    rutTecnico = models.ForeignKey(Tecnico, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Técnico") 
-    rutAdministrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Administrador")
-    rutAtendedor = models.ForeignKey(Atendedor, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Atendedor") 
-
+    # rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
     idReceta = models.ForeignKey(Receta, on_delete=models.CASCADE, verbose_name="ID Receta") 
     fechaCertificado = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Certificado")
     
+    
     def __str__(self):
-        return f"{self.rutCliente} {self.fechaCertificado}"
+        return f"{self.numeroCertificado}"
     
     

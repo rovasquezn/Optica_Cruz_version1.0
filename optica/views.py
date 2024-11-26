@@ -1,10 +1,6 @@
 from rest_framework import viewsets
-# from .serializer import ClienteSerializer
-# from .serializer import RecetaSerializer
-# from .serializer import OrdenTrabajoSerializer
-
-# from .serializer import AdministradorSerializer
-from .models import Cliente, Receta, OrdenTrabajo, Abono, Administrador
+from .models import Cliente, Receta, OrdenTrabajo, Abono, Certificado
+from django.views.generic.edit import CreateView
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -19,6 +15,8 @@ from django.db.models import Q
 
 from .forms import RecetaForm 
 from .forms import OrdenTrabajoForm 
+from .forms import AbonoForm
+from .forms import CertificadoForm
 
 from django import forms
 from django.views import View
@@ -28,62 +26,6 @@ from django.http import FileResponse
 from django.conf import settings
 from datetime import datetime
 from django.db.models import Max
-# from .serializer import AtendedorSerializer
-# from .serializer import TecnicoSerializer
-# from .serializer import RecetaSerializer
-# from .serializer import AbonoSerializer
-# from .serializer import OrdenTrabajoSerializer
-# from .serializer import CertificadoSerializer
-# from .serializer import AdministradorSerializer
-
-# from .models import Atendedor
-# from .models import Tecnico
-# from .models import Receta
-# from .models import Abono
-# from .models import OrdenTrabajo
-# from .models import Certificado
-# from .models import Administrador
-
-# Create your views here.
-# class ClienteView(viewsets.ModelViewSet):
-#     serializer_class = ClienteSerializer
-#     queryset = Cliente.objects.all()
-
-
-# class AtendedorView(viewsets.ModelViewSet):
-#     serializer_class = AtendedorSerializer
-#     queryset = Atendedor.objects.all()
-
-
-# class TecnicoView(viewsets.ModelViewSet):
-#     serializer_class = TecnicoSerializer
-#     queryset = Tecnico.objects.all()
-
-
-# class RecetaView(viewsets.ModelViewSet):
-#     serializer_class = RecetaSerializer
-#     queryset = Receta.objects.all()
-
-
-# class AbonoView(viewsets.ModelViewSet):
-#     serializer_class = AbonoSerializer
-#     queryset = Abono.objects.all()
-
-
-# class OrdenTrabajoView(viewsets.ModelViewSet):
-#     serializer_class = OrdenTrabajoSerializer
-#     queryset = OrdenTrabajo.objects.all()
-
-
-# class CertificadoView(viewsets.ModelViewSet):
-#     serializer_class = CertificadoSerializer
-#     queryset = Certificado.objects.all()
-
-
-# class AdministradorView(viewsets.ModelViewSet):
-#     serializer_class = AdministradorSerializer
-#     queryset = Administrador.objects.all()
-
 
 
 
@@ -110,17 +52,7 @@ def editar_orden_trabajo(request, pk):
 class ListarClienteView(generic.ListView):
     model = Cliente
     paginate_by = 10
-    ordering = ['-creacionCliente']  # Ordena por el campo 'creacionCliente' en orden descendente
-
-    # def get_queryset(self) -> QuerySet[Any]:
-    #     q = self.request.GET.get('q')
-
-    #     if q:
-    #         return Cliente.objects.filter(
-    #             Q(nombreCliente__icontains=q) | Q(apPaternoCliente__icontains=q)| Q(rutCliente__icontains=q))
-        
-    #     return super().get_queryset()
-    
+    ordering = ['-creacionCliente']  # Ordena por el campo 'creacionCliente' en orden descendente    
     
     
     def get_queryset(self):
@@ -329,16 +261,6 @@ class ListarOrdenTrabajoView(generic.ListView):
         return super().get_queryset()
  
     
-    # def get_queryset(self) -> QuerySet[Any]: 
-    #     q = self.request.GET.get('q')
-    #     if q:
-    #         return OrdenTrabajo.objects.filter(
-    #             Q(idReceta__rutCliente__cliente__nombreCliente__icontains=q) | 
-    #             Q(idReceta__rutCliente__cliente__apPaternoCliente__icontains=q) | 
-    #             Q(idReceta__rutCliente__rutCliente__icontains=q)
-    #         )
-    #     return super().get_queryset()
-
 class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
     model = OrdenTrabajo
     fields = (
@@ -478,7 +400,7 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
                     
                 orden_trabajo.save()  # Guarda la orden de trabajo
                     
-                messages.success(request, "Orden de Trabajo creada con éxito.")
+                messages.success(request, "La Orden de Trabajo se ha creado exitosamente.")
                 return redirect(self.success_url)  # Redirige tras guardar
                     
             except Receta.DoesNotExist:
@@ -558,6 +480,25 @@ class EliminarOrdenTrabajoView(SuccessMessageMixin, generic.DeleteView):
     success_message = "La Orden de Trabajo se ha eliminado exitosamente."
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ABONOS
+
+
 class ListarAbonoView(generic.ListView):
     model = Abono
     paginate_by = 10
@@ -567,40 +508,391 @@ class ListarAbonoView(generic.ListView):
         q = self.request.GET.get('q')
         if q:
             return Abono.objects.filter(
-                Q(idReceta__rutCliente__nombreCliente__icontains=q) | 
-                Q(idReceta__rutCliente__apPaternoCliente__icontains=q) | 
-                Q(idReceta__rutCliente__rutCliente__icontains=q)
+                Q(idOrdenTrabajo__idReceta__rutCliente__nombreCliente__icontains=q) | 
+                Q(idOrdenTrabajo__idReceta__rutCliente__apPaternoCliente__icontains=q) | 
+                Q(idOrdenTrabajo__idReceta__rutCliente__rutCliente__icontains=q)
             )
         return super().get_queryset()
     
     
 class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
     model = Abono
-    fields = ('idAbono',
-    'idOrdenTrabajo',
-    'rutCliente',
-    'fechaAbono', 
-    'valorAbono', 
-    'saldo', 
-    'tipoPagoAbono', 
-    'numeroVoucherAbono',
-    'numeroAbono'    
+    fields = (
+        'idAbono',
+        'idOrdenTrabajo',
+        'rutCliente',  
+        'valorAbono',
+        'saldo',
+        'tipoPagoAbono',
+        'numeroVoucherAbono',
+        'numeroAbono',
     )
+    form_class = AbonoForm
     success_url = reverse_lazy('abono_list')
-    success_message = "El abono se ha creado exitosamente."
+    success_message = "El abono se ha Registrado exitosamente."
+    template_name = 'optica/abono_form.html'
 
+    def generar_numero_abono(self, numeroOrdenTrabajo):
+        # Lógica para calcular el siguiente número de orden
+        ultimo_valor = Abono.objects.filter(idOrdenTrabajo=numeroOrdenTrabajo).aggregate(max_val=Max('numeroAbono'))['max_val']
+        return (ultimo_valor + 1) if ultimo_valor else 1
+    
+    def get(self, request):
+        orden_trabajo = None
+        cliente = None
+        id_orden_trabajo = request.GET.get('id_orden_trabajo')
+        # rut_cliente = request.GET.get('rut_cliente') #va a ser usado cuando se haga la relacion entre cliente y orden de trabajo
+
+        if id_orden_trabajo:
+            try:
+                orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
+                
+                cliente = orden_trabajo.idReceta.rutCliente #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
+                # cliente = Cliente.objects.get(rutCliente=rut_cliente) #funcionara cuando se haga la relacion entre cliente y orden de trabajo
+                messages.success(request, "Orden de Trabajo encontrada")
+            except OrdenTrabajo.DoesNotExist:
+                messages.error(request, "Orden de Trabajo no encontrada")
+
+        numero_abono = self.generar_numero_abono(orden_trabajo) if orden_trabajo else 1
+        
+        # if rut_cliente:
+        #     try:
+        #         cliente = Cliente.objects.get(rutCliente=rut_cliente)
+        #         messages.success(request, "Cliente encontrado")
+        #     except Cliente.DoesNotExist:
+        #         messages.error(request, "Cliente no encontrado")
+
+        # Cargar formulario de ABONO con datos del Cliente y Orden de Trabajo, si existen, se pueden prellenar campos
+        # form = AbonoForm(initial={
+        #     'numeroAbono': numero_abono,
+        #     'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
+        #     'rutCliente': cliente.rutCliente if cliente else '',
+        #     'valorAbono': '',
+        #     'saldo': '',
+        #     'tipoPagoAbono': '',
+        #     'numeroVoucherAbono': '',
+        #     'idAbono': '',
+        #     'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
+         
+        #     'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+        #     'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
+        #     'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
+        #     'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
+        
+        
+        
+           # Cargar formulario de ABONO con datos del Cliente y Orden de Trabajo, si existen, se pueden prellenar campos
+        form = AbonoForm(initial={
+            'numeroAbono': numero_abono,
+            'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
+            # 'rutCliente' : orden_trabajo.idReceta.rutCliente if orden_trabajo else '', #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
+
+            'rutCliente': cliente.rutCliente if cliente else '',
+            'valorAbono': '',
+            'saldo': '',
+            'tipoPagoAbono': '',
+            'numeroVoucherAbono': ''
+        })
+
+        return render(request, self.template_name, {
+            'form': form,
+            'orden_trabajo': orden_trabajo,
+            'cliente': cliente,
+            'numeroAbono': numero_abono,
+            'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
+            'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
+            'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+            'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
+            'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
+            'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
+        })
+        
+        
+        # return render(request, self.template_name, {'form': form, 'orden_trabajo': orden_trabajo, 'cliente': cliente})
+
+    # def post(self, request):
+    #     form = AbonoForm(request.POST)
+    #     if form.is_valid():
+    #         abono=form.save()
+    #         messages.success(request, self.success_message)
+    #         return redirect(self.success_url)
+    #     return render(request, self.template_name, {'form': form})
+    
+   
+    
+    def post(self, request):
+        form = AbonoForm(request.POST)
+        # cliente = None 
+        orden_trabajo = None
+        # rut_cliente = request.POST.get('rutCliente')  # Captura el `rut_cliente` del formulario
+        id_orden_trabajo = request.POST.get('idOrdenTrabajo')  # Captura el `id_orden_trabajo` del formulario
+        
+        if id_orden_trabajo:
+            try:
+                # cliente = Cliente.objects.get(rutCliente=rut_cliente)
+                orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
+             
+                if form.is_valid():
+                    abono = form.save(commit=False)
+                    # abono.rutCliente = cliente  # Asigna el cliente al abono
+                    abono.idOrdenTrabajo = orden_trabajo  # Asigna la orden de trabajo al abono
+                    abono.save()  # Guarda el abono
+                    messages.success(request, "El abono se ha registrado exitosamente.")
+                    return redirect(self.success_url)
+            except OrdenTrabajo.DoesNotExist:
+                messages.error(request, "Orden de trabajo no encontrada.")
+        
+        else:
+            messages.error(request, "No se proporcionó un ID de orden de trabajo válido.")
+        
+        return render(request, self.template_name, {
+            'form': form,
+            'orden_trabajo': orden_trabajo,
+            'dvRutCliente': orden_trabajo.idReceta.dvRutCliente if orden_trabajo else '',
+            'nombreCliente': orden_trabajo.idReceta.nombreCliente if orden_trabajo else '',
+            'apPaternoCliente': orden_trabajo.idReceta.apPaternoCliente if orden_trabajo else '',
+            'apMaternoCliente': orden_trabajo.idReceta.apMaternoCliente if orden_trabajo else '',
+            'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
+            'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+            'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
+            'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
+            'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
+        })    
 
 class EditarAbonoView(SuccessMessageMixin, generic.UpdateView):
     model = Abono
-    fields = ( 'fechaAbono', 
-    'valorAbono', 
+    fields = ( 'valorAbono', 
     'tipoPagoAbono', 
+    'saldoAnterior',
+    'saldo',
     'numeroVoucherAbono',)
     success_url = reverse_lazy('abono_list')
     success_message = "El abono se ha editado exitosamente."
+    
+def get_initial(self):
+        initial = super().get_initial()
+        initial['numeroAbono'] = self.object.numeroAbono  # Valor del modelo
+        return initial
+    
+    
+def editar_abono(request, pk):
+    abono = get_object_or_404(Abono, pk=pk)
+    if request.method == "POST":
+        form = AbonoForm(request.POST, instance=abono)
+        if form.is_valid():
+            form.save()
+            return redirect('abono_list')
+    else:
+        form = AbonoForm(instance=abono)
+    return render(request, 'abono_form.html', {'form': form, 'abono': abono})
+
+def form_valid(self, form):
+        # Aquí puedes agregar lógica si necesitas procesar el formulario
+        return super().form_valid(form) 
+
 
 class EliminarAbonoView(SuccessMessageMixin, generic.DeleteView):
     model = Abono
+    success_url = reverse_lazy('abono_list')
+    success_message = "El abono se ha eliminado exitosamente."
+
+
+
+#CERTIFICADOS
+class ListarCertificadoView(generic.ListView):
+    model = Certificado
+    paginate_by = 10
+    ordering = ['-fechaAbono']
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        q = self.request.GET.get('q')
+        if q:
+            return Abono.objects.filter(
+                Q(idOrdenTrabajo__idReceta__rutCliente__nombreCliente__icontains=q) | 
+                Q(idOrdenTrabajo__idReceta__rutCliente__apPaternoCliente__icontains=q) | 
+                Q(idOrdenTrabajo__idReceta__rutCliente__rutCliente__icontains=q)
+            )
+        return super().get_queryset()
+    
+    
+class CrearCertificadoView(SuccessMessageMixin, generic.CreateView):
+    model = Certificado
+    fields = (
+        'idAbono',
+        'idOrdenTrabajo',
+        'rutCliente',  
+        'valorAbono',
+        'saldo',
+        'tipoPagoAbono',
+        'numeroVoucherAbono',
+        'numeroAbono',
+    )
+    form_class = AbonoForm
+    success_url = reverse_lazy('abono_list')
+    success_message = "El abono se ha Registrado exitosamente."
+    template_name = 'optica/abono_form.html'
+
+    def generar_numero_abono(self, numeroOrdenTrabajo):
+        # Lógica para calcular el siguiente número de orden
+        ultimo_valor = Abono.objects.filter(idOrdenTrabajo=numeroOrdenTrabajo).aggregate(max_val=Max('numeroAbono'))['max_val']
+        return (ultimo_valor + 1) if ultimo_valor else 1
+    
+    def get(self, request):
+        orden_trabajo = None
+        cliente = None
+        id_orden_trabajo = request.GET.get('id_orden_trabajo')
+        # rut_cliente = request.GET.get('rut_cliente') #va a ser usado cuando se haga la relacion entre cliente y orden de trabajo
+
+        if id_orden_trabajo:
+            try:
+                orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
+                
+                cliente = orden_trabajo.idReceta.rutCliente #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
+                # cliente = Cliente.objects.get(rutCliente=rut_cliente) #funcionara cuando se haga la relacion entre cliente y orden de trabajo
+                messages.success(request, "Orden de Trabajo encontrada")
+            except OrdenTrabajo.DoesNotExist:
+                messages.error(request, "Orden de Trabajo no encontrada")
+
+        numero_abono = self.generar_numero_abono(orden_trabajo) if orden_trabajo else 1
+        
+        # if rut_cliente:
+        #     try:
+        #         cliente = Cliente.objects.get(rutCliente=rut_cliente)
+        #         messages.success(request, "Cliente encontrado")
+        #     except Cliente.DoesNotExist:
+        #         messages.error(request, "Cliente no encontrado")
+
+        # Cargar formulario de ABONO con datos del Cliente y Orden de Trabajo, si existen, se pueden prellenar campos
+        # form = AbonoForm(initial={
+        #     'numeroAbono': numero_abono,
+        #     'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
+        #     'rutCliente': cliente.rutCliente if cliente else '',
+        #     'valorAbono': '',
+        #     'saldo': '',
+        #     'tipoPagoAbono': '',
+        #     'numeroVoucherAbono': '',
+        #     'idAbono': '',
+        #     'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
+         
+        #     'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+        #     'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
+        #     'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
+        #     'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
+        
+        
+        
+           # Cargar formulario de ABONO con datos del Cliente y Orden de Trabajo, si existen, se pueden prellenar campos
+        form = AbonoForm(initial={
+            'numeroAbono': numero_abono,
+            'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
+            # 'rutCliente' : orden_trabajo.idReceta.rutCliente if orden_trabajo else '', #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
+
+            'rutCliente': cliente.rutCliente if cliente else '',
+            'valorAbono': '',
+            'saldo': '',
+            'tipoPagoAbono': '',
+            'numeroVoucherAbono': ''
+        })
+
+        return render(request, self.template_name, {
+            'form': form,
+            'orden_trabajo': orden_trabajo,
+            'cliente': cliente,
+            'numeroAbono': numero_abono,
+            'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
+            'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
+            'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+            'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
+            'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
+            'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
+        })
+        
+        
+        # return render(request, self.template_name, {'form': form, 'orden_trabajo': orden_trabajo, 'cliente': cliente})
+
+    # def post(self, request):
+    #     form = AbonoForm(request.POST)
+    #     if form.is_valid():
+    #         abono=form.save()
+    #         messages.success(request, self.success_message)
+    #         return redirect(self.success_url)
+    #     return render(request, self.template_name, {'form': form})
+    
+   
+    
+    def post(self, request):
+        form = AbonoForm(request.POST)
+        # cliente = None 
+        orden_trabajo = None
+        # rut_cliente = request.POST.get('rutCliente')  # Captura el `rut_cliente` del formulario
+        id_orden_trabajo = request.POST.get('idOrdenTrabajo')  # Captura el `id_orden_trabajo` del formulario
+        
+        if id_orden_trabajo:
+            try:
+                # cliente = Cliente.objects.get(rutCliente=rut_cliente)
+                orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
+             
+                if form.is_valid():
+                    abono = form.save(commit=False)
+                    # abono.rutCliente = cliente  # Asigna el cliente al abono
+                    abono.idOrdenTrabajo = orden_trabajo  # Asigna la orden de trabajo al abono
+                    abono.save()  # Guarda el abono
+                    messages.success(request, "El abono se ha registrado exitosamente.")
+                    return redirect(self.success_url)
+            except OrdenTrabajo.DoesNotExist:
+                messages.error(request, "Orden de trabajo no encontrada.")
+        
+        else:
+            messages.error(request, "No se proporcionó un ID de orden de trabajo válido.")
+        
+        return render(request, self.template_name, {
+            'form': form,
+            'orden_trabajo': orden_trabajo,
+            'dvRutCliente': orden_trabajo.idReceta.dvRutCliente if orden_trabajo else '',
+            'nombreCliente': orden_trabajo.idReceta.nombreCliente if orden_trabajo else '',
+            'apPaternoCliente': orden_trabajo.idReceta.apPaternoCliente if orden_trabajo else '',
+            'apMaternoCliente': orden_trabajo.idReceta.apMaternoCliente if orden_trabajo else '',
+            'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
+            'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+            'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
+            'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
+            'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
+        })    
+
+class EditarCertificadoView(SuccessMessageMixin, generic.UpdateView):
+    model = Certificado
+    fields = ( 'valorAbono', 
+    'tipoPagoAbono', 
+    'saldoAnterior',
+    'saldo',
+    'numeroVoucherAbono',)
+    success_url = reverse_lazy('abono_list')
+    success_message = "El abono se ha editado exitosamente."
+    
+def get_initial(self):
+        initial = super().get_initial()
+        initial['numeroAbono'] = self.object.numeroAbono  # Valor del modelo
+        return initial
+    
+    
+def editar_abono(request, pk):
+    abono = get_object_or_404(Abono, pk=pk)
+    if request.method == "POST":
+        form = AbonoForm(request.POST, instance=abono)
+        if form.is_valid():
+            form.save()
+            return redirect('abono_list')
+    else:
+        form = AbonoForm(instance=abono)
+    return render(request, 'abono_form.html', {'form': form, 'abono': abono})
+
+def form_valid(self, form):
+        # Aquí puedes agregar lógica si necesitas procesar el formulario
+        return super().form_valid(form) 
+
+
+class EliminarCertificadoView(SuccessMessageMixin, generic.DeleteView):
+    model = Certificado
     success_url = reverse_lazy('abono_list')
     success_message = "El abono se ha eliminado exitosamente."
 

@@ -92,7 +92,7 @@
                             <th scope="col">Fecha Orden T.</th>
                             <th scope="col">Fecha entrega</th>
                             <th scope="col">Valor Total </th>
-                            <th scope="col">Observaciones</th>
+                            <th scope="col">Estado Orden de Trabajo</th>
 
                         </tr>
                     </thead>
@@ -108,7 +108,7 @@
                             <td>{{ ordenTrabajo.fechaOrdenTrabajo |date:'d/m/Y' |default:'' }}</td>
                             <td>{{ ordenTrabajo.fechaEntregaOrdenTrabajo |date:'d/m/Y' |default:'' }}</td>
                             <td>{{ ordenTrabajo.totalOrdenTrabajo |default:'' }}</td>
-                            <td class="text-uppercase">{{ ordenTrabajo.observacionOrdenTrabajo |default:'' }}</td>
+                            <td class="text-uppercase">{{ ordenTrabajo.estadoOrdenTrabajo |default:'' }}</td>
 
                             <td>
                                 <div class="btn-group btn-group-sm">
@@ -121,10 +121,16 @@
                                         <i class="bi bi-pencil"></i> <!-- Icono de lápiz para editar -->
                                     </a>
 
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#crearAbono{{ ordenTrabajo.idOrdenTrabajo }}">
+                                    <a href="{% url 'abono_new' %}?idOrdenTrabajo={{ ordenTrabajo.idOrdenTrabajo }}&q={{ ordenTrabajo.idOrdenTrabajo }}"
+                                        class="btn btn-success">
                                         <i class="bi bi-cash"></i><!-- Icono de moneda -->
-                                    </button>
+                                    </a>
+
+
+                                    <!-- <a href="{% url 'abono_new' %}?idOrdenTrabajo={{ ordenTrabajo.idOrdenTrabajo }}"
+                                    class="btn btn-success">
+                                    <i class="bi bi-cash"></i>
+                                    </a> -->
 
 
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"

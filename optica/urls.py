@@ -5,6 +5,7 @@ from optica import views
 # from django.contrib.staticfiles.urls import static
 from django.conf.urls.static import static
 from django.conf import settings
+from .views import CrearAbonoView
 
 from django.views.generic import TemplateView
 router = routers.DefaultRouter()
@@ -40,10 +41,18 @@ urlpatterns = [
     path('<int:pk>/ordenTrabajo_edit/', views.EditarOrdenTrabajoView.as_view(), name='ordenTrabajo_edit'),
     path('<int:pk>/ordenTrabajo_delete/', views.EliminarOrdenTrabajoView.as_view(), name='ordenTrabajo_delete'),
     
+    path('abono/new/', CrearAbonoView.as_view(), name='abono_new'),
+    
     path('abono_list', views.ListarAbonoView.as_view(), name='abono_list'),
     path('abono_new/', views.CrearAbonoView.as_view(), name='abono_new'),    
     path('<int:pk>/abono_edit/', views.EditarAbonoView.as_view(), name='abono_edit'),
     path('<int:pk>/abono_delete/', views.EliminarAbonoView.as_view(), name='abono_delete'),
+
+
+    path('certificado_list', views.ListarCertificadoView.as_view(), name='certificado_list'),
+    path('certificado_new/', views.CrearCertificadoView.as_view(), name='certificado_new'),    
+    path('<int:pk>/certificado_edit/', views.EditarCertificadoView.as_view(), name='certificado_edit'),
+    path('<int:pk>/certificado_delete/', views.EliminarCertificadoView.as_view(), name='certificado_delete'),
 
     
     ]

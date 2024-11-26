@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.db import models
-from .models import Receta, OrdenTrabajo, Abono 
+from .models import Receta, OrdenTrabajo, Abono, Certificado 
 from crispy_forms.helper import FormHelper
 
 
@@ -31,9 +31,6 @@ class OrdenTrabajoForm(forms.ModelForm):
     class Meta:
         model = OrdenTrabajo  
         fields = ['idReceta',
-        # 'rutAtendedor',
-        # 'rutTecnico',
-        # 'rutAdministrador',
         'idOrdenTrabajo',
         'numeroOrdenTrabajo',
         'fechaEntregaOrdenTrabajo',
@@ -69,8 +66,6 @@ class OrdenTrabajoForm(forms.ModelForm):
         'tipoPago',
         'numeroVoucherOrdenTrabajo',
         'observacionOrdenTrabajo',
-        # 'esAbono',
-        # 'esPagoTotal',
         'estadoDelPago',
         'estadoOrdenTrabajo',
         'estadoOrdenTrabajo']
@@ -105,23 +100,72 @@ class OrdenTrabajoForm(forms.ModelForm):
 class AbonoForm(forms.ModelForm):
     class Meta:
         model = Abono  
-        fields = ['idOrdenTrabajo',
-        'idAbono',
-        'valorAbono', 
-        'saldo', 
-        'tipoPagoAbono', 
-        'numeroVoucherAbono',
-        'numeroAbono' ]
+        fields = [ 
+            'idAbono', 
+            'numeroAbono', 
+            'idOrdenTrabajo',
+            'rutCliente', 
+            'valorAbono', 
+            'saldoAnterior', 
+            'saldo', 
+            'tipoPagoAbono', 
+            'numeroVoucherAbono'
+        ]
         
     def __init__(self, *args, **kwargs):
         super(AbonoForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-control-sm'
+        # self.helper = FormHelper()
+        # self.helper.form_class = 'form-control-sm'
+
+       
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control form-control-sm'    
+            field.widget.attrs.update({'class': 'form-control form-control-sm'})  # Clases para diseño 
+            
+        self.fields['idOrdenTrabajo'].widget = forms.TextInput()
   
-        # Hacer los campos readonly
-        self.fields['rutCliente'].widget = forms.TextInput()
-        self.fields['saldo'].widget.attrs['readonly'] = True
+            # Hacer los campos readonly
+            # self.fields['rutCliente'].widget = forms.TextInput()
+        self.fields['saldoAnterior'].widget.attrs['readonly'] = True 
+            # self.fields['saldo'].widget.attrs['readonly'] = True
         self.fields['numeroAbono'].widget.attrs['readonly'] = True
+            # self.fields['fechaAbono'].widget.attrs['readonly'] = True
+           # Asegúrate de que el campo valorAbono sea requerido
+        self.fields['valorAbono'].required = True  
         
+ 
+class CertificadoForm(forms.ModelForm):
+    class Meta:
+        model = Certificado 
+        fields = [ 
+            'numeroCertificado',
+            'idOrdenTrabajo',
+            # 'fechaCertificado',
+            'idOrdenTrabajo',
+            'idReceta'
+            
+        ]
+        
+    def __init__(self, *args, **kwargs):
+        super(CertificadoForm, self).__init__(*args, **kwargs)
+        # self.helper = FormHelper()
+        # self.helper.form_class = 'form-control-sm'
+
+       
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control form-control-sm'    
+            field.widget.attrs.update({'class': 'form-control form-control-sm'})  # Clases para diseño 
+            
+        self.fields['idOrdenTrabajo'].widget = forms.TextInput()
+  
+            # Hacer los campos readonly
+            # self.fields['rutCliente'].widget = forms.TextInput()
+        #self.fields['saldoAnterior'].widget.attrs['readonly'] = True 
+            # self.fields['saldo'].widget.attrs['readonly'] = True
+       
+       # self.fields['numeroAbono'].widget.attrs['readonly'] = True
+            # self.fields['fechaAbono'].widget.attrs['readonly'] = True
+           # Asegúrate de que el campo valorAbono sea requerido
+        #self.fields['valorAbono'].required = True  
         
  

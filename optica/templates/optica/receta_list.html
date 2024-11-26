@@ -151,6 +151,11 @@
                                         <i class="bi bi-pencil"></i> <!-- Icono de lápiz para editar -->
                                     </a>
 
+                                    <a href="{% url 'ordenTrabajo_new' %}?idReceta={{ receta.idReceta }}&q={{ receta.idReceta }}"
+                                        class="btn btn-warning">
+                                        <i class="icon ion-md-hammer"></i><!-- Icono de moneda -->
+                                    </a>
+
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#eliminarRecetaModal{{ receta.idReceta }}">
                                         <i class="bi bi-trash"></i> <!-- Icono de basura para eliminar -->
@@ -231,7 +236,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">Cliente:</span>
-                                                        <span id="letras-modal">{{ receta.nombreCliente |upper }}
+                                                        <span>{{ receta.nombreCliente |upper }}
                                                             {{ receta.apPaternoCliente |upper }}
                                                             {{ receta.apMaternoCliente|default:'' |upper }}</span>
                                                     </p>
@@ -453,13 +458,15 @@
                                                             id="texto-modal">Institución:</span>
                                                         {{ receta.institucion|default:""|upper }}</p>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <p><span class="font-weight-bold" id="texto-modal">
-                                                            Doctor(a) Oftalmología:</span>
+
+                                            </div>
+                                            <div claass="row">
+                                                <div class="col-md-12">
+                                                    <p><span class="font-weight-bold" id="texto-modal"> Doctor(a)
+                                                            Oftalmología:</span>
                                                         {{ receta.doctorOftalmologo |default:""|upper }}</p>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <p><span class="font-weight-bold"
