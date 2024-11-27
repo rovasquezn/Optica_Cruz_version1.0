@@ -51,7 +51,7 @@ urlpatterns = [
 
     path('certificado_list', views.ListarCertificadoView.as_view(), name='certificado_list'),
     path('certificado_new/', views.CrearCertificadoView.as_view(), name='certificado_new'),    
-    path('<int:pk>/certificado_edit/', views.EditarCertificadoView.as_view(), name='certificado_edit'),
+    # path('<int:pk>/certificado_edit/', views.EditarCertificadoView.as_view(), name='certificado_edit'),
     path('<int:pk>/certificado_delete/', views.EliminarCertificadoView.as_view(), name='certificado_delete'),
 
     

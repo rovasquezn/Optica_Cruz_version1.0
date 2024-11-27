@@ -104,7 +104,7 @@ class AbonoForm(forms.ModelForm):
             'idAbono', 
             'numeroAbono', 
             'idOrdenTrabajo',
-            'rutCliente', 
+            'rutCliente',
             'valorAbono', 
             'saldoAnterior', 
             'saldo', 

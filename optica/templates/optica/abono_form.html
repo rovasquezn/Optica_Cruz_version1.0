@@ -133,12 +133,13 @@
 
                             <div style="max-width:50px;">
                                 <label for="dvRutCliente">Dígito</label>
-                                <input value="{{ cliente.dvRutCliente  }}" readonly class="form-control">
+                                <input value="{{ orden_trabajo.idReceta.dvRutCliente|default:'' }}" readonly
+                                    class="form-control">
                             </div>
                             <div class="col-md-7 ml-2">
                                 <label for="nombreCliente">Nombre</label>
                                 <input
-                                    value="{{ cliente.nombreCliente  }} {{ cliente.apPaternoCliente }} {{ cliente.apMaternoCliente |default:'' }} "
+                                    value="{{ orden_trabajo.idReceta.nombreCliente  }} {{ orden_trabajo.idReceta.apPaternoCliente }} {{ orden_trabajo.idReceta.apMaternoCliente |default:'' }} "
                                     readonly class="form-control">
                             </div>
                             <!-- <div class="col-md-3">
@@ -193,7 +194,7 @@
                             </div>
                             <div class="col-md-3">
                                 <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
-                                    readonly value="{{ form.saldoAnterior.last.saldo|default:'0' }}">
+                                    readonly value="{{ saldoAnterior.last.saldo }}">
                             </div>
                         </div>
 

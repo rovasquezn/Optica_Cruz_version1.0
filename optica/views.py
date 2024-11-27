@@ -520,7 +520,8 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
     fields = (
         'idAbono',
         'idOrdenTrabajo',
-        'rutCliente',  
+        'rutCliente', 
+        'dvRutCliente', 
         'valorAbono',
         'saldo',
         'tipoPagoAbono',
@@ -586,8 +587,8 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
             'numeroAbono': numero_abono,
             'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
             # 'rutCliente' : orden_trabajo.idReceta.rutCliente if orden_trabajo else '', #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
-
             'rutCliente': cliente.rutCliente if cliente else '',
+            'dvRutCliente': cliente.dvRutCliente if cliente else '',
             'valorAbono': '',
             'saldo': '',
             'tipoPagoAbono': '',
@@ -598,6 +599,7 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
             'form': form,
             'orden_trabajo': orden_trabajo,
             'cliente': cliente,
+            'dvRutCliente': cliente.dvRutCliente if cliente else '',
             'numeroAbono': numero_abono,
             'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
             'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
@@ -702,15 +704,15 @@ class EliminarAbonoView(SuccessMessageMixin, generic.DeleteView):
 class ListarCertificadoView(generic.ListView):
     model = Certificado
     paginate_by = 10
-    ordering = ['-fechaAbono']
+    ordering = ['-fechaCertificado']
     
     def get_queryset(self) -> QuerySet[Any]:
         q = self.request.GET.get('q')
         if q:
             return Abono.objects.filter(
-                Q(idOrdenTrabajo__idReceta__rutCliente__nombreCliente__icontains=q) | 
-                Q(idOrdenTrabajo__idReceta__rutCliente__apPaternoCliente__icontains=q) | 
-                Q(idOrdenTrabajo__idReceta__rutCliente__rutCliente__icontains=q)
+                Q(idCertificado__idOrdenTrabajo__idReceta__rutCliente__nombreCliente__icontains=q) | 
+                Q(idCertificado__idOrdenTrabajo__idReceta__rutCliente__apPaternoCliente__icontains=q) | 
+                Q(idCertificado__idOrdenTrabajo__idReceta__rutCliente__rutCliente__icontains=q)
             )
         return super().get_queryset()
     
@@ -718,29 +720,28 @@ class ListarCertificadoView(generic.ListView):
 class CrearCertificadoView(SuccessMessageMixin, generic.CreateView):
     model = Certificado
     fields = (
-        'idAbono',
-        'idOrdenTrabajo',
-        'rutCliente',  
-        'valorAbono',
-        'saldo',
-        'tipoPagoAbono',
-        'numeroVoucherAbono',
-        'numeroAbono',
+        'idReceta',
+        'idOrdenTrabajo',  
+        'totalOrdenTrabajo',
+        'valorCristalesLejos',
+        'valorCristalesCerca',
+        'valorMarcoLejos',
+        'valorMarcoCerca',
+        'totalLejos',
+        'totalCerca',
+    
     )
-    form_class = AbonoForm
-    success_url = reverse_lazy('abono_list')
-    success_message = "El abono se ha Registrado exitosamente."
-    template_name = 'optica/abono_form.html'
-
-    def generar_numero_abono(self, numeroOrdenTrabajo):
-        # Lógica para calcular el siguiente número de orden
-        ultimo_valor = Abono.objects.filter(idOrdenTrabajo=numeroOrdenTrabajo).aggregate(max_val=Max('numeroAbono'))['max_val']
-        return (ultimo_valor + 1) if ultimo_valor else 1
+    form_class = CertificadoForm
+    success_url = reverse_lazy('certificado_list')
+    success_message = "El Certificado se ha guardado exitosamente."
+    template_name = 'optica/certificado_form.html'
     
     def get(self, request):
         orden_trabajo = None
         cliente = None
+        receta = None
         id_orden_trabajo = request.GET.get('id_orden_trabajo')
+        # id_receta = request.GET.get('id_receta')
         # rut_cliente = request.GET.get('rut_cliente') #va a ser usado cuando se haga la relacion entre cliente y orden de trabajo
 
         if id_orden_trabajo:
@@ -748,80 +749,50 @@ class CrearCertificadoView(SuccessMessageMixin, generic.CreateView):
                 orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
                 
                 cliente = orden_trabajo.idReceta.rutCliente #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
+                receta = orden_trabajo.idReceta
                 # cliente = Cliente.objects.get(rutCliente=rut_cliente) #funcionara cuando se haga la relacion entre cliente y orden de trabajo
                 messages.success(request, "Orden de Trabajo encontrada")
             except OrdenTrabajo.DoesNotExist:
                 messages.error(request, "Orden de Trabajo no encontrada")
 
-        numero_abono = self.generar_numero_abono(orden_trabajo) if orden_trabajo else 1
         
-        # if rut_cliente:
-        #     try:
-        #         cliente = Cliente.objects.get(rutCliente=rut_cliente)
-        #         messages.success(request, "Cliente encontrado")
-        #     except Cliente.DoesNotExist:
-        #         messages.error(request, "Cliente no encontrado")
-
-        # Cargar formulario de ABONO con datos del Cliente y Orden de Trabajo, si existen, se pueden prellenar campos
-        # form = AbonoForm(initial={
-        #     'numeroAbono': numero_abono,
-        #     'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
-        #     'rutCliente': cliente.rutCliente if cliente else '',
-        #     'valorAbono': '',
-        #     'saldo': '',
-        #     'tipoPagoAbono': '',
-        #     'numeroVoucherAbono': '',
-        #     'idAbono': '',
-        #     'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
-         
-        #     'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
-        #     'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
-        #     'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
-        #     'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
-        
-        
-        
-           # Cargar formulario de ABONO con datos del Cliente y Orden de Trabajo, si existen, se pueden prellenar campos
-        form = AbonoForm(initial={
-            'numeroAbono': numero_abono,
+           # Cargar formulario de CERTIFICADO con datos del Cliente, Receta y Orden de Trabajo, si existen, se pueden prellenar campos
+        form = CertificadoForm(initial={
             'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
             # 'rutCliente' : orden_trabajo.idReceta.rutCliente if orden_trabajo else '', #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
-
             'rutCliente': cliente.rutCliente if cliente else '',
-            'valorAbono': '',
-            'saldo': '',
-            'tipoPagoAbono': '',
-            'numeroVoucherAbono': ''
+            'idReceta': receta.idReceta if orden_trabajo else '',
+            'nombreCliente':'',
+            'apPaternoCliente':'',
+            'apMaternoCliente':'',
+            'totalOrdenTrabajo':'',
+            'valorCristalesLejos':'',
+            'valorCristalesCerca':'',
+            'valorMarcoLejos':'',
+            'valorMarcoCerca':'',
+            'totalLejos':'',
+            'totalCerca':'',
+            'fechaCertificado':'',
         })
 
         return render(request, self.template_name, {
             'form': form,
             'orden_trabajo': orden_trabajo,
             'cliente': cliente,
-            'numeroAbono': numero_abono,
             'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
             'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
-            'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+            'valorCristalesLejos': orden_trabajo.valorCristalesLejos if orden_trabajo else '',
+            'valorCristalesCerca': orden_trabajo.valorCristalesCerca if orden_trabajo else '',
+            'valorMarcoLejos': orden_trabajo.valorMarcoLejos if orden_trabajo else '',
+            'valorMarcoCerca': orden_trabajo.valorMarcoCerca if orden_trabajo else '',
             'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
             'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
             'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
         })
-        
-        
-        # return render(request, self.template_name, {'form': form, 'orden_trabajo': orden_trabajo, 'cliente': cliente})
-
-    # def post(self, request):
-    #     form = AbonoForm(request.POST)
-    #     if form.is_valid():
-    #         abono=form.save()
-    #         messages.success(request, self.success_message)
-    #         return redirect(self.success_url)
-    #     return render(request, self.template_name, {'form': form})
-    
-   
+           
     
     def post(self, request):
-        form = AbonoForm(request.POST)
+        form = CertificadoForm(request.POST)
         # cliente = None 
         orden_trabajo = None
         # rut_cliente = request.POST.get('rutCliente')  # Captura el `rut_cliente` del formulario
@@ -833,11 +804,11 @@ class CrearCertificadoView(SuccessMessageMixin, generic.CreateView):
                 orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
              
                 if form.is_valid():
-                    abono = form.save(commit=False)
-                    # abono.rutCliente = cliente  # Asigna el cliente al abono
-                    abono.idOrdenTrabajo = orden_trabajo  # Asigna la orden de trabajo al abono
-                    abono.save()  # Guarda el abono
-                    messages.success(request, "El abono se ha registrado exitosamente.")
+                    certificado = form.save(commit=False)
+                    # certificado.rutCliente = cliente  # Asigna el cliente al certificado
+                    certificado.idOrdenTrabajo = orden_trabajo  # Asigna la orden de trabajo al certificado
+                    certificado.save()  # Guarda el certificado
+                    messages.success(request, "El certificado se ha registrado exitosamente.")
                     return redirect(self.success_url)
             except OrdenTrabajo.DoesNotExist:
                 messages.error(request, "Orden de trabajo no encontrada.")
@@ -848,51 +819,55 @@ class CrearCertificadoView(SuccessMessageMixin, generic.CreateView):
         return render(request, self.template_name, {
             'form': form,
             'orden_trabajo': orden_trabajo,
+            'rutCliente': orden_trabajo.idReceta.rutCliente if orden_trabajo else '',
             'dvRutCliente': orden_trabajo.idReceta.dvRutCliente if orden_trabajo else '',
             'nombreCliente': orden_trabajo.idReceta.nombreCliente if orden_trabajo else '',
             'apPaternoCliente': orden_trabajo.idReceta.apPaternoCliente if orden_trabajo else '',
             'apMaternoCliente': orden_trabajo.idReceta.apMaternoCliente if orden_trabajo else '',
             'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
-            'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
+            'valorCristalesLejos': orden_trabajo.valorCristalesLejos if orden_trabajo else '',
+            'valorCristalesCerca': orden_trabajo.valorCristalesCerca if orden_trabajo else '',
+            'valorMarcoLejos': orden_trabajo.valorMarcoLejos if orden_trabajo else '',
+            'valorMarcoCerca': orden_trabajo.valorMarcoCerca if orden_trabajo else '',
             'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
             'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
             'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
         })    
 
-class EditarCertificadoView(SuccessMessageMixin, generic.UpdateView):
-    model = Certificado
-    fields = ( 'valorAbono', 
-    'tipoPagoAbono', 
-    'saldoAnterior',
-    'saldo',
-    'numeroVoucherAbono',)
-    success_url = reverse_lazy('abono_list')
-    success_message = "El abono se ha editado exitosamente."
+# class EditarCertificadoView(SuccessMessageMixin, generic.UpdateView):
+#     model = Certificado
+#     fields = ( 'valorAbono', 
+#     'tipoPagoAbono', 
+#     'saldoAnterior',
+#     'saldo',
+#     'numeroVoucherAbono',)
+#     success_url = reverse_lazy('abono_list')
+#     success_message = "El abono se ha editado exitosamente."
     
-def get_initial(self):
-        initial = super().get_initial()
-        initial['numeroAbono'] = self.object.numeroAbono  # Valor del modelo
-        return initial
+# def get_initial(self):
+#         initial = super().get_initial()
+#         initial['numeroAbono'] = self.object.numeroAbono  # Valor del modelo
+#         return initial
     
     
-def editar_abono(request, pk):
-    abono = get_object_or_404(Abono, pk=pk)
-    if request.method == "POST":
-        form = AbonoForm(request.POST, instance=abono)
-        if form.is_valid():
-            form.save()
-            return redirect('abono_list')
-    else:
-        form = AbonoForm(instance=abono)
-    return render(request, 'abono_form.html', {'form': form, 'abono': abono})
+# def editar_abono(request, pk):
+#     abono = get_object_or_404(Abono, pk=pk)
+#     if request.method == "POST":
+#         form = AbonoForm(request.POST, instance=abono)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('abono_list')
+#     else:
+#         form = AbonoForm(instance=abono)
+#     return render(request, 'abono_form.html', {'form': form, 'abono': abono})
 
-def form_valid(self, form):
-        # Aquí puedes agregar lógica si necesitas procesar el formulario
-        return super().form_valid(form) 
+# def form_valid(self, form):
+#         # Aquí puedes agregar lógica si necesitas procesar el formulario
+#         return super().form_valid(form) 
 
 
 class EliminarCertificadoView(SuccessMessageMixin, generic.DeleteView):
     model = Certificado
     success_url = reverse_lazy('abono_list')
-    success_message = "El abono se ha eliminado exitosamente."
+    success_message = "El certificado se ha eliminado exitosamente."
 
