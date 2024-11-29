@@ -222,12 +222,16 @@ class Abono(models.Model):
 class Certificado(models.Model): 
     numeroCertificado = models.AutoField(primary_key=True, verbose_name="ID Certificado")
     idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, verbose_name="ID Orden de Trabajo") 
-    # rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
     idReceta = models.ForeignKey(Receta, on_delete=models.CASCADE, verbose_name="ID Receta") 
     fechaCertificado = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Certificado")
     
-    
+
     def __str__(self):
         return f"{self.numeroCertificado}"
+        
+    
+    def delete_certificado(self, numeroCertificado):
+        Certificado.objects.filter(numeroCertificado=numeroCertificado).delete()
+            
     
     

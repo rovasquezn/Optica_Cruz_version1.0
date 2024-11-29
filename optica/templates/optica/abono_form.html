@@ -192,10 +192,18 @@
                             <div class="col-md-3">
                                 <label for="saldoAnterior">Saldo Anterior</label>
                             </div>
+
                             <div class="col-md-3">
                                 <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
-                                    readonly value="{{ saldoAnterior.last.saldo }}">
+                                    readonly
+                                    value="{% if abono.saldo %}{{ abono.saldo }}{% else %}{{ abono.idOrdenTrabajo.totalOrdenTrabajo }}{% endif %}">
+
                             </div>
+
+                            <!-- <div class="col-md-3">
+                                <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
+                                    readonly value="{{ saldoAnterior.last.saldo }}">
+                            </div> -->
                         </div>
 
                         <div class="row mt-4">
@@ -247,7 +255,8 @@
                                 function actualizarSaldo() {
                                     const valorTotal = parseFloat(inputTotal.value) || 0;
                                     const valorAbono = parseFloat(inputAbono.value) || 0;
-                                    inputSaldo.value = valorTotal - valorAbono;
+                                    const valorSaldoAnterior = parseFloat(inputSaldoAnterior.value) || 0;
+                                    inputSaldo.value = valorSaldoAnterior - valorAbono;
                                 }
 
 
@@ -262,23 +271,23 @@
 
 
                                 // Función para verificar y actualizar el saldo anterior
-                                // function verificarSaldoAnterior() {
-                                //     const numeroAbono = parseInt(inputNumeroAbono.value) || 1;
-                                //     if (numeroAbono === 1) {
-                                //         inputSaldoAnterior.value = parseFloat(inputTotal.value) || 0;
-                                //     } else {
-                                //         // Busca el abono anterior y obtiene el saldo
-                                //         // const abonoAnterior = Abono.objects.filter(idOrdenTrabajo = inputOrdenTrabajo.value).order_by('-idAbono')[1];
-                                //         // inputSaldoAnterior.value = parseFloat(inputSaldo.value);
+                                function verificarSaldoAnterior() {
+                                    const numeroAbono = parseInt(inputNumeroAbono.value) || 1;
+                                    if (numeroAbono === 1) {
+                                        inputSaldoAnterior.value = parseFloat(inputTotal.value) || 0;
+                                    } else {
+                                        // Busca el abono anterior y obtiene el saldo
+                                        // const abonoAnterior = Abono.objects.filter(idOrdenTrabajo = inputOrdenTrabajo.value).order_by('-idAbono')[1];
+                                        // inputSaldoAnterior.value = parseFloat(inputSaldo.value);
 
-                                //         fetch(`/api/saldo_anterior/${numeroAbono.value}`)
-                                //             .then(response => response.json())
-                                //             .then(data => {
-                                //                 inputSaldoAnterior.value = data.saldoAnterior;
-                                //                 actualizarSaldo();
-                                //             });
-                                //     }
-                                // }
+                                        fetch(`/api/saldo_anterior/${numeroAbono.value}`)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                inputSaldoAnterior.value = data.saldoAnterior;
+                                                actualizarSaldo();
+                                            });
+                                    }
+                                }
 
                                 // Eventos para recalcular el valor total al cambiar los valores
                                 inputAbono.addEventListener("input", actualizarSaldo);
@@ -292,7 +301,7 @@
                                 });
 
                                 // Verificar y actualizar el saldo anterior al cargar la página
-                                // verificarSaldoAnterior();
+                                verificarSaldoAnterior();
                             });
                         </script>
 
@@ -458,15 +467,16 @@
                             </div>
                         </div>
 
-                        <!-- <div class="row mt-1">
+                        <div class="row mt-1">
                             <div class="col-md-3">
                                 <label for="saldoAnterior">Saldo Anterior</label>
                             </div>
                             <div class="col-md-3">
                                 <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
-                                    readonly value="{{ form.saldoAnterior.last.saldo|default:'0' }}">
+                                    value="{{ form.saldoAnterior}}" readonly>
+
                             </div>
-                        </div> -->
+                        </div>
 
 
                         <div class="row mt-1">
@@ -475,7 +485,7 @@
                             </div>
                             <div class="col-md-3">
                                 <input type="text" id="id_valorAbono" name="valorAbono" class="form-control"
-                                    value="{{ form.valorAbono.value |default:'' }}" class="form-control">
+                                    value="{{ form.valorAbono.value |default:'' }}">
                             </div>
                         </div>
 

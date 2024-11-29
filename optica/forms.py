@@ -140,16 +140,15 @@ class CertificadoForm(forms.ModelForm):
         fields = [ 
             'numeroCertificado',
             'idOrdenTrabajo',
-            # 'fechaCertificado',
-            'idOrdenTrabajo',
-            'idReceta'
+            'idReceta',
+          
             
         ]
         
     def __init__(self, *args, **kwargs):
         super(CertificadoForm, self).__init__(*args, **kwargs)
-        # self.helper = FormHelper()
-        # self.helper.form_class = 'form-control-sm'
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-control-sm'
 
        
         for field in self.fields.values():
@@ -157,15 +156,10 @@ class CertificadoForm(forms.ModelForm):
             field.widget.attrs.update({'class': 'form-control form-control-sm'})  # Clases para diseño 
             
         self.fields['idOrdenTrabajo'].widget = forms.TextInput()
-  
+        # self.fields['numeroOrdenTrabajo'].widget.attrs['readonly'] = True 
             # Hacer los campos readonly
             # self.fields['rutCliente'].widget = forms.TextInput()
-        #self.fields['saldoAnterior'].widget.attrs['readonly'] = True 
-            # self.fields['saldo'].widget.attrs['readonly'] = True
-       
-       # self.fields['numeroAbono'].widget.attrs['readonly'] = True
-            # self.fields['fechaAbono'].widget.attrs['readonly'] = True
-           # Asegúrate de que el campo valorAbono sea requerido
-        #self.fields['valorAbono'].required = True  
+        # self.fields['numeroCertificado'].widget.attrs['readonly'] = True 
+
         
  

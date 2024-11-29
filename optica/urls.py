@@ -5,7 +5,7 @@ from optica import views
 # from django.contrib.staticfiles.urls import static
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import CrearAbonoView
+from .views import CrearAbonoView, CrearCertificadoView
 
 from django.views.generic import TemplateView
 router = routers.DefaultRouter()
@@ -53,7 +53,7 @@ urlpatterns = [
     path('certificado_new/', views.CrearCertificadoView.as_view(), name='certificado_new'),    
     # path('<int:pk>/certificado_edit/', views.EditarCertificadoView.as_view(), name='certificado_edit'),
     path('<int:pk>/certificado_delete/', views.EliminarCertificadoView.as_view(), name='certificado_delete'),
-
+    path('certificado/new/', CrearCertificadoView.as_view(), name='certificado_new'),
     
     ]
 

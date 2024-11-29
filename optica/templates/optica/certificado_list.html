@@ -34,19 +34,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-md-8">
-                    <h1 class="font-weight-bold mb-0">Órdenes de Trabajo</h1>
-                    <p class="lead text-muted">Listado de órdenes de trabajo registradas en sistema</p>
+                    <h1 class="font-weight-bold mb-0">Certificados</h1>
+                    <p class="lead text-muted">Listado de certificados registradas en sistema</p>
                 </div>
                 <div class="col-lg-3 col-md-4 d-flex">
 
-                    <a href="{% url 'ordenTrabajo_new' %}" class="btn btn-primary w-100 align-self-center">
-                        Crear nueva Orden de Trabajo</a>
+                    <a href="{% url 'certificado_new' %}" class="btn btn-primary w-100 align-self-center">
+                        Generar Certificado</a>
                 </div>
             </div>
         </div>
     </section>
-
-
 
     <div class="mt-0">
         <div class="container-fluid w-100">
@@ -59,7 +57,7 @@
                             placeholder="Buscar por Nombre, Apellido o RUN (Sin guión)" name="q"
                             value="{{ request.GET.q }}">
                         <button class="btn btn-primary">
-                            Buscar Orden de trabajo
+                            Buscar Certificado
                         </button>
                     </div>
                 </form>
@@ -85,95 +83,75 @@
                 <table class="table table-condensed table-striped mb-0">
                     <thead>
                         <tr>
-                            <th scope="col">ID Ord.Trab.</th>
-                            <th scope="col">Numero Orden T.</th>
+
+                            <th scope="col">Numero de Certificado.</th>
                             <th scope="col">RUN</th>
                             <th scope="col">Nombre Cliente</th>
-                            <th scope="col">Fecha Orden T.</th>
-                            <th scope="col">Fecha entrega</th>
-                            <th scope="col">Valor Total </th>
-                            <th scope="col">Estado Orden de Trabajo</th>
+                            <th scope="col">Fecha Certificado</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        {% for ordenTrabajo in object_list %}
+                        {% for certificado in object_list %}
                         <tr>
-                            <td>{{ ordenTrabajo.idOrdenTrabajo }}</td>
-                            <td>{{ ordenTrabajo.numeroOrdenTrabajo }}</td>
+
+                            <td>{{ certificado.numeroCertificado }}</td>
                             <td>{{ ordenTrabajo.idReceta.rutCliente }}-{{ ordenTrabajo.idReceta.dvRutCliente }}</td>
                             <td class="text-uppercase">{{ ordenTrabajo.idReceta.nombreCliente }}
                                 {{ ordenTrabajo.idReceta.apPaternoCliente }}
                                 {{ ordenTrabajo.idRreceta.apMaternoCliente |default:'' }}</td>
-                            <td>{{ ordenTrabajo.fechaOrdenTrabajo |date:'d/m/Y' |default:'' }}</td>
+                            <td>{{ certificado.fechaCertificado |date:'d/m/Y' |default:'' }}</td>
                             <td>{{ ordenTrabajo.fechaEntregaOrdenTrabajo |date:'d/m/Y' |default:'' }}</td>
-                            <td>{{ ordenTrabajo.totalOrdenTrabajo |default:'' }}</td>
-                            <td class="text-uppercase">{{ ordenTrabajo.estadoOrdenTrabajo |default:'' }}</td>
+
 
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                        data-bs-target="#ordenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}">
+                                        data-bs-target="#certificadoModal{{ certificado.numeroCertificado }}">
                                         <i class="bi bi-eye"></i> <!-- Icono de OJO para ver detalle -->
                                     </button>
 
-                                    <a href="{% url 'ordenTrabajo_edit' ordenTrabajo.pk %}" class="btn btn-primary">
-                                        <i class="bi bi-pencil"></i> <!-- Icono de lápiz para editar -->
-                                    </a>
-
-                                    <a href="{% url 'abono_new' %}?idOrdenTrabajo={{ ordenTrabajo.idOrdenTrabajo }}&q={{ ordenTrabajo.idOrdenTrabajo }}"
-                                        class="btn btn-success">
-                                        <i class="bi bi-cash"></i><!-- Icono de moneda -->
-                                    </a>
-
-
-                                    <!-- <a href="{% url 'abono_new' %}?idOrdenTrabajo={{ ordenTrabajo.idOrdenTrabajo }}"
-                                    class="btn btn-success">
-                                    <i class="bi bi-cash"></i>
-                                    </a> -->
-
 
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#eliminarOrdenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}">
+                                        data-bs-target="#eliminarCertificadoModal{{ certificado.numeroCertificado }}">
                                         <i class="bi bi-trash"></i> <!-- Icono de basura para eliminar -->
                                     </button>
                                 </div>
 
 
-                                <!-- --MODAL PARA ELIMINAR ORDEN DE TRABAJO -->
+                                <!-- --MODAL PARA ELIMINAR CERTIFICADO -->
                                 <a data-bs-toggle="modal"
-                                    data-bs-target="#eliminarOrdenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}">
+                                    data-bs-target="#eliminarCertificadoModal{{ certificado.numeroCertificado }}">
 
                                     <div class="modal fade"
-                                        id="eliminarOrdenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}" tabindex="-1"
-                                        aria-labelledby="eliminarOrdenTrabajoModalLabel{{ ordenTrabajo.idOrdenTrabajo }}"
+                                        id="eliminarCertificadoModal{{ certificado.numeroCertificado }}" tabindex="-1"
+                                        aria-labelledby="eliminarCertificadoModalLabel{{ certificado.numeroCertificado }}"
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title font-weight-bold"
-                                                        id="eliminarOrdenTrabajoModalLabel{{ ordenTrabajo.idOrdenTrabajo }}">
-                                                        Eliminar
-                                                        Orden de Trabajo</h5>
+                                                        id="eliminarCertificadoModalLabel{{ certificado.numeroCertificado }}">
+                                                        Eliminar Certificado</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <span class="font-weight-bold text-center">
                                                         <h5>
-                                                            ¿Está seguro de eliminar la Orden de Trabajo <br>Número
-                                                            {{ordenTrabajo.numeroOrdenTrabajo|default:''}}?</h5>
+                                                            ¿Está seguro de eliminar el Certificado <br>Número
+                                                            {{certificado.numeroCertificado|default:''}}?</h5>
                                                     </span>
                                                     <form method="post" class="mt-3 text-center"
-                                                        action="{% url 'ordenTrabajo_delete' ordenTrabajo.idOrdenTrabajo %}">
+                                                        action="{% url 'certificado_delete' certificado.numeroCertificado %}">
                                                         {% csrf_token %}
-                                                        <a href="{% url 'ordenTrabajo_list' %}"
+                                                        <a href="{% url 'certificado_list' %}"
                                                             class="btn btn-secondary me-1">Cancelar</a>
 
 
                                                         <button type="submit" class="btn btn-danger"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#eliminarOrdenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}">
+                                                            data-bs-target="#eliminarCertificadoModal{{ certificado.numeroCertificado }}">
                                                             Eliminar
                                                         </button>
                                                     </form>
@@ -188,8 +166,8 @@
                         <!-- --MODAL PARA MOSTRAR EL DETALLE -->
 
                         <div class="modal-condensed">
-                            <div class="modal fade" id="ordenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}"
-                                tabindex="-1" aria-labelledby="ordenTrabajoModalLabel{{ ordenTrabajo.idOrdenTrabajo }}"
+                            <div class="modal fade" id="certificadoModal{{ certificado.idCertificado }}" tabindex="-1"
+                                aria-labelledby="certificadoModalLabel{{ certificado.idCertificado }}"
                                 aria-hidden="true">
 
                                 <div class="modal-dialog" style=" max-width: 53%;">
@@ -198,15 +176,15 @@
                                             <img src="{% static '/images/Optica_Cruz_Celeste.png' %}"
                                                 alt="Descripción de la imagen" style="width: 180px; height: auto;">
                                             <h5 class="modal-title mt-3" style="font-weight: bold;"
-                                                id="recetaModalLabel{{ ordenTrabajo.idOrdenTrabajo}} ">
-                                                ORDEN DE TRABAJO - Número
-                                                {{ ordenTrabajo.numeroOrdenTrabajo |default:'' }}
+                                                id="certificadoModalLabel{{ certificado.idCertificado}} ">
+                                                CERTIFICADO - Número
+                                                {{ certificado.numeroCertificado |default:'' }}
                                             </h5>
 
                                             <p>
                                             <div class="font-weight-bold mt-4" id="texto-modal">Creada el:</div>
                                             <div class="font-weight-bold mt-4">
-                                                {{ ordenTrabajo.fechaOrdenTrabajo | date:'d/m/Y'|default:'--' }}</div>
+                                                {{ certificado.fechaCertificado | date:'d/m/Y'|default:'--' }}</div>
                                             </p>
 
                                             <button type="button" class="btn-info" data-bs-dismiss="modal"
@@ -221,7 +199,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">RUN:</span>
-                                                        {{ ordenTrabajo.idReceta.rutCliente }}-
+                                                        {{ certificado.idOrdenTrabajo.idReceta.rutCliente }}-
                                                         {{ ordenTrabajo.idReceta.dvRutCliente }}
                                                     </p>
                                                 </div>
@@ -254,7 +232,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">Fecha de
                                                             Entrega:</span>
@@ -269,7 +247,7 @@
                                                 </div>
 
 
-                                            </div>
+                                            </div> -->
 
                                             <div class="row">
                                                 <div class="col-md-12 text-center">
@@ -292,7 +270,7 @@
 
                                             </div>
 
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-md-6">
                                                     <p><span class="font-weight-bold" id="texto-modal">Tipo de
                                                             lente:</span>
@@ -304,7 +282,7 @@
                                                         {{ ordenTrabajo.altura|default:"--"|upper }}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -321,16 +299,16 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-md-12">
                                                     <p><span class="font-weight-bold"
                                                             id="texto-modal">Observaciones:</span>
                                                         {{ordenTrabajo.idReceta.observacionReceta|default:"--"|upper }}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
-                                            <div class="card border border-1 shadow rounded p-3 ">
+                                            <!-- <div class="card border border-1 shadow rounded p-3 ">
                                                 <h6 class="card-header text-Dark font-weight-bold">LEJOS</h6>
                                                 <div class="card-body">
 
@@ -493,7 +471,7 @@
                                                     </div>
 
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             <div class="row">
                                                 <div class="col-md-12 text-center">
@@ -501,7 +479,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="card border border-1 shadow rounded p-3 ">
+                                            <!-- <div class="card border border-1 shadow rounded p-3 ">
                                                 <h6 class="card-header font-weight-bold">
                                                     CERCA
 
@@ -668,9 +646,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-md-12 text-center">
                                                     <hr style="width: 100%; border: 1px solid #06818e;">
                                                 </div>
@@ -689,7 +667,7 @@
                                                 <div class="col-md-12 text-center">
                                                     <hr style="width: 100%; border: 1px solid #06818e;">
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             <div class="row">
                                                 <div class="col-md-6">
