@@ -23,14 +23,16 @@ from django import forms
 from django.views import View
 
 import os
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from django.conf import settings
 from datetime import datetime
 from django.db.models import Max
-
-
-
-
+from django.http import JsonResponse
+from django.core.mail import EmailMessage
+from django.views.generic import TemplateView
+from django.template import Context
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 def index(request):
     # Construir la ruta completa del archivo index.html en la raíz
@@ -49,6 +51,52 @@ def editar_orden_trabajo(request, pk):
     else:
         form = OrdenTrabajoForm(instance=orden_trabajo)
     return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
+
+def generar_certificado(request):
+    orden_trabajo = None
+    id_orden_trabajo = request.GET.get('id_orden_trabajo')
+
+    if id_orden_trabajo:
+        try:
+            orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
+            messages.success(request, "Orden de Trabajo encontrada")
+        except OrdenTrabajo.DoesNotExist:
+            messages.error(request, "Orden de Trabajo no encontrada")
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="certificado_{}.pdf"'.format(
+        orden_trabajo.idOrdenTrabajo if orden_trabajo else '')
+
+    return render(request, 'optica/certificado_form.html', {
+        'orden_trabajo': orden_trabajo,
+    }, response)
+
+
+def enviar_certificado_pdf(request):
+    if request.method == 'POST':
+        form = CertificadoForm(request.POST, request.FILES)
+        if form.is_valid():
+            certificado = form.cleaned_data['certificado']
+            email_cliente = form.cleaned_data['emailCliente']
+            nombre_cliente = form.cleaned_data['nombreCliente']
+            numero_orden_trabajo = form.cleaned_data['numeroOrdenTrabajo']
+            id_orden_trabajo = form.cleaned_data['idOrdenTrabajo']
+
+            asunto = 'Certificado de Óptica Cruz'
+            cuerpo = f'Sr. {nombre_cliente}, adjunto encontrará su certificado correspondiente a la orden de trabajo N° {numero_orden_trabajo} ID: {id_orden_trabajo}.'
+            email = EmailMessage(asunto, cuerpo, 'rigovas@hotmail.com', [email_cliente])
+            email.attach(certificado.name, certificado.read(), certificado.content_type)
+            email.send()
+            messages.success(request, "El certificado se ha enviado exitosamente.")
+            return redirect('cliente_list')
+        else:
+            messages.error(request, "Error al enviar el certificado. Por favor, verifique los datos ingresados.")
+    else:
+        form = CertificadoForm()
+    return render(request, 'certificado_form.html', {'form': form})
+
+
+
 
 # Create your views here.
 class ListarClienteView(generic.ListView):
@@ -483,25 +531,7 @@ class EliminarOrdenTrabajoView(SuccessMessageMixin, generic.DeleteView):
     success_message = "La Orden de Trabajo se ha eliminado exitosamente."
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ABONOS
-
-
 class ListarAbonoView(generic.ListView):
     model = Abono
     paginate_by = 10
@@ -573,6 +603,7 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
             # 'rutCliente' : orden_trabajo.idReceta.rutCliente if orden_trabajo else '', #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
             'rutCliente': cliente.rutCliente if cliente else '',
             'dvRutCliente': cliente.dvRutCliente if cliente else '',
+            'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
             'valorAbono': '',
             'saldoAnterior': '',
             'saldo': '',
@@ -591,8 +622,8 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
             'estadoDelPago': orden_trabajo.estadoDelPago if orden_trabajo else '',
             'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
             'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
-            # 'saldoAnterior': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
-            # 'saldo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
+            'saldoAnterior': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
+            'saldo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
             'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
         })
         
@@ -662,7 +693,7 @@ class EditarAbonoView(SuccessMessageMixin, generic.UpdateView):
     
 def get_initial(self):
         initial = super().get_initial()
-        initial['numeroAbono'] = self.object.numeroAbono  # Valor del modelo
+        initial['numeroAbono'] = self.object.numeroOrdenTrabajo.numeroAbono  # Valor del modelo
         return initial
     
     
@@ -690,59 +721,14 @@ class EliminarAbonoView(SuccessMessageMixin, generic.DeleteView):
 
 
 #CERTIFICADOS
-class ListarCertificadoView(generic.ListView):
-    model = Certificado
-    paginate_by = 10
-    ordering = ['-fechaCertificado']
     
-    def get_queryset(self) -> QuerySet[Any]:
-        q = self.request.GET.get('q')
-        if q:
-            return Abono.objects.filter(
-                Q(idCertificado__idOrdenTrabajo__idReceta__rutCliente__nombreCliente__icontains=q) | 
-                Q(idCertificado__idOrdenTrabajo__idReceta__rutCliente__apPaternoCliente__icontains=q) | 
-                Q(idCertificado__idOrdenTrabajo__idReceta__rutCliente__rutCliente__icontains=q)
-            )
-        return super().get_queryset()
-    
-    
-class CrearCertificadoView(SuccessMessageMixin, CreateView):
-    model = Certificado
-    fields = (
-        'numeroCertificado', 
-        'idOrdenTrabajo',
-        'idReceta',
-       
-         
-    #     'totalOrdenTrabajo',
-    #     'valorCristalesLejos',
-    #     'valorCristalesCerca',
-    #     'valorMarcoLejos',
-    #     'valorMarcoCerca',
-    #     'totalLejos',
-    #     'totalCerca',
-    
-    )
-    form_class = CertificadoForm
-    success_url = reverse_lazy('certificado_list')
-    success_message = "El Certificado se ha guardado exitosamente."
+
+class CrearCertificadoView(CreateView):
     template_name = 'optica/certificado_form.html'
-    
-    
-    def generar_numero_certificado(self):
-        # Lógica para calcular el siguiente número de orden
-        ultimo_valor2 = Certificado.objects.aggregate(max_val=Max('numeroCertificado'))['max_val']
-        return (ultimo_valor2 + 1) if ultimo_valor2 and ultimo_valor2 >= 1 else 1
 
-   
-
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         orden_trabajo = None
-        # cliente = None
-        # receta = None
         id_orden_trabajo = request.GET.get('id_orden_trabajo')
-        # id_receta = request.GET.get('id_receta')
-        # rut_cliente = request.GET.get('rut_cliente') #va a ser usado cuando se haga la relacion entre cliente y orden de trabajo
 
         if id_orden_trabajo:
             try:
@@ -750,99 +736,26 @@ class CrearCertificadoView(SuccessMessageMixin, CreateView):
                 messages.success(request, "Orden de Trabajo encontrada")
             except OrdenTrabajo.DoesNotExist:
                 messages.error(request, "Orden de Trabajo no encontrada")
-                
-        numero_certificado = self.generar_numero_certificado()
-        
-           # Cargar formulario de CERTIFICADO con datos del Cliente, Receta y Orden de Trabajo, si existen, se pueden prellenar campos
-        form = CertificadoForm(initial={
-            'numeroCertificado': numero_certificado,
-            'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
-            'idReceta': orden_trabajo.idReceta if orden_trabajo else '',
-            # 'rutCliente' : orden_trabajo.idReceta.rutCliente if orden_trabajo else '', #se esta tomando el cliente de la receta, se debe cambiar por el cliente de la orden de trabajo
-            # 'rutCliente': cliente.rutCliente if cliente else '',
-            # 'idReceta': receta.idReceta if orden_trabajo else '',
-            # 'idCertificado': '',
-           
-            # 'nombreCliente':'',
-            # 'apPaternoCliente':'',
-            # 'apMaternoCliente':'',
-            # 'totalOrdenTrabajo':'',
-            # 'valorCristalesLejos':'',
-            # 'valorCristalesCerca':'',
-            # 'valorMarcoLejos':'',
-            # 'valorMarcoCerca':'',
-            # 'totalLejos':'',
-            # 'totalCerca':'',
-            # 'fechaCertificado':'',
-        })
 
         return render(request, self.template_name, {
-            'form': form,
             'orden_trabajo': orden_trabajo,
-            # 'cliente': cliente,
+            'numero_orden_trabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
             'idOrdenTrabajo': orden_trabajo.idOrdenTrabajo if orden_trabajo else '',
-            'numeroCertificado': '',
-            # 'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
-            # 'valorCristalesLejos': orden_trabajo.valorCristalesLejos if orden_trabajo else '',
-            # 'valorCristalesCerca': orden_trabajo.valorCristalesCerca if orden_trabajo else '',
-            # 'valorMarcoLejos': orden_trabajo.valorMarcoLejos if orden_trabajo else '',
-            # 'valorMarcoCerca': orden_trabajo.valorMarcoCerca if orden_trabajo else '',
-            # 'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
-            # 'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
-            # 'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
         })
-           
-    
-    def post(self, request, *args, **kwargs):
-        form = CertificadoForm(request.POST)
-        # cliente = None 
-        orden_trabajo = None
-        # rut_cliente = request.POST.get('rutCliente')  # Captura el `rut_cliente` del formulario
-        id_orden_trabajo = request.POST.get('idOrdenTrabajo')  # Captura el `id_orden_trabajo` del formulario
         
-        if id_orden_trabajo:
-            try:
-                # cliente = Cliente.objects.get(rutCliente=rut_cliente)
-                orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
-             
-                if form.is_valid():
-                    certificado = form.save(commit=False)
-                    # certificado.rutCliente = cliente  # Asigna el cliente al certificado
-                    certificado.idOrdenTrabajo = orden_trabajo  # Asigna la orden de trabajo al certificado
-                    certificado.save()  # Guarda el certificado
-                    messages.success(request, "El certificado se ha registrado exitosamente.")
-                    return redirect(self.success_url)
-            except OrdenTrabajo.DoesNotExist:
-                messages.error(request, "Orden de trabajo no encontrada.")
         
-        else:
-            messages.error(request, "No se proporcionó un ID de orden de trabajo válido.")
-        
-        return render(request, self.template_name, {
-            'form': form,
-            'orden_trabajo': orden_trabajo,
-            'numeroCertificado': '',
-            # 'rutCliente': orden_trabajo.idReceta.rutCliente if orden_trabajo else '',
-            # 'dvRutCliente': orden_trabajo.idReceta.dvRutCliente if orden_trabajo else '',
-            # 'nombreCliente': orden_trabajo.idReceta.nombreCliente if orden_trabajo else '',
-            # 'apPaternoCliente': orden_trabajo.idReceta.apPaternoCliente if orden_trabajo else '',
-            # 'apMaternoCliente': orden_trabajo.idReceta.apMaternoCliente if orden_trabajo else '',
-            # 'numeroOrdenTrabajo': orden_trabajo.numeroOrdenTrabajo if orden_trabajo else '',
-            # 'valorCristalesLejos': orden_trabajo.valorCristalesLejos if orden_trabajo else '',
-            # 'valorCristalesCerca': orden_trabajo.valorCristalesCerca if orden_trabajo else '',
-            # 'valorMarcoLejos': orden_trabajo.valorMarcoLejos if orden_trabajo else '',
-            # 'valorMarcoCerca': orden_trabajo.valorMarcoCerca if orden_trabajo else '',
-            # 'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
-            # 'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
-            # 'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
-        })    
 
 
-
-
-
-class EliminarCertificadoView(SuccessMessageMixin, generic.DeleteView):
-    model = Certificado
-    success_url = reverse_lazy('certificado_list')
-    success_message = "El certificado se ha eliminado exitosamente."
-
+class CertificadoPdfView(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('optica/certificado_pdf.html')  
+        context = {'title': 'Certificado de Óptica Cruz'}
+        html = template.render(context)
+         # return HttpResponse ('<h1> Certificado </h1>')
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="certificado.pdf"'
+        pisaStatus = pisa.CreatePDF(
+            html, dest=response)
+        if pisaStatus.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response

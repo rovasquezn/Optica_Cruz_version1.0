@@ -462,21 +462,6 @@
                                 <label for="totalLejos">Sub Total</label>
                                 <input type="number" id="totalLejos" name="totalLejos" value="{{form.totalLejos.value}}"
                                     class=" form-control form-control-sm" readonly>
-                                <!-- 
-                                <input type="number" name="totalLejos"
-                                    value="{% if form.totalLejos.value %}{{ form.totalLejos.value }}{% else %}{{ ordenTrabajo.totalLejos }}{% endif %}"
-                                    class="form-control" readonly> -->
-
-
-
-
-
-
-
-
-
-
-
                             </div>
                             <script>
                                 // Selecciona los campos de los valores
@@ -539,7 +524,8 @@
                             <div class="col-md-3 ml-1 mr-5">
                                 <label for="totalOrdenTrabajo">VALOR TOTAL</label>
                                 <input type="number" id="totalOrdenTrabajo" name="totalOrdenTrabajo"
-                                    class="form-control form-control-sm" readonly>
+                                    value="{{form.totalOrdenTrabajo.value}}" class="form-control form-control-sm"
+                                    readonly>
                             </div>
 
                             <div class="col-md-2">

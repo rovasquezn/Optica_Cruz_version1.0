@@ -74,8 +74,8 @@
                     <form action="" method="post" class="mt-3 mb-3 modal-condensed " enctype="multipart/form-data"
                         novalidate>
                         {% csrf_token %}
-                        {{ form.non_field_errors }}
                         {% if form.idOrdenTrabajo %}
+                        {{ form.non_field_errors }}
 
                         <div class="row">
                             <!-- VARIACION DE VISTA PARA CUANDO SE ENCUENTRA LA ORDEN DE TRABAJO (CAMPOS READONLY) -->
@@ -94,11 +94,6 @@
                                 <input type="text" name="idOrdenTrabajo"
                                     value="{{ form.idOrdenTrabajo.value|default:'' }}" readonly class="form-control">
                             </div>
-                            <!-- <div class="col-md-2 ml-1 mt-3">
-                                <label for="idAbono">ID Orden Trabajo</label>
-                                <input value="{{ orden_trabajo.idOrdenTrabajo }}" readonly class="form-control"
-                                    name="idOrdenTrabajo">
-                            </div> -->
 
 
                             <div class="col-md-3 ml-1 mt-5">
@@ -106,10 +101,7 @@
                                 <input type="text" name="numeroAbono" id="numeroAbono"
                                     value="{{ form.numeroAbono.value|default:'' }}" readonly class="form-control">
                             </div>
-                            <!-- <div class="col-md-2 ml-1 mt-3">
-                                <label for="numeroAbono">Número de Abono</label>
-                                {{ form.numeroAbono }}
-                            </div> -->
+
 
                             <div class="col-md-4 ml-1 mt-5  ">
                                 <label for="numeroOrdenTrabajo">Numero de Orden de Trabajo</label>
@@ -142,14 +134,6 @@
                                     value="{{ orden_trabajo.idReceta.nombreCliente  }} {{ orden_trabajo.idReceta.apPaternoCliente }} {{ orden_trabajo.idReceta.apMaternoCliente |default:'' }} "
                                     readonly class="form-control">
                             </div>
-                            <!-- <div class="col-md-3">
-                                <label for="apPaternoCliente">Apellido Paterno</label>
-                                <input value="{{ cliente.apPaternoCliente }}" readonly class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="apMaternoCliente">Apellido Materno</label>
-                                <input value="{{ cliente.apMaternoCliente |default:'' }}" readonly class="form-control">
-                            </div> -->
                         </div>
 
                         <div class="row">
@@ -158,10 +142,8 @@
                             </div>
                         </div>
 
-
-
-                        <div class="row mt-4">
-                            <div class="col-md-3">
+                        <div class="row mt-4 ml-5">
+                            <div class="col-md-4">
                                 <label for="totalLejos">Sub-Total lente de lejos</label>
                             </div>
                             <div class="col-md-3">
@@ -169,8 +151,8 @@
                             </div>
                         </div>
 
-                        <div class="row mt-1">
-                            <div class="col-md-3">
+                        <div class="row mt-1 ml-5">
+                            <div class="col-md-4">
                                 <label for="totalCerca">Sub-Total lente de Cerca</label>
                             </div>
                             <div class="col-md-3">
@@ -178,147 +160,86 @@
                             </div>
                         </div>
 
-                        <div class="row mt-1">
-                            <div class="col-md-3">
+                        <div class="row mt-1 ml-5">
+                            <div class="col-md-4">
                                 <label for="totalOrdenTrabajo">Total Orden de Trabajo</label>
                             </div>
                             <div class="col-md-3">
                                 <input type="number" id="totalOrdenTrabajo" name="totalOrdenTrabajo"
                                     class="form-control" value="{{ totalOrdenTrabajo }}" readonly>
                             </div>
+
                         </div>
 
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="saldoAnterior">Saldo Anterior</label>
+                        {% else %}
+
+                        <div class="row">
+                            <!-- VARIACION DE VISTA PARA CUANDO SE ENCUENTRA LA ORDEN DE TRABAJO (CAMPOS READONLY) -->
+                            <div class="col-md-12 text-center mt-3 font-weight-bold">
+                                <h3>Optica Cruz - Editar Abonos</h3><br>
                             </div>
 
-                            <div class="col-md-3">
-                                <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
-                                    readonly
-                                    value="{% if abono.saldo %}{{ abono.saldo }}{% else %}{{ abono.idOrdenTrabajo.totalOrdenTrabajo }}{% endif %}">
-
-                            </div>
-
-                            <!-- <div class="col-md-3">
-                                <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
-                                    readonly value="{{ saldoAnterior.last.saldo }}">
-                            </div> -->
                         </div>
 
-                        <div class="row mt-4">
-                            <div class="col-md-3 ml-2"></div>
+                        <div class="row mt-1 ml-5">
+                            <div class="col-md-4">
+                                <label for="totalOrdenTrabajo">Total Orden de Trabajo</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" id="totalOrdenTrabajo" name="totalOrdenTrabajo"
+                                    class="form-control" value="{{ abono.idOrdenTrabajo.totalOrdenTrabajo }}" readonly>
+                            </div>
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="row mt-3">
+                            <div class="col-md-5"></div>
                             {{ form.valorAbono|as_crispy_field }}
 
                         </div>
 
-                        <!-- <div class="row mt-1">
-                            <div class="col-md-3"> -->
-                        <!-- <label for="valorAbono">Valor Abono</label> -->
-                        <!-- {{ form.valorAbono|as_crispy_field }}
-                            </div>
-                        </div> -->
 
-                        <!-- <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="valorAbono">Valor Abono</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" id="id_valorAbono" name="valorAbono" class="form-control"
-                                    value="{{ form.valorAbono.value |default:'' }}" class="form-control">
-                            </div>
-                        </div> -->
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
+                        <div class="row mt-1 ml-5">
+                            <div class="col-md-4">
                                 <label for="saldo">Saldo Pendiente</label>
                             </div>
                             <div class="col-md-3">
-                                <input type="number" id="saldo" name="saldo" class="form-control" readonly
-                                    value="{{ form.saldo.value}}">
+                                <input type="number" id="saldo" name="saldo" value="{{ form.saldo.value}}"
+                                    class="form-control" readonly>
                             </div>
+
                         </div>
 
-
-
                         <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                // Selecciona los campos de los valores
-                                const inputTotal = document.getElementById("totalOrdenTrabajo");
-                                const inputAbono = document.getElementById("id_valorAbono");
-                                const inputSaldo = document.getElementById("saldo");
-                                const inputSaldoAnterior = document.getElementById("saldoAnterior");
-                                // const inputNumeroAbono = document.getElementById("numeroAbono");
+                            // Selecciona los campos de los valores
 
-                                // Función para actualizar el valor total en tiempo real
-                                function actualizarSaldo() {
-                                    const valorTotal = parseFloat(inputTotal.value) || 0;
-                                    const valorAbono = parseFloat(inputAbono.value) || 0;
-                                    const valorSaldoAnterior = parseFloat(inputSaldoAnterior.value) || 0;
-                                    inputSaldo.value = valorSaldoAnterior - valorAbono;
-                                }
+                            const inputTotal = document.getElementById("totalOrdenTrabajo");
+                            const inputAbono = document.getElementById("id_valorAbono");
+                            const inputSaldo = document.getElementById("saldo");
+                            // Función para actualizar el valor total en tiempo real
+                            function actualizarSaldo() {
+                                const valorTotal = parseFloat(inputTotal.value) || 0;
+                                const valorAbono = parseFloat(inputAbono.value) || 0;
+                                inputSaldo.value = valorTotal - valorAbono;
 
+                            }
 
+                            // Eventos para recalcular el valor total al cambiar los valores
+                            inputAbono.addEventListener("input", actualizarSaldo);
 
-                                function actualizarSaldoAnterior() {
-                                    const valorSaldoAnterior = parseFloat(inputSaldoAnterior.value) || 0;
-                                    const valorAbono = parseFloat(inputAbono.value) || 0;
-                                    inputSaldoAnterior.value = valorTotal - valorAbono;
-                                }
-
-
-
-
-                                // Función para verificar y actualizar el saldo anterior
-                                function verificarSaldoAnterior() {
-                                    const numeroAbono = parseInt(inputNumeroAbono.value) || 1;
-                                    if (numeroAbono === 1) {
-                                        inputSaldoAnterior.value = parseFloat(inputTotal.value) || 0;
-                                    } else {
-                                        // Busca el abono anterior y obtiene el saldo
-                                        // const abonoAnterior = Abono.objects.filter(idOrdenTrabajo = inputOrdenTrabajo.value).order_by('-idAbono')[1];
-                                        // inputSaldoAnterior.value = parseFloat(inputSaldo.value);
-
-                                        fetch(`/api/saldo_anterior/${numeroAbono.value}`)
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                inputSaldoAnterior.value = data.saldoAnterior;
-                                                actualizarSaldo();
-                                            });
-                                    }
-                                }
-
-                                // Eventos para recalcular el valor total al cambiar los valores
-                                inputAbono.addEventListener("input", actualizarSaldo);
-
-                                // Prevenir el envío del formulario al presionar ENTER en el campo de abono
-                                inputAbono.addEventListener("keydown", function (event) {
-                                    if (event.key === "Enter") {
-                                        event.preventDefault();
-                                        actualizarSaldo();
-                                    }
-                                });
-
-                                // Verificar y actualizar el saldo anterior al cargar la página
-                                verificarSaldoAnterior();
-                            });
                         </script>
 
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
+                        <div class="row mt-1 ml-5">
+                            <div class="col-md-4 ">
                                 <label for="tipoPagoAbono">Forma de pago del Abono</label>
                             </div>
-                            <!-- <div class="col-md-3">
-                                <input type="text" name="tipoPagoAbono" class="form-control"
-                                    value="{{ form.tipoPagoAbono.value |default:'' }}" class="form-control">
-                            </div> -->
+
 
                             <br>
-                            <select class="form-select form-control ml-3" id="tipoPagoAbono" name="tipoPagoAbono"
-                                style="width: 170px; height: 35px;" disabled>
+                            <select class="form-select form-control col-md-2 ml-3" id="tipoPagoAbono"
+                                name="tipoPagoAbono" style="width: 150px; height: 35px;">
 
                                 <option value="Efectivo">Efectivo</option>
                                 <option value="Debito">Débito</option>
@@ -340,8 +261,8 @@
                             </script>
                         </div>
 
-                        <div class="row mt-1">
-                            <div class="col-md-3">
+                        <div class="row mt-1 ml-5">
+                            <div class="col-md-4">
                                 <label for="numeroVoucherAbono">Número de Voucher Abono</label>
                             </div>
                             <div class="col-md-3">
@@ -350,266 +271,11 @@
                             </div>
                         </div>
 
-                        <!-- <div class="row">
-                            <div class="col-md-3">
-                                <label for="estadoDelPago">Estado del Pago</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input value="{{ estadoDelPago }}" readonly class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label for="estadoDelPago">Estado del Pago</label>
-                            </div>
-                            <select class="form-select form-control ml-3" id="estadoDelPago" name="estadoDelPago"
-                                required style="width: 170px; height: 35px;">
-                                <option value="Pago pendiente">Pago pendiente</option>
-                                <option value="Pagado">Pagado</option>
-                                <option value="Abono">Abono</option>
-
-                            </select>
-
-
-                        </div>-->
-
-                        {% else %}
-                        EDITAR
-                        <!-- VARIACION DE VISTA PARA EDITAR -->
-
-                        <div class="row">
-                            <!-- VARIACION DE VISTA PARA CUANDO SE ENCUENTRA LA ORDEN DE TRABAJO (CAMPOS READONLY) -->
-                            <div class="col-md-12 text-center mt-3 font-weight-bold">
-                                <h3>Optica Cruz - Registro de Abonos</h3>
-                            </div>
-
-                        </div>
-
-
-                        <div class="row">
-
-
-                            <div class="col-md-3 ml-5 mt-5">
-                                <label for="idOrdenTrabajo">ID Orden Trabajo</label>
-                                <input type="text" name="idOrdenTrabajo"
-                                    value="{{ abono.idOrdenTrabajo.idOrdenTrabajo|default:'' }}" readonly
-                                    class="form-control">
-                            </div>
-                            <!-- <div class="col-md-2 ml-1 mt-3">
-                                <label for="idAbono">ID Orden Trabajo</label>
-                                <input value="{{ orden_trabajo.idOrdenTrabajo }}" readonly class="form-control"
-                                    name="idOrdenTrabajo">
-                            </div> -->
-
-
-                            <div class="col-md-3 ml-1 mt-5">
-                                <label for="numeroAbono">Número de Abono</label>
-                                <input type="text" name="numeroAbono" id="numeroAbono"
-                                    value="{{ abono.numeroAbono|default:'' }}" readonly class="form-control">
-                            </div>
-                            <!-- <div class="col-md-2 ml-1 mt-3">
-                                <label for="numeroAbono">Número de Abono</label>
-                                {{ form.numeroAbono }}
-                            </div> -->
-
-                            <div class="col-md-4 ml-1 mt-5  ">
-                                <label for="numeroOrdenTrabajo">Numero de Orden de Trabajo</label>
-                                <input value="{{ abono.idOrdenTrabajo.numeroOrdenTrabajo }}" readonly
-                                    class="form-control">
-                            </div>
-
-                        </div>
-
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <hr style="width: 90%; border: 1px solid #5eb9a4;">
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-3 ml-4">
-                                <label for="rutCliente">RUN Cliente</label>
-                                <input type="text" name="rutCliente" value="{{ abono.rutCliente.rutCliente }}" readonly
-                                    class="form-control">
-                            </div>
-
-                            <div style="max-width:50px;">
-                                <label for="dvRutCliente">Dígito</label>
-                                <input value="{{ abono.rutCliente.dvRutCliente  }}" readonly class="form-control">
-                            </div>
-                            <div class="col-md-7 ml-2">
-                                <label for="nombreCliente">Nombre</label>
-                                <input
-                                    value="{{ abono.rutCliente.nombreCliente  }} {{ abono.rutCliente.apPaternoCliente }} {{ abono.rutCliente.apMaternoCliente |default:'' }} "
-                                    readonly class="form-control">
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <hr style="width: 90%; border: 1px solid #5eb9a4;">
-                            </div>
-                        </div>
-
-
-
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="totalOrdenTrabajo">Total Orden de Trabajo</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" id="totalOrdenTrabajo" name="totalOrdenTrabajo"
-                                    class="form-control" value="{{ abono.idOrdenTrabajo.totalOrdenTrabajo }}" readonly>
-                            </div>
-                        </div>
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="saldoAnterior">Saldo Anterior</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" id="saldoAnterior" name="saldoAnterior" class="form-control"
-                                    value="{{ form.saldoAnterior}}" readonly>
-
-                            </div>
-                        </div>
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="valorAbono">Valor Abono</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" id="id_valorAbono" name="valorAbono" class="form-control"
-                                    value="{{ form.valorAbono.value |default:'' }}">
-                            </div>
-                        </div>
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="saldo">Saldo Pendiente</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" id="saldo" name="saldo" class="form-control" readonly
-                                    value="{{ form.saldo.value }}">
-                            </div>
-                        </div>
-
-
-
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                // Selecciona los campos de los valores
-                                const inputTotal = document.getElementById("totalOrdenTrabajo");
-                                const inputAbono = document.getElementById("id_valorAbono");
-                                const inputSaldo = document.getElementById("saldo");
-                                const inputSaldoAnterior = document.getElementById("saldoAnterior");
-                                // const inputNumeroAbono = document.getElementById("numeroAbono");
-
-                                // Función para actualizar el valor total en tiempo real
-                                function actualizarSaldo() {
-                                    const valorTotal = parseFloat(inputTotal.value) || 0;
-                                    const valorAbono = parseFloat(inputAbono.value) || 0;
-                                    inputSaldo.value = valorTotal - valorAbono;
-                                }
-
-
-
-
-
-
-
-                                // Función para verificar y actualizar el saldo anterior
-                                // function verificarSaldoAnterior() {
-                                //     const numeroAbono = parseInt(inputNumeroAbono.value) || 1;
-                                //     if (numeroAbono === 1) {
-                                //         inputSaldoAnterior.value = parseFloat(inputTotal.value) || 0;
-                                //     } else {
-                                //         // Busca el abono anterior y obtiene el saldo
-                                //         // const abonoAnterior = Abono.objects.filter(idOrdenTrabajo = inputOrdenTrabajo.value).order_by('-idAbono')[1];
-                                //         // inputSaldoAnterior.value = parseFloat(inputSaldo.value);
-
-                                //         fetch(`/api/saldo_anterior/${numeroAbono.value}`)
-                                //             .then(response => response.json())
-                                //             .then(data => {
-                                //                 inputSaldoAnterior.value = data.saldoAnterior;
-                                //                 actualizarSaldo();
-                                //             });
-                                //     }
-                                // }
-
-                                // Eventos para recalcular el valor total al cambiar los valores
-                                inputAbono.addEventListener("input", actualizarSaldo);
-
-                                // Prevenir el envío del formulario al presionar ENTER en el campo de abono
-                                inputAbono.addEventListener("keydown", function (event) {
-                                    if (event.key === "Enter") {
-                                        event.preventDefault();
-                                        actualizarSaldo();
-                                    }
-                                });
-
-                                // Verificar y actualizar el saldo anterior al cargar la página
-                                // verificarSaldoAnterior();
-                            });
-                        </script>
-
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="tipoPagoAbono">Forma de pago del Abono</label>
-                            </div>
-                            <!-- <div class="col-md-3">
-                                <input type="text" name="tipoPagoAbono" class="form-control"
-                                    value="{{ form.tipoPagoAbono.value |default:'' }}" class="form-control">
-                            </div> -->
-
-                            <br>
-                            <select class="form-select form-control ml-3" id="tipoPagoAbono" name="tipoPagoAbono"
-                                style="width: 170px; height: 35px;">
-
-                                <option value="Efectivo">Efectivo</option>
-                                <option value="Debito">Débito</option>
-                                <option value="Credito">Crédito</option>
-                                <option value="Cheque">Cheque</option>
-                            </select>
-                        </div>
-
-
-
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-3">
-                                <label for="numeroVoucherAbono">Número de Voucher Abono</label>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" name="numeroVoucherAbono" class="form-control"
-                                    value="{{ form.numeroVoucherAbono.value |default:'' }}" class="form-control">
-                            </div>
-                        </div>
-
-
-
-
-                        {% endif %}
-
-
-
-
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <hr style="width: 90%; border: 1px solid #5eb9a4;">
-                            </div>
-                        </div>
-
-
 
                         <div class="mt-3">
                             <a href="{% url 'abono_list' %}" class="btn btn-secondary mr-3">Cancelar</a>

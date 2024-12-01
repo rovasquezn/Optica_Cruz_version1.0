@@ -5,7 +5,7 @@ from optica import views
 # from django.contrib.staticfiles.urls import static
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import CrearAbonoView, CrearCertificadoView
+from .views import CrearAbonoView, CrearCertificadoView, enviar_certificado_pdf, generar_certificado, CertificadoPdfView
 
 from django.views.generic import TemplateView
 router = routers.DefaultRouter()
@@ -49,12 +49,14 @@ urlpatterns = [
     path('<int:pk>/abono_delete/', views.EliminarAbonoView.as_view(), name='abono_delete'),
 
 
-    path('certificado_list', views.ListarCertificadoView.as_view(), name='certificado_list'),
+    # path('certificado_list', views.ListarCertificadoView.as_view(), name='certificado_list'),
     path('certificado_new/', views.CrearCertificadoView.as_view(), name='certificado_new'),    
+    path('certificado_send/', enviar_certificado_pdf, name='enviar_certificado_pdf'),
     # path('<int:pk>/certificado_edit/', views.EditarCertificadoView.as_view(), name='certificado_edit'),
-    path('<int:pk>/certificado_delete/', views.EliminarCertificadoView.as_view(), name='certificado_delete'),
-    path('certificado/new/', CrearCertificadoView.as_view(), name='certificado_new'),
-    
+    # path('<int:pk>/certificado_delete/', views.EliminarCertificadoView.as_view(), name='certificado_delete'),
+    # path('certificado/new/', CrearCertificadoView.as_view(), name='certificado_new'),
+    path('certificado/generar/', generar_certificado, name='generar_certificado'),
+    path('certificado/pdf/<int:pk>/', CertificadoPdfView.as_view(), name='certificado_download'),
     ]
 
 if settings.DEBUG:

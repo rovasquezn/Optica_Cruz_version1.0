@@ -127,7 +127,7 @@ class AbonoForm(forms.ModelForm):
             # Hacer los campos readonly
             # self.fields['rutCliente'].widget = forms.TextInput()
         self.fields['saldoAnterior'].widget.attrs['readonly'] = True 
-            # self.fields['saldo'].widget.attrs['readonly'] = True
+        self.fields['saldo'].widget.attrs['readonly'] = True
         self.fields['numeroAbono'].widget.attrs['readonly'] = True
             # self.fields['fechaAbono'].widget.attrs['readonly'] = True
            # Asegúrate de que el campo valorAbono sea requerido
