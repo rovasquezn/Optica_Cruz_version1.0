@@ -5,3 +5,4 @@
 /optica/migrations/__pycache__
 
 /proyecto_optica_cruz/__pycache__
+**/migrations/__pycache__
