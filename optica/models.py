@@ -16,47 +16,47 @@ class Cliente(models.Model):
     def __str__(self):
         return f"{self.rutCliente}"
 
-class Atendedor(models.Model): 
-    rutAtendedor = models.IntegerField(primary_key=True, verbose_name="RUN Atendedor") 
-    dvRutAtendedor = models.CharField(max_length=1, verbose_name="Digito")
-    nombreAtendedor = models.CharField(max_length=20, verbose_name="Nombre")
-    apPaternoAtendedor = models.CharField(max_length=20, verbose_name="Apellido Paterno")
-    apMaternoAtendedor = models.CharField(max_length=20, verbose_name="Apellido Materno")
-    celularAtendedor = models.IntegerField(null=True, blank=True, verbose_name="Celular")
-    emailAtendedor = models.EmailField(max_length=30, null=True, blank=True, verbose_name="Correo Electrónico")  
-    nombreUsuarioAtendedor = models.CharField(max_length=15, verbose_name="Nombre de Usuario") #Nombre de usuario
-    claveAtendedor = models.CharField(max_length=15, verbose_name="Clave") #Clave
+# class Atendedor(models.Model): 
+#     rutAtendedor = models.IntegerField(primary_key=True, verbose_name="RUN Atendedor") 
+#     dvRutAtendedor = models.CharField(max_length=1, verbose_name="Digito")
+#     nombreAtendedor = models.CharField(max_length=20, verbose_name="Nombre")
+#     apPaternoAtendedor = models.CharField(max_length=20, verbose_name="Apellido Paterno")
+#     apMaternoAtendedor = models.CharField(max_length=20, verbose_name="Apellido Materno")
+#     celularAtendedor = models.IntegerField(null=True, blank=True, verbose_name="Celular")
+#     emailAtendedor = models.EmailField(max_length=30, null=True, blank=True, verbose_name="Correo Electrónico")  
+#     nombreUsuarioAtendedor = models.CharField(max_length=15, verbose_name="Nombre de Usuario") #Nombre de usuario
+#     claveAtendedor = models.CharField(max_length=15, verbose_name="Clave") #Clave
 
-    def __str__(self):
-        return f"{self.nombreAtendedor} {self.apPaternoAtendedor} {self.apMaternoAtendedor}"
+#     def __str__(self):
+#         return f"{self.nombreAtendedor} {self.apPaternoAtendedor} {self.apMaternoAtendedor}"
 
-class Tecnico(models.Model): 
-    rutTecnico = models.IntegerField(primary_key=True, verbose_name="RUN Técnico") 
-    dvRutTecnico = models.CharField(max_length=1, verbose_name="Digito")
-    nombreTecnico = models.CharField(max_length=20, verbose_name="Nombre")
-    apPaternoTecnico = models.CharField(max_length=20, verbose_name="Apellido Paterno")
-    apMaternoTecnico = models.CharField(max_length=20, verbose_name="Apellido Materno")
-    celularTecnico = models.IntegerField(null=True, blank=True, verbose_name="Celular")
-    emailTecnico = models.EmailField(max_length=30, null=True, blank=True, verbose_name="Correo Electrónico")  
-    nombreUsuarioTecnico = models.CharField(max_length=15, verbose_name="Nombre de Usuario") #Nombre de usuario
-    claveTecnico = models.CharField(max_length=15, verbose_name="Clave") #Clave
+# class Tecnico(models.Model): 
+#     rutTecnico = models.IntegerField(primary_key=True, verbose_name="RUN Técnico") 
+#     dvRutTecnico = models.CharField(max_length=1, verbose_name="Digito")
+#     nombreTecnico = models.CharField(max_length=20, verbose_name="Nombre")
+#     apPaternoTecnico = models.CharField(max_length=20, verbose_name="Apellido Paterno")
+#     apMaternoTecnico = models.CharField(max_length=20, verbose_name="Apellido Materno")
+#     celularTecnico = models.IntegerField(null=True, blank=True, verbose_name="Celular")
+#     emailTecnico = models.EmailField(max_length=30, null=True, blank=True, verbose_name="Correo Electrónico")  
+#     nombreUsuarioTecnico = models.CharField(max_length=15, verbose_name="Nombre de Usuario") #Nombre de usuario
+#     claveTecnico = models.CharField(max_length=15, verbose_name="Clave") #Clave
 
-    def __str__(self):
-        return f"{self.nombreTecnico} {self.apPaternoTecnico} {self.apMaternoTecnico}"
+#     def __str__(self):
+#         return f"{self.nombreTecnico} {self.apPaternoTecnico} {self.apMaternoTecnico}"
 
-class Administrador(models.Model): 
-    rutAdministrador = models.IntegerField(primary_key=True, verbose_name="RUN Administrador") 
-    dvRutAdministrador = models.CharField(max_length=1, verbose_name="Digito")
-    nombreAdministrador = models.CharField(max_length=20, verbose_name="Nombre")
-    apPaternoAdministrador = models.CharField(max_length=20, verbose_name="Apellido Paterno")
-    apMaternoAdministrador = models.CharField(max_length=20, verbose_name="Apellido Materno")
-    celularAdministrador = models.IntegerField(null=True, blank=True, verbose_name="Celular")
-    emailAdministrador = models.EmailField(max_length=50, null=True, blank=True, verbose_name="Correo Electrónico")   
-    nombreUsuarioAdministrador = models.CharField(max_length=20, verbose_name="Nombre de Usuario") #Nombre de usuario
-    claveAdministrador = models.CharField(max_length=20, verbose_name="Clave") #Clave
+# class Administrador(models.Model): 
+#     rutAdministrador = models.IntegerField(primary_key=True, verbose_name="RUN Administrador") 
+#     dvRutAdministrador = models.CharField(max_length=1, verbose_name="Digito")
+#     nombreAdministrador = models.CharField(max_length=20, verbose_name="Nombre")
+#     apPaternoAdministrador = models.CharField(max_length=20, verbose_name="Apellido Paterno")
+#     apMaternoAdministrador = models.CharField(max_length=20, verbose_name="Apellido Materno")
+#     celularAdministrador = models.IntegerField(null=True, blank=True, verbose_name="Celular")
+#     emailAdministrador = models.EmailField(max_length=50, null=True, blank=True, verbose_name="Correo Electrónico")   
+#     nombreUsuarioAdministrador = models.CharField(max_length=20, verbose_name="Nombre de Usuario") #Nombre de usuario
+#     claveAdministrador = models.CharField(max_length=20, verbose_name="Clave") #Clave
 
-    def __str__(self):
-        return f"{self.nombreAdministrador} {self.apPaternoAdministrador} {self.apMaternoAdministrador}"
+#     def __str__(self):
+#         return f"{self.nombreAdministrador} {self.apPaternoAdministrador} {self.apMaternoAdministrador}"
     
 class Receta(models.Model):
     idReceta = models.BigAutoField(primary_key=True, verbose_name="ID receta")
