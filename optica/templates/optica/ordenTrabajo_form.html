@@ -636,11 +636,7 @@
                         </div>
 
 
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <hr style="width: 50%; border: 1px solid #5eb9a4;">
-                            </div>
-                        </div>
+
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <label for="estadoOrdenTrabajo" class="form-label"
@@ -1156,11 +1152,14 @@
                         <!-- {{ form.rutAtendedor.as_hidden }}
                             {{ form.rutTecnico.as_hidden }}
                             {{ form.rutAdministrador.as_hidden }} -->
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <hr style="width: 90%; border: 1px solid #5eb9a4;">
+                            </div>
+                        </div>
 
-
-
-
-                        <div class="mt-3 mb-3">
+                        <div class="mt-3 mb-3 d-flex justify-content-center">
                             <a href="{% url 'ordenTrabajo_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
                             <button type="submit" class="btn btn-success">Guardar Orden de
                                 Trabajo</button>

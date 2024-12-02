@@ -217,7 +217,7 @@
                                         class="bi bi-file-earmark-pdf"></i>
                                     Descargar PDF</button>
 
-                                <script>
+                                <!-- <script>
                                     document.getElementById("generarPdf").addEventListener("click", function () {
                                         fetch("{% url 'generar_certificado' %}?id_orden_trabajo={{ orden_trabajo.idOrdenTrabajo }}")
                                             .then(response => response.json())
@@ -237,7 +237,7 @@
                                             })
                                             .catch(error => console.error('Error:', error));
                                     });
-                                </script>
+                                </script> -->
                             </div>
                             <div class="col-md-6 text-center">
                                 <button class="btn btn-success" id="enviarCertificado"><i class="bi bi-envelope"></i>
