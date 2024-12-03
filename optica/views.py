@@ -34,7 +34,8 @@ from .forms import (
 from .models import Cliente, Receta, OrdenTrabajo, CustomUser, Abono, Certificado
 from .signals import send_password_reset_success_email, send_user_creation_email
 from optica import models
-
+from django.conf import settings
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -49,6 +50,62 @@ User = get_user_model()
 #     elif user.user_type == 3:
 #         return getattr(user, 'tecnico', None), TecnicoChangeForm
 #     return None, None
+
+def editar_orden_trabajo(request, pk):
+    orden_trabajo = get_object_or_404(OrdenTrabajo, pk=pk)
+    if request.method == "POST":
+        form = OrdenTrabajoForm(request.POST, instance=orden_trabajo)
+        if form.is_valid():
+            form.save()
+            return redirect('orden_trabajo_list')
+    else:
+        form = OrdenTrabajoForm(instance=orden_trabajo)
+    return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
+
+def generar_certificado(request):
+    orden_trabajo = None
+    id_orden_trabajo = request.GET.get('id_orden_trabajo')
+
+    if id_orden_trabajo:
+        try:
+            orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
+            messages.success(request, "Orden de Trabajo encontrada")
+        except OrdenTrabajo.DoesNotExist:
+            messages.error(request, "Orden de Trabajo no encontrada")
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="certificado_{}.pdf"'.format(
+        orden_trabajo.idOrdenTrabajo if orden_trabajo else '')
+
+    return render(request, 'optica/certificado_form.html', {
+        'orden_trabajo': orden_trabajo,
+    }, response)
+
+
+def enviar_certificado_pdf(request):
+    if request.method == 'POST':
+        form = CertificadoForm(request.POST, request.FILES)
+        if form.is_valid():
+            certificado = form.cleaned_data['certificado']
+            email_cliente = form.cleaned_data['emailCliente']
+            nombre_cliente = form.cleaned_data['nombreCliente']
+            numero_orden_trabajo = form.cleaned_data['numeroOrdenTrabajo']
+            id_orden_trabajo = form.cleaned_data['idOrdenTrabajo']
+
+            asunto = 'Certificado de Óptica Cruz'
+            cuerpo = f'Sr. {nombre_cliente}, adjunto encontrará su certificado correspondiente a la orden de trabajo N° {numero_orden_trabajo} ID: {id_orden_trabajo}.'
+            email = EmailMessage(asunto, cuerpo, 'rigovas@hotmail.com', [email_cliente])
+            email.attach(certificado.name, certificado.read(), certificado.content_type)
+            email.send()
+            messages.success(request, "El certificado se ha enviado exitosamente.")
+            return redirect('cliente_list')
+        else:
+            messages.error(request, "Error al enviar el certificado. Por favor, verifique los datos ingresados.")
+    else:
+        form = CertificadoForm()
+    return render(request, 'certificado_form.html', {'form': form})
+
+
 
 @login_required
 def index(request):
@@ -225,60 +282,6 @@ class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteV
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.user_type == 1  # Solo Administrador
     
-def editar_orden_trabajo(request, pk):
-    orden_trabajo = get_object_or_404(OrdenTrabajo, pk=pk)
-    if request.method == "POST":
-        form = OrdenTrabajoForm(request.POST, instance=orden_trabajo)
-        if form.is_valid():
-            form.save()
-            return redirect('orden_trabajo_list')
-    else:
-        form = OrdenTrabajoForm(instance=orden_trabajo)
-    return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
-
-def generar_certificado(request):
-    orden_trabajo = None
-    id_orden_trabajo = request.GET.get('id_orden_trabajo')
-
-    if id_orden_trabajo:
-        try:
-            orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
-            messages.success(request, "Orden de Trabajo encontrada")
-        except OrdenTrabajo.DoesNotExist:
-            messages.error(request, "Orden de Trabajo no encontrada")
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="certificado_{}.pdf"'.format(
-        orden_trabajo.idOrdenTrabajo if orden_trabajo else '')
-
-    return render(request, 'optica/certificado_form.html', {
-        'orden_trabajo': orden_trabajo,
-    }, response)
-
-
-def enviar_certificado_pdf(request):
-    if request.method == 'POST':
-        form = CertificadoForm(request.POST, request.FILES)
-        if form.is_valid():
-            certificado = form.cleaned_data['certificado']
-            email_cliente = form.cleaned_data['emailCliente']
-            nombre_cliente = form.cleaned_data['nombreCliente']
-            numero_orden_trabajo = form.cleaned_data['numeroOrdenTrabajo']
-            id_orden_trabajo = form.cleaned_data['idOrdenTrabajo']
-
-            asunto = 'Certificado de Óptica Cruz'
-            cuerpo = f'Sr. {nombre_cliente}, adjunto encontrará su certificado correspondiente a la orden de trabajo N° {numero_orden_trabajo} ID: {id_orden_trabajo}.'
-            email = EmailMessage(asunto, cuerpo, 'rigovas@hotmail.com', [email_cliente])
-            email.attach(certificado.name, certificado.read(), certificado.content_type)
-            email.send()
-            messages.success(request, "El certificado se ha enviado exitosamente.")
-            return redirect('cliente_list')
-        else:
-            messages.error(request, "Error al enviar el certificado. Por favor, verifique los datos ingresados.")
-    else:
-        form = CertificadoForm()
-    return render(request, 'certificado_form.html', {'form': form})
-
 
 
 

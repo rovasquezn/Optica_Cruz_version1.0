@@ -28,34 +28,73 @@
 
     <div id="content" class="bg-grey w-100" style="overflow-y: auto; max-height: 100vh;">
         <div style="display: flex; justify-content: center; align-items: center;" class="mt-3">
-            <div class="card border-success mt-2 mb-5" style="width: 50rem;">
+            <div class="card border-success mt-2 mb-5" style="width: 60rem;">
                 <div class="card border border-1 shadow rounded p-3 ">
                     <!-- <div class="scrollable-form"> -->
                     <form action="" method="post" class="mt-3 mb-3 modal-condensed " enctype="multipart/form-data"
                         novalidate>
 
+                        {% csrf_token %}
                         <div class="row">
                             <div class="col-md-12 text-center mt-3 font-weight-bold">
                                 <h3>Optica Cruz - Registro de Clientes</h3>
                             </div>
                         </div>
 
-                        <div class="row">
-
-                            <div class="col-md-5 form-group">
-
+                        <div class="row mt-5 ml-1 mr-1">
+                            <div class="col-md-4">
                                 {{ form.nombreCliente|as_crispy_field }}
                             </div>
+                            <div class="col-md-4">
+                                {{ form.apPaternoCliente|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.apMaternoCliente|as_crispy_field }}
+                            </div>
+                        </div>
+                        {% if not cliente %}
+                        <div class="row mt-2 ml-1 mr-1">
+                            <div class="col-md-3">
+                                {{ form.rutCliente|as_crispy_field }}
+                            </div>
+                            <div class=" col-md-1 mr-5 form-group">
+                                {{ form.dvRutCliente|as_crispy_field }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="row mt-2 ml-1 mr-1">
+                            <div class=" col-md-3">
+                                {{ form.telefonoCliente|as_crispy_field }}
+                            </div>
+                            <div class=" col-md-3">
+                                {{ form.celularCliente|as_crispy_field }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.emailCliente|as_crispy_field }}
+                            </div>
+
 
                         </div>
-                        {% csrf_token %}
-                        {{ form|crispy }}
+                        <div class="row mt-2 ml-1 mr-1">
+                            <div class="col-md-12">
+                                {{ form.direccionCliente|as_crispy_field }}
+                            </div>
+                        </div>
 
-                        <a href="{% url 'cliente_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <hr style="width: 90%; border: 1px solid #5eb9a4;">
+                            </div>
+                        </div>
 
-                        <button type="submit" class="btn btn-success">
-                            Guardar Datos
-                        </button>
+                        <div class="d-flex justify-content-center">
+                            <a href="{% url 'cliente_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
+
+                            <button type="submit" class="btn btn-success">
+                                Guardar Datos
+                            </button>
+                        </div>
 
                     </form>
                 </div>
