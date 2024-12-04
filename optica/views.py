@@ -21,7 +21,7 @@ from xhtml2pdf import pisa
 from typing import Any
 import os
 from datetime import datetime
-
+import tempfile
 # Importaciones de rest_framework
 from rest_framework import viewsets
 
@@ -62,49 +62,82 @@ def editar_orden_trabajo(request, pk):
         form = OrdenTrabajoForm(instance=orden_trabajo)
     return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
 
-def generar_certificado(request):
-    orden_trabajo = None
-    id_orden_trabajo = request.GET.get('id_orden_trabajo')
+def generar_certificado_pdf(request, id_orden_trabajo):
+    # Obtener los datos necesarios de la base de datos
+    orden_trabajo = get_object_or_404(OrdenTrabajo, idOrdenTrabajo=id_orden_trabajo)
 
-    if id_orden_trabajo:
-        try:
-            orden_trabajo = OrdenTrabajo.objects.get(idOrdenTrabajo=id_orden_trabajo)
-            messages.success(request, "Orden de Trabajo encontrada")
-        except OrdenTrabajo.DoesNotExist:
-            messages.error(request, "Orden de Trabajo no encontrada")
-
+    
+    # Crear el objeto HttpResponse con el encabezado PDF adecuado.
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="certificado_{}.pdf"'.format(
-        orden_trabajo.idOrdenTrabajo if orden_trabajo else '')
+    response['Content-Disposition'] = f'attachment; filename="certificado_{orden_trabajo.idOrdenTrabajo}.pdf"'
+    
+    # Obtener la URL completa de la imagen
+    logo_url = os.path.join(settings.STATIC_ROOT, 'images/Optica_Cruz_Celeste2.png')
+    timbre_firma_url = os.path.join(settings.STATIC_ROOT, 'images/timbre_firma.png')
 
-    return render(request, 'optica/certificado_form.html', {
+    # Renderizar la plantilla HTML con los datos
+    template_path = 'optica/certificado_pdf.html'
+    context = {
         'orden_trabajo': orden_trabajo,
-    }, response)
+        'logo_url': logo_url,
+        'timbre_firma_url': timbre_firma_url
+    }
+    template = get_template(template_path)
+    html = template.render(context)
 
+    # Crear el PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
 
-def enviar_certificado_pdf(request):
-    if request.method == 'POST':
-        form = CertificadoForm(request.POST, request.FILES)
-        if form.is_valid():
-            certificado = form.cleaned_data['certificado']
-            email_cliente = form.cleaned_data['emailCliente']
-            nombre_cliente = form.cleaned_data['nombreCliente']
-            numero_orden_trabajo = form.cleaned_data['numeroOrdenTrabajo']
-            id_orden_trabajo = form.cleaned_data['idOrdenTrabajo']
+    # Verificar si hubo errores
+    if pisa_status.err:
+        return HttpResponse('Hubo un error al generar el PDF', status=400)
+    
+    return response
 
-            asunto = 'Certificado de Óptica Cruz'
-            cuerpo = f'Sr. {nombre_cliente}, adjunto encontrará su certificado correspondiente a la orden de trabajo N° {numero_orden_trabajo} ID: {id_orden_trabajo}.'
-            email = EmailMessage(asunto, cuerpo, 'rigovas@hotmail.com', [email_cliente])
-            email.attach(certificado.name, certificado.read(), certificado.content_type)
-            email.send()
-            messages.success(request, "El certificado se ha enviado exitosamente.")
-            return redirect('cliente_list')
-        else:
-            messages.error(request, "Error al enviar el certificado. Por favor, verifique los datos ingresados.")
-    else:
-        form = CertificadoForm()
-    return render(request, 'certificado_form.html', {'form': form})
+def enviar_certificado_pdf(request, id_orden_trabajo):
+    # Obtener los datos necesarios de la base de datos
+    orden_trabajo = get_object_or_404(OrdenTrabajo, idOrdenTrabajo=id_orden_trabajo)
 
+    # Obtener la URL completa de la imagen
+    logo_url = os.path.join(settings.STATIC_ROOT, 'images/Optica_Cruz_Celeste2.png')
+    timbre_firma_url = os.path.join(settings.STATIC_ROOT, 'images/timbre_firma.png')
+
+    # Renderizar la plantilla HTML con los datos
+    template_path = 'optica/certificado_pdf.html'
+    context = {
+        'orden_trabajo': orden_trabajo,
+        'logo_url': logo_url,
+        'timbre_firma_url': timbre_firma_url,
+    }
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Crear un archivo temporal para el PDF
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
+        pisa_status = pisa.CreatePDF(html, dest=temp_file)
+        temp_file_path = temp_file.name
+
+    # Verificar si hubo errores
+    if pisa_status.err:
+        return JsonResponse({'error': 'Hubo un error al generar el PDF'}, status=400)
+
+    # Obtener el correo del cliente desde el modelo Cliente a través de Receta
+    email_cliente = orden_trabajo.idReceta.rutCliente.emailCliente
+
+    # Enviar el PDF por correo electrónico
+    email = EmailMessage(
+        'Certificado de Óptica Cruz',
+        'Adjunto encontrará su certificado.',
+        settings.DEFAULT_FROM_EMAIL,
+        [email_cliente],  # Usar el correo del cliente
+    )
+    email.attach_file(temp_file_path)
+    email.send()
+
+    # Eliminar el archivo temporal
+    os.remove(temp_file_path)
+
+    return JsonResponse({'success': 'El certificado ha sido enviado por correo electrónico.'})
 
 
 @login_required

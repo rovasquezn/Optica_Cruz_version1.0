@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Nueva Orden de Trabajo</title>
+</head>
+
+<body>
+    <h1>Hola {{ orden_trabajo.idReceta.nombreCliente }},</h1>
+    <p>Te informamos que hemos creado una nueva orden de trabajo con los siguientes detalles:</p>
+    <ul>
+        <li><strong>ID Orden de Trabajo:</strong> {{ orden_trabajo.idOrdenTrabajo }}</li>
+        <li><strong>Número de Orden de Trabajo:</strong> {{ orden_trabajo.numeroOrdenTrabajo }}</li>
+        <li><strong>Fecha de Entrega:</strong> {{ orden_trabajo.fechaEntregaOrdenTrabajo|date:"d-m-Y"}}</li>
+        <li><strong>Hora de Entrega:</strong> {{ orden_trabajo.horaEntregaOrdenTrabajo|time:"H:i" }}</li>
+        <li><strong>Estado de la Orden de Trabajo:</strong> {{ orden_trabajo.estadoOrdenTrabajo }}</li>
+        <li><strong>Estado del Pago:</strong> {{ orden_trabajo.estadoDelPago }}</li>
+        {% if orden_trabajo.estadoDelPago == "Pagado" %}
+        <li><strong>Tipo de Pago:</strong> {{ orden_trabajo.tipoPago }}</li>
+        {% if orden_trabajo.tipoPago != "Efectivo" %}
+        <li><strong>Número de Documento:</strong> {{ orden_trabajo.numeroVoucherOrdenTrabajo }}</li>
+        {% endif %}
+        {% endif %}
+
+    </ul>
+    <p>Gracias por confiar en nosotros.</p>
+    <p>Atentamente,</p>
+    <p><strong>Óptica Cruz</strong></p>
+    <p>Condell 1170 - Valparaíso</p>
+    <p>Teléfono: <a href="tel:+56322213097">32-2213097</a></p>
+    <p>Whatsapp: <a href="https://api.whatsapp.com/send?phone=56988783011">Contáctanos aquí</a></p>
+</body>
+
+</html>

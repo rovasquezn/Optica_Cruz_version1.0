@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>Actualización de tu Orden de Trabajo</title>
+</head>
+
+<body>
+    <h1>Hola {{ orden_trabajo.idReceta.rutCliente.nombreCliente }},</h1>
+    {% if 'estado' in changes and 'fecha' in changes and 'hora' in changes %}
+    <p>Te informamos que se han actualizado el <strong>estado</strong>, <strong>fecha</strong> y <strong>hora</strong>
+        de entrega de tu orden de trabajo.</p>
+    {% elif 'estado' in changes and 'fecha' in changes %}
+    <p>Te informamos que se han actualizado el <strong>estado</strong> y <strong>fecha</strong> de entrega de tu orden
+        de trabajo.</p>
+    {% elif 'estado' in changes and 'hora' in changes %}
+    <p>Te informamos que se han actualizado el <strong>estado</strong> y <strong>hora</strong> de entrega de tu orden de
+        trabajo.</p>
+    {% elif 'fecha' in changes and 'hora' in changes %}
+    <p>Te informamos que se han actualizado la <strong>fecha</strong> y <strong>hora</strong> de entrega de tu orden de
+        trabajo.</p>
+    {% elif 'estado' in changes %}
+    <p>Te informamos que se ha actualizado el <strong>estado</strong> de tu orden de trabajo.</p>
+    {% elif 'fecha' in changes %}
+    <p>Te informamos que se ha actualizado la <strong>fecha</strong> de entrega de tu orden de trabajo.</p>
+    {% elif 'hora' in changes %}
+    <p>Te informamos que se ha actualizado la <strong>hora</strong> de entrega de tu orden de trabajo.</p>
+    {% endif %}
+    <ul>
+        <li><strong>ID Orden de Trabajo:</strong> {{ orden_trabajo.idOrdenTrabajo }}</li>
+        <li><strong>Número de Orden de Trabajo:</strong> {{ orden_trabajo.numeroOrdenTrabajo }}</li>
+        <li><strong>Estado:</strong> {{ orden_trabajo.estadoOrdenTrabajo }}</li>
+        <li><strong>Fecha de Entrega:</strong> {{ orden_trabajo.fechaEntregaOrdenTrabajo|date:"d-m-Y" }}</li>
+        <li><strong>Hora de Entrega:</strong> {{ orden_trabajo.horaEntregaOrdenTrabajo|time:"H:i" }}</li>
+    </ul>
+    <p>Gracias por confiar en nosotros.</p>
+    <p>Atentamente,</p>
+    <p><strong>Óptica Cruz</strong></p>
+    <p>Condell 1170 - Valparaíso</p>
+    <p>Teléfono: <a href="tel:+56322213097">32-2213097</a></p>
+    <p>Whatsapp: <a href="https://api.whatsapp.com/send?phone=56988783011">Contáctanos aquí</a></p>
+</body>
+
+</html>

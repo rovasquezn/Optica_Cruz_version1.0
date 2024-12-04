@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
+from .views import enviar_certificado_pdf, generar_certificado_pdf
 
 # Importaciones de rest_framework
 from rest_framework import routers
@@ -71,8 +72,10 @@ urlpatterns = [
     # path('<int:pk>/certificado_edit/', views.EditarCertificadoView.as_view(), name='certificado_edit'),
     # path('<int:pk>/certificado_delete/', views.EliminarCertificadoView.as_view(), name='certificado_delete'),
     # path('certificado/new/', views.CrearCertificadoView.as_view(), name='certificado_new'),
-    path('certificado/generar/', views.generar_certificado, name='generar_certificado'),
+    path('certificado_generar/<int:id_orden_trabajo>/', generar_certificado_pdf, name='generar_certificado_pdf'),
     path('certificado/pdf/<int:pk>/', views.CertificadoPdfView.as_view(), name='certificado_download'),
+    path('certificado/enviar/<int:id_orden_trabajo>/', enviar_certificado_pdf, name='enviar_certificado_pdf'),
+ 
 ]
 
 if settings.DEBUG:

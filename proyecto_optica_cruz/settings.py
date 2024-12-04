@@ -133,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ES'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -145,8 +145,13 @@ USE_TZ = True
 
 SITE_URL = 'http://127.0.0.1:8000'  # URL de tu servidor local
 
+
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') 
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 #STATICFILES_DIRS = [
     #os.path.join(BASE_DIR, 'static')
 #]

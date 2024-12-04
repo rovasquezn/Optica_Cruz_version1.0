@@ -7,10 +7,8 @@
 <!-- Page Content -->
 <div id="content" class="bg-grey w-100" style="overflow-y: auto; max-height: 100vh;">
     <div class="container">
-        <h1 class="font-weight-bold mb-0">
-            {% if cetificado %}
-            Editar Certificado
-            {% else %}
+        <h1 class="font-weight-bold mt-4 mb-4">
+
             Generar Certificado</h1>
 
         <!-- Buscar Orden de Trabajo-->
@@ -18,7 +16,7 @@
             <div class="input-group mb-2 fixed">
                 <input type="text" class="form-control" id="id_orden_trabajo" name="id_orden_trabajo"
                     placeholder="Ingrese ID de la Orden de Trabajo" value="{{ request.GET.id_orden_trabajo }}">
-                <button type="submit" class="btn btn-primary">Buscar Orden de Trabajo</button>
+                <button type="submit" class="btn btn-primary mb-4">Buscar Orden de Trabajo</button>
             </div>
         </form>
 
@@ -40,6 +38,7 @@
             {% endif %}
         </div>
 
+
         <!-- Incluir el script de Bootstrap para inicializar los toasts -->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -52,7 +51,7 @@
             });
         </script>
 
-        {% endif %}
+
     </div>
 
 
@@ -105,7 +104,10 @@
                                         -{{orden_trabajo.idReceta.rutCliente.dvRutCliente}}</strong>,
 
                                     con fecha
-                                    <span id="fecha"></span>, solicitó este certificado por la confección de lentes
+                                    {{orden_trabajo.fechaOrdenTrabajo}},
+
+                                    <!-- <span id="fecha"></span>, -->
+                                    solicitó la confección de lentes
 
                                     ópticos según <strong>receta médica N°
                                         {{ orden_trabajo.idReceta.numeroReceta|default:'(sin número)' }}</strong>
@@ -211,73 +213,33 @@
                             </div>
                         </div>
 
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
                         <div class="row">
                             <div class="col-md-6 text-center">
-                                <button class="btn btn-success" id="generarPdf" onclick="generarPdf()"><i
-                                        class="bi bi-file-earmark-pdf"></i>
-                                    Descargar PDF</button>
-
-                                <!-- <script>
-                                    document.getElementById("generarPdf").addEventListener("click", function () {
-                                        fetch("{% url 'generar_certificado' %}?id_orden_trabajo={{ orden_trabajo.idOrdenTrabajo }}")
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                var { jsPDF } = window.jspdf;
-                                                var pdf = new jsPDF('p', 'pt', 'a4');
-                                                var source = document.body;
-                                                pdf.html(source, {
-                                                    callback: function (pdf) {
-                                                        var pdfName = "certificado_" + data.idOrdenTrabajo + ".pdf";
-                                                        pdf.save(pdfName);
-                                                    },
-                                                    x: 15,
-                                                    y: 15,
-                                                    width: 170
-                                                });
-                                            })
-                                            .catch(error => console.error('Error:', error));
-                                    });
-                                </script> -->
+                                <a href="{% url 'generar_certificado_pdf' orden_trabajo.idOrdenTrabajo %}"
+                                    class="btn btn-success"><i class="bi bi-file-earmark-pdf"></i> Generar PDF</a>
                             </div>
                             <div class="col-md-6 text-center">
                                 <button class="btn btn-success" id="enviarCertificado"><i class="bi bi-envelope"></i>
                                     Enviar Certificado por Correo</button>
                             </div>
-
-
-                            <script>
-                                document.getElementById("enviarCertificado").addEventListener("click", function () {
-                                    var { jsPDF } = window.jspdf;
-                                    var pdf = new jsPDF();
-                                    var source = document.body; // Cambia esto para capturar el contenido específico que deseas
-                                    pdf.html(source, {
-                                        callback: function (pdf) {
-                                            var file = pdf.output("blob");
-                                            var formData = new FormData();
-                                            formData.append("certificado", file);
-                                            formData.append("emailCliente", "{{ orden_trabajo.idReceta.emailCliente }}");
-                                            formData.append("nombreCliente", "{{ orden_trabajo.idReceta.nombreCliente }}");
-                                            formData.append("numeroOrdenTrabajo", "{{ orden_trabajo.numeroOrdenTrabajo }}");
-                                            formData.append("idOrdenTrabajo", "{{ orden_trabajo.idOrdenTrabajo }}");
-
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open("POST", "{% url 'enviar_certificado_pdf' %}", true);
-                                            xhr.onload = function () {
-                                                if (xhr.status === 200) {
-                                                    alert("Certificado enviado exitosamente");
-                                                } else {
-                                                    alert("Error al enviar certificado");
-                                                }
-                                            };
-                                            xhr.send(formData);
-                                        },
-                                        x: 15,
-                                        y: 15,
-                                        width: 170
-                                    });
-                                });
-                            </script>
                         </div>
+                        <script>
+                            document.getElementById("enviarCertificado").addEventListener("click", function () {
+                                var xhr = new XMLHttpRequest();
+                                xhr.open("GET", "{% url 'enviar_certificado_pdf' orden_trabajo.idOrdenTrabajo %}", true);
+                                xhr.onload = function () {
+                                    if (xhr.status === 200) {
+                                        alert("Certificado enviado exitosamente");
+                                    } else {
+                                        alert("Error al enviar certificado");
+                                    }
+                                };
+                                xhr.send();
+                            });
+                        </script>
+
+
                         {% else %}
                         <div class="row">
                             <div class="col-md-3 ml-3">
@@ -309,11 +271,13 @@
                             </div>
                             <br>
 
-                            {% endif %}
+
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endblock content %}
+</div>
+{% endblock content %}

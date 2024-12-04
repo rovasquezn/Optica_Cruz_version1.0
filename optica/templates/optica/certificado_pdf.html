@@ -1,5 +1,147 @@
-{% extends 'optica/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
 
-<h5>{{ receta.idReceta }}</h5>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<h4>hola</h4>
+<title>Optica Cruz</title>
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Certificado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: small;
+        }
+
+        .header {
+            text-align: center;
+
+            margin-bottom: 40px;
+        }
+
+        .content {
+            /* font-family: 'Muli', sans-serif; */
+            margin: 30px;
+            text-align: center;
+
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+
+    <header>
+
+        <div style="margin-left: 4px; display: flex; align-items: left; justify-content: left; gap: 20px;">
+            <img src="{{ logo_url }}" alt="logoCeleste" style="width: 165px; height: auto;">
+
+            <div style="text-align: center;">
+                <h1>Sociedad Óptica Cruz Limitada</h1>
+                RUT: 76.367.312-K <br>
+                Condell 1170 - Valparaíso <br>
+                Fono: 32-2213097
+
+            </div>
+        </div>
+
+
+
+    </header>
+</head>
+
+<body>
+
+    <br><br>
+    <div class="content">
+        <h1>CERTIFICADO</h1>
+        <h4>
+            <p style="text-align: center"> Sociedad Óptica Cruz Limitada, certifica que nuestro cliente,
+                <strong>{{ orden_trabajo.idReceta.rutCliente.nombreCliente }}
+                    {{ orden_trabajo.idReceta.rutCliente.apPaternoCliente }}
+                    {{ orden_trabajo.idReceta.rutCliente.apMaternoCliente|default:'' }}</strong>,
+                RUN <strong>{{ orden_trabajo.idReceta.rutCliente.rutCliente|default:0 }}-
+                    {{ orden_trabajo.idReceta.rutCliente.dvRutCliente }}</strong>,
+            </p>
+
+            <p>con fecha <strong>{{ orden_trabajo.fechaOrdenTrabajo }}</strong>, solicitó la confección de lentes
+                ópticos</p>
+
+            <p> según receta médica N°
+                <strong>{{ orden_trabajo.idReceta.numeroReceta|default:'(sin número)' }},</strong>
+
+                asociada a la orden de trabajo N° <strong>{{ orden_trabajo.numeroOrdenTrabajo }}</strong>
+                con los siguientes valores:
+            </p>
+
+            <table>
+                <tr>
+                    <th>LEJOS</th>
+                    <th>CERCA</th>
+                </tr>
+                <tr>
+                    <td>Valor Marco: ${{ orden_trabajo.valorMarcoLejos|default:0 }}</td>
+                    <td>Valor Marco: ${{ orden_trabajo.valorMarcoCerca|default:0 }}</td>
+                </tr>
+                <tr>
+                    <td>Valor Cristal: ${{ orden_trabajo.valorCristalesLejos|default:0 }}</td>
+                    <td>Valor Cristal: ${{ orden_trabajo.valorCristalesCerca|default:0 }}</td>
+                </tr>
+                <tr>
+                    <td>Sub-Total: ${{ orden_trabajo.totalLejos|default:0 }}</td>
+                    <td>Sub-Total: ${{ orden_trabajo.totalCerca|default:0 }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center" class="font-weight-bold text-center">VALOR TOTAL:
+                        ${{ orden_trabajo.totalOrdenTrabajo|default:0 }}</td>
+                    {% if orden_trabajo.numeroVoucherOrdenTrabajo %}
+                    <td class="font-weight-bold text-center">NÚMERO VOUCHER:
+                        {{ orden_trabajo.numeroVoucherOrdenTrabajo }}
+                    </td>
+                    {% endif %}
+                </tr>
+            </table>
+
+            <p>Se extiende el presente certificado para ser presentado en la entidad correspondiente.</p>
+        </h4>
+
+    </div>
+
+
+    <div class="footer">
+
+
+        <div">
+            <img src="{{ timbre_firma_url }}" alt="logoCeleste" style="width: 190px; height: auto;">
+            <p>-------------------------------------------------</p>
+            <p>FIRMA Y TIMBRE</p>
+    </div>
+</body>
+
+
+
+
+</html>
