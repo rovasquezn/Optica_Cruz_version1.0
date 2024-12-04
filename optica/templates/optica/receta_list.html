@@ -131,8 +131,10 @@
                                         </div>
                                         <div class="modal-body text-center">
                                             {% if receta.imagenReceta %}
-                                            <img src="{{ receta.imagenReceta.url }}" alt="Imagen de receta"
+                                            <img src="{{ receta.imagenReceta.url }}" alt="Imagen de receta" class="mb-3"
                                                 style="max-height: 60%; max-width: 80%; height: auto; width: auto;">
+                                            <button type="button" class="btn btn-success">
+                                                Enviar receta por correo a cliente</button>
                                             {% endif %}
                                             <!-- Ajusta el tamaño de la imagen -->
                                         </div>
