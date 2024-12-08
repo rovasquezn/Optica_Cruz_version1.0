@@ -27,7 +27,7 @@
 </script>
 
 <!-- Page Content -->
-<div id="content" class="bg-grey w-100">
+<div id="content" style="background-color: #2840482f" class="w-100">
 
     <section class="bg-light py-3">
         <div class="container">
@@ -46,7 +46,7 @@
     </section>
 
     <div class="mt-0">
-        <div class="container-fluid w-100">
+        <div class="container-fluid mt-2 w-100">
             <div class="card border border-1 shadow rounded p-3 ">
 
                 <!-- Buscar por -->
@@ -91,6 +91,7 @@
                             <th scope="col">Institucion</th>
                             <th scope="col">Doctor Oftalmologo</th>
                             <th scope="col">Imagen</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -133,7 +134,8 @@
                                             {% if receta.imagenReceta %}
                                             <img src="{{ receta.imagenReceta.url }}" alt="Imagen de receta" class="mb-3"
                                                 style="max-height: 60%; max-width: 80%; height: auto; width: auto;">
-                                            <button type="button" class="btn btn-success">
+                                            <button type="button" class="btn btn-success"
+                                                onclick="enviarRecetaPorCorreo('{{ receta.idReceta }}')">
                                                 Enviar receta por correo a cliente</button>
                                             {% endif %}
                                             <!-- Ajusta el tamaño de la imagen -->
@@ -218,7 +220,7 @@
                             <div class="modal fade" id="recetaModal{{ receta.idReceta }}" tabindex="-1"
                                 aria-labelledby="recetaModalLabel{{ receta.idReceta }}" aria-hidden="true">
 
-                                <div class="modal-dialog" style=" max-width: 40%;">
+                                <div class="modal-dialog" style=" max-width: 46%;">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" style="font-weight: bold;"
@@ -272,177 +274,200 @@
 
                                             <div class="row">
                                                 <div class="col-md-12 text-center">
-                                                    <hr style="width: 100%; border: 1px solid #06818e;">
+                                                    <hr style="width: 100%; border: 0.3px solid #06818e;">
                                                 </div>
                                             </div>
 
 
 
+                                            <div class="card border border-1 shadow rounded p-3 ">
+                                                <h6 class="card-header text-Dark font-weight-bold">LEJOS</h6>
+                                                <div class="card-body">
 
+
+
+
+                                                    <!-- <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="font-weight-bold" id="texto-modal">Lejos</p>
+                                                        </div>
+                                                    </div> -->
+
+                                                    <div class="row">
+                                                        <div class="col" style="width: 10%;">
+                                                            <p>---</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold"
+                                                                    id="texto-modal">Esfera</span></p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold"
+                                                                    id="texto-modal">Cilindro</span>
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold"
+                                                                    id="texto-modal">Eje</span></p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold" id="texto-modal">DP</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+
+
+
+
+                                                    <div class="row">
+                                                        <div class="col" style="width: 12%;">
+                                                            <p><span class="font-weight-bold" id="texto-modal">OD</span>
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.lejosOdEsfera |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.lejosOdCilindro |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.lejosOdEje |default:'' }}</p>
+                                                        </div>
+
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.dpLejos |default:'' }}</p>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="row">
+                                                        <div class="col" style="width: 12%;">
+                                                            <p><span class="font-weight-bold" id="texto-modal">OI</span>
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.lejosOiEsfera |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.lejosOiCilindro |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.lejosOiEje |default:'' }}</p>
+                                                        </div>
+
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="font-weight-bold" id="texto-modal">Lejos</p>
+                                                <div class="col-md-12 text-center">
+                                                    <hr style="width: 100%; border: 0.3px solid #06818e;">
                                                 </div>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col" style="width: 10%;">
-                                                    <p>---</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Esfera</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Cilindro</span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Eje</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">DP</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OD</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOdEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOdCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOdEje |default:'' }}</p>
-                                                </div>
+                                            <div class="card border border-1 shadow rounded p-3 ">
+                                                <h6 class="card-header text-Dark font-weight-bold">CERCA</h6>
+                                                <div class="card-body">
 
 
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.dpLejos |default:'' }}</p>
-                                                </div>
-                                            </div>
 
 
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OI</span></p>
-                                                </div>
+                                                    <div class="row">
+                                                        <div class="col" style="width: 12%;">
+                                                            <p>---</p>
+                                                        </div>
 
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOiEsfera |default:'' }}</p>
-                                                </div>
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold"
+                                                                    id="texto-modal">Esfera</span></p>
+                                                        </div>
 
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOiCilindro |default:'' }}</p>
-                                                </div>
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold"
+                                                                    id="texto-modal">Cilindro</span>
+                                                            </p>
+                                                        </div>
 
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.lejosOiEje |default:'' }}</p>
-                                                </div>
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold"
+                                                                    id="texto-modal">Eje</span></p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p><span class="font-weight-bold" id="texto-modal">DP</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col" style="width: 12%;">
+                                                            <p><span class="font-weight-bold" id="texto-modal">OD</span>
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.cercaOdEsfera |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.cercaOdCilindro |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.cercaOdEje |default:'' }}</p>
+                                                        </div>
 
 
-                                                <div class="col" style="width: 22%;">
-                                                    <p></p>
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.dpCerca |default:'' }}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col" style="width: 12%;">
+                                                            <p><span class="font-weight-bold" id="texto-modal">OI</span>
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.cercaOiEsfera |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.cercaOiCilindro |default:'' }}</p>
+                                                        </div>
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p>{{ receta.cercaOiEje |default:'' }}</p>
+                                                        </div>
+
+
+                                                        <div class="col" style="width: 22%;">
+                                                            <p></p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
 
 
                                             <div class="row">
                                                 <div class="col-md-12 text-center">
-                                                    <hr style="width: 100%; border: 1px solid #06818e;">
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="font-weight-bold" id="texto-modal">Cerca</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p>---</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Esfera</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Cilindro</span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">Eje</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">DP</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OD</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOdEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOdCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOdEje |default:'' }}</p>
-                                                </div>
-
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.dpCerca |default:'' }}</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col" style="width: 12%;">
-                                                    <p><span class="font-weight-bold" id="texto-modal">OI</span></p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOiEsfera |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOiCilindro |default:'' }}</p>
-                                                </div>
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p>{{ receta.cercaOiEje |default:'' }}</p>
-                                                </div>
-
-
-                                                <div class="col" style="width: 22%;">
-                                                    <p></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12 text-center">
-                                                    <hr style="width: 100%; border: 1px solid #06818e;">
+                                                    <hr style="width: 100%; border: 0.3px solid #06818e;">
                                                 </div>
                                             </div>
 
@@ -464,7 +489,8 @@
                                             </div>
                                             <div claass="row">
                                                 <div class="col-md-12">
-                                                    <p><span class="font-weight-bold" id="texto-modal"> Doctor(a)
+                                                    <p><span class="font-weight-bold" id="texto-modal">
+                                                            Doctor(a)
                                                             Oftalmología:</span>
                                                         {{ receta.doctorOftalmologo |default:""|upper }}</p>
                                                 </div>
@@ -525,5 +551,29 @@
         </section>
     </div>
 </div>
+
+<!-- Script para enviar receta por correo -->
+<script>
+    function enviarRecetaPorCorreo(idReceta) {
+        fetch(`/enviar_receta/${idReceta}/`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.success);
+                } else {
+                    alert('Hubo un error al enviar la receta: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Hubo un error al enviar la receta.');
+                console.error('Error:', error);
+            });
+    }
+</script>
 
 {% endblock content %}

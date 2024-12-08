@@ -5,7 +5,7 @@ from .models import Abono, Certificado, Receta, OrdenTrabajo, CustomUser
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
-from .models import CustomUser, Cliente, Receta, OrdenTrabajo
+from .models import CustomUser, Cliente, Receta, OrdenTrabajo, Abono
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -141,6 +141,20 @@ class UserProfileForm(UserChangeForm):
         model = CustomUser
         fields = ['username']
 
+
+
+class ClienteForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = ['rutCliente', 'dvRutCliente', 'nombreCliente', 'apPaternoCliente', 'apMaternoCliente', 'celularCliente', 'telefonoCliente', 'emailCliente', 'direccionCliente']
+     
+    def __init__(self, *args, **kwargs):
+        super(ClienteForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-control form-control-sm'
+        self.fields['dvRutCliente'].widget.attrs['readonly'] = True
+        
+
 class RecetaForm(forms.ModelForm):
     class Meta:
         model = Receta  
@@ -235,39 +249,20 @@ class OrdenTrabajoForm(forms.ModelForm):
 
 class AbonoForm(forms.ModelForm):
     class Meta:
-        model = Abono  
-        fields = [ 
-            'idAbono', 
-            'numeroAbono', 
-            'idOrdenTrabajo',
-            'rutCliente',
-            'valorAbono', 
-            'saldoAnterior', 
-            'saldo', 
-            'tipoPagoAbono', 
-            'numeroVoucherAbono'
-        ]
-        
-    def __init__(self, *args, **kwargs):
-        super(AbonoForm, self).__init__(*args, **kwargs)
-        # self.helper = FormHelper()
-        # self.helper.form_class = 'form-control-sm'
+        model = Abono
+        fields = ['idOrdenTrabajo', 'numeroAbono', 'rutCliente', 'valorAbono', 'saldo', 'tipoPagoAbono', 'numeroVoucherAbono']
+        widgets = {
+            'saldo': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
 
-       
-        for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control form-control-sm'    
-            field.widget.attrs.update({'class': 'form-control form-control-sm'})  # Clases para diseño 
-            
-        self.fields['idOrdenTrabajo'].widget = forms.TextInput()
-  
-            # Hacer los campos readonly
-            # self.fields['rutCliente'].widget = forms.TextInput()
-        self.fields['saldoAnterior'].widget.attrs['readonly'] = True 
-        self.fields['saldo'].widget.attrs['readonly'] = True
-        self.fields['numeroAbono'].widget.attrs['readonly'] = True
-            # self.fields['fechaAbono'].widget.attrs['readonly'] = True
-           # Asegúrate de que el campo valorAbono sea requerido
-        self.fields['valorAbono'].required = True  
+    def clean_valorAbono(self):
+        valorAbono = self.cleaned_data.get('valorAbono')
+        idOrdenTrabajo = self.cleaned_data.get('idOrdenTrabajo')
+        if valorAbono < 1:
+            raise forms.ValidationError('El valor del abono no puede ser menor a 1.')
+        if valorAbono > idOrdenTrabajo.totalOrdenTrabajo:
+            raise forms.ValidationError('El valor del abono no puede ser mayor al total de la orden de trabajo.')
+        return valorAbono
         
  
 class CertificadoForm(forms.ModelForm):
@@ -295,4 +290,4 @@ class CertificadoForm(forms.ModelForm):
         # self.fields['numeroOrdenTrabajo'].widget.attrs['readonly'] = True 
             # Hacer los campos readonly
             # self.fields['rutCliente'].widget = forms.TextInput()
-        # self.fields['numeroCertificado'].widget.attrs['readonly'] = True 
+        # self.fields['numeroCertificado'].widget.attrs['readonly'] = True

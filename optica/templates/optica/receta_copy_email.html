@@ -1,0 +1,25 @@
+<!-- templates/optica/receta_copy_email.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Copia de Receta de Óptica Cruz</title>
+</head>
+<body>
+    <h1>Hola {{ receta.rutCliente.nombreCliente }},</h1>
+    <p>Te enviamos una copia de la receta solicitada. A continuación, encontrarás los detalles:</p>
+    <ul>
+        <li><strong>ID Receta:</strong> {{ receta.idReceta }}</li>
+        <li><strong>Número de Receta:</strong> {{ receta.numeroReceta }}</li>
+        <li><strong>Fecha de Receta:</strong> {{ receta.fechaReceta|date:"d-m-Y" }}</li>
+        <li><strong>Institución:</strong> {{ receta.institucion }}</li>
+        <li><strong>Doctor Oftalmólogo:</strong> {{ receta.doctorOftalmologo }}</li>
+    </ul>
+    <p>Gracias por confiar en nosotros.</p>
+    <p>Atentamente,</p>
+    <p><strong>Óptica Cruz</strong></p>
+    <p>Condell 1170 - Valparaíso</p>
+    <p>Teléfono: <a href="tel:+56322213097">32-2213097</a></p>
+    <p>Whatsapp: <a href="https://api.whatsapp.com/send?phone=56988783011">Contáctanos aquí</a></p>
+</body>
+</html>

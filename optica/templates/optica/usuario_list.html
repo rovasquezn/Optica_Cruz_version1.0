@@ -2,8 +2,7 @@
 
 {% block content %}
 <!-- Page Content -->
-<div id="content" class="bg-grey w-100">
-
+<div id="content" style="background-color: #2840482f" class="w-100">
     <section class="bg-light py-3">
         <div class="container">
             <div class="row">
@@ -22,22 +21,21 @@
     </section>
 
     <div class="mt-0">
-        <div class="container-fluid w-100">
+        <div class="container-fluid mt-2 w-100">
             <div class="card border border-1 shadow rounded p-3 ">
 
                 {% if messages %}
-                    <div class="alert alert-success">
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    </div>
+                <div class="alert alert-success">
+                    {% for message in messages %}
+                    {{ message }}
+                    {% endfor %}
+                </div>
                 {% endif %}
 
                 <!-- Buscar por -->
                 <form action="" method="get" style="max-width: 550px;">
                     <div class="input-group">
-                        <input type="text" class="form-control"
-                            placeholder="Buscar por Nombre, Usuario, Email" name="q"
+                        <input type="text" class="form-control" placeholder="Buscar por Nombre, Usuario, Email" name="q"
                             value="{{ request.GET.q }}">
                         <button class="btn btn-primary">
                             Buscar Usuario
@@ -111,7 +109,7 @@
                                     <a href="{% url 'usuario_delete' usuario.id %}" class="btn btn-danger">
                                         <i class="bi bi-trash"></i>
                                     </a>
-                                    
+
                                 </div>
                             </td>
                             {% endif %}

@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
-from .views import enviar_certificado_pdf, generar_certificado_pdf
+from .views import enviar_certificado_pdf, generar_certificado_pdf, enviar_receta_por_correo
 
 # Importaciones de rest_framework
 from rest_framework import routers
@@ -15,7 +15,7 @@ from rest_framework.documentation import include_docs_urls
 from . import views
 
 urlpatterns = [
-    path('home/', views.index, name='index'),
+    path('dashboard/', views.dashboard, name='index'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
@@ -53,6 +53,7 @@ urlpatterns = [
     path('receta_new/', views.CrearRecetaView.as_view(), name='receta_new'),    
     path('<int:pk>/receta_edit/', views.EditarRecetaView.as_view(), name='receta_edit'),
     path('<int:pk>/receta_delete/', views.EliminarRecetaView.as_view(), name='receta_delete'),
+    path('enviar_receta/<int:id_receta>/', enviar_receta_por_correo, name='enviar_receta_por_correo'),
     
     path('ordenTrabajo_list', views.ListarOrdenTrabajoView.as_view(), name='ordenTrabajo_list'),
     path('ordenTrabajo_new/', views.CrearOrdenTrabajoView.as_view(), name='ordenTrabajo_new'),    

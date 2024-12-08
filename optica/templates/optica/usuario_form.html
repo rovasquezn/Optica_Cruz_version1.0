@@ -5,76 +5,109 @@
 
 {% block content %}
 <div id="content" class="bg-grey w-100">
+
+
     <section class="bg-light py-3">
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-md-8">
                     <h1 class="font-weight-bold mb-0">{{ form_title }}</h1>
-                    <p class="lead text-muted">Complete la información del usuario</p>
+                    <p class="lead text-muted">Ingrese los datos solicitados</p>
                 </div>
             </div>
         </div>
     </section>
-    <div class="container mt-5">
-        <div class="row justify-content-center mt-4">
-            <div class="col-lg-8 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="row">
-                                {% for field in form %}
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-group">
-                                            {{ field.label_tag|cut:":" }}
-                                            {{ field }}
-                                            {% if field.errors %}
-                                                <div class="invalid-feedback">
-                                                    {% for error in field.errors %}
-                                                        <p>{{ error }}</p>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+
+
+    <!-- <div class="container mt-5"> -->
+
+
+
+    <div id="content" style="background-color: #28404824" class="w-100">
+        <div style="display: flex; justify-content: center; align-items: center;" class="mt-1">
+            <div class="card border-success mt-2" style="width: 60rem;">
+                <div class="card border border-3 shadow rounded p-5">
+                    <!-- <div class="scrollable-form"> -->
+                    <form action="" method="post" class="mt-3 mb-3 modal-condensed " enctype="multipart/form-data"
+                        novalidate>
+
+
+                        <div class="row">
+                            <div class="col-md-12 text-center font-weight-bold">
+                                <h5>Óptica Cruz - Registro de Usuarios</h5>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <hr style="width: 60%; border: 1px solid #5eb9a4;">
                                     </div>
-                                {% endfor %}
+                                </div>
+
                             </div>
-                            <div class="d-flex justify-content-center mt-3">
-                                <button type="submit" class="btn btn-primary">
-                                    {% if is_edit %}
-                                        Guardar cambios
-                                    {% else %}
-                                        Crear usuario
-                                    {% endif %}
-                                </button>
-                                <a href="{% url 'usuario_list' %}" class="btn btn-secondary ml-2">Cancelar</a>
-                            </div>
-                        </form>
-                        {% if form.errors %}
-                            <div class="alert alert-danger mt-3">
-                                <ul>
-                                    {% for field in form %}
+                        </div>
+
+
+                        {% csrf_token %}
+                        <div class="row mt-3">
+                            {% for field in form %}
+                            <div class="col-md-4 mb-3">
+                                <div class="form-group">
+                                    {{ field.label_tag|cut:":" }}
+                                    {{ field }}
+                                    {% if field.errors %}
+                                    <div class="invalid-feedback">
                                         {% for error in field.errors %}
-                                            <li>{{ error }}</li>
+                                        <p>{{ error }}</p>
                                         {% endfor %}
-                                    {% endfor %}
-                                    {% for error in form.non_field_errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <hr style="width: 90%; border: 1px solid #5eb9a4;">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <a href="{% url 'usuario_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
+                            <button type="submit" class="btn btn-success">
+                                {% if is_edit %}
+                                Guardar cambios
+                                {% else %}
+                                Crear usuario
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+
+
+                    {% for field in form %}
+                    {% if field.errors %}
+                    <div class="alert alert-danger mt-3">
+                        <ul>
+                            {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                            {% if field.required and not field.value %}
+                            <li>{{ field.label }}: Este campo es requerido</li>
+                            {% endif %}
+                        </ul>
                     </div>
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
+    <!-- </div> -->
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const firstNameField = document.querySelector('#id_first_name');
         const apPaternoField = document.querySelector('#id_ap_paterno');
         const usernameField = document.querySelector('#id_username');
@@ -101,15 +134,15 @@
         firstNameField.addEventListener('input', generateUsername);
         apPaternoField.addEventListener('input', generateUsername);
 
-        runField.addEventListener('input', function(event) {
+        runField.addEventListener('input', function (event) {
             restrictInput(event, /^\d{0,8}$/); // Solo números, máximo 8 dígitos
         });
 
-        dvField.addEventListener('input', function(event) {
+        dvField.addEventListener('input', function (event) {
             restrictInput(event, /^[0-9Kk]?$/); // Solo un número o la letra K
         });
 
-        celularField.addEventListener('input', function(event) {
+        celularField.addEventListener('input', function (event) {
             restrictInput(event, /^\d{0,9}$/); // Solo números, máximo 9 dígitos
         });
     });
@@ -119,10 +152,13 @@
 {% block extra_css %}
 <style>
     .form-group label {
-        font-weight: normal; /* No poner en negrita */
+        font-weight: normal;
+        /* No poner en negrita */
     }
+
     .form-control {
-        border-radius: 0.25rem; /* Asegurar que los cuadros de ingreso de texto coincidan con la apariencia de otros formularios */
+        border-radius: 0.25rem;
+        /* Asegurar que los cuadros de ingreso de texto coincidan con la apariencia de otros formularios */
     }
 </style>
 {% endblock %}

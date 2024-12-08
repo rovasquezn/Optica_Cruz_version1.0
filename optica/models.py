@@ -1,6 +1,17 @@
 import os
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from itertools import cycle
+from django.core.exceptions import ValidationError
+
+# Función para calcular el dígito verificador
+def calcular_dv(rut):
+    rut = str(rut)
+    reversed_digits = map(int, reversed(rut))
+    factors = cycle(range(2, 8))
+    s = sum(d * f for d, f in zip(reversed_digits, factors))
+    mod = (-s) % 11
+    return 'K' if mod == 10 else str(mod)
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -51,6 +62,11 @@ class Cliente(models.Model):
     emailCliente = models.EmailField(max_length=50, null=True, blank=True, verbose_name="Correo Electrónico")
     direccionCliente = models.CharField(max_length=100, null=True, blank=True, verbose_name="Dirección")
     creacionCliente = models.DateTimeField(auto_now_add=True, verbose_name="Creado el día")
+
+    def save(self, *args, **kwargs):
+        if not self.dvRutCliente:
+            self.dvRutCliente = calcular_dv(self.rutCliente)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.rutCliente}"
@@ -136,34 +152,34 @@ class OrdenTrabajo(models.Model):
     fechaOrdenTrabajo = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Fecha Orden de Trabajo")
     fechaEntregaOrdenTrabajo = models.DateField(null=True, blank=True, verbose_name="Fecha Entrega") 
     horaEntregaOrdenTrabajo = models.TimeField(null=True, blank=True, verbose_name="Hora de Entrega")
-    laboratorioLejos = models.CharField(max_length=30, null=True, blank=True, verbose_name="Laboratorio (Lejos)")
-    gradoLejosOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado Lejos OD")
-    gradoLejosOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado Lejos OI")
-    prismaLejosOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma Lejos OD")
-    prismaLejosOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma Lejos OI")
-    adicionLejosOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición Lejos OD")
-    adicionLejosOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición Lejos OI")    
-    tipoCristalLejos = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Cristal (Lejos)")
-    colorCristalLejos = models.CharField(max_length=20, null=True, blank=True, verbose_name="Color (Lejos)")
-    marcoLejos = models.CharField(max_length=25, null=True, blank=True, verbose_name="Marco (Lejos)")
-    valorMarcoLejos = models.IntegerField(null=True, blank=True, verbose_name="Valor Marco (Lejos)") 
-    valorCristalesLejos = models.IntegerField(null=True, blank=True, verbose_name="Valor Cristal (Lejos)") 
-    totalLejos = models.IntegerField(null=True, blank=True, verbose_name="Total (Lejos)") 
+    laboratorioLejos = models.CharField(max_length=30, null=True, blank=True, verbose_name="Laboratorio")
+    gradoLejosOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado")
+    gradoLejosOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado")
+    prismaLejosOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma")
+    prismaLejosOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma")
+    adicionLejosOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición")
+    adicionLejosOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición")    
+    tipoCristalLejos = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Cristal")
+    colorCristalLejos = models.CharField(max_length=20, null=True, blank=True, verbose_name="Color")
+    marcoLejos = models.CharField(max_length=25, null=True, blank=True, verbose_name="Marco")
+    valorMarcoLejos = models.IntegerField(null=True, blank=True, verbose_name="Valor Marco") 
+    valorCristalesLejos = models.IntegerField(null=True, blank=True, verbose_name="Valor Cristal") 
+    totalLejos = models.IntegerField(null=True, blank=True, verbose_name="Total") 
     altura = models.CharField(max_length=25, null=True, blank=True, verbose_name="Altura")
-    laboratorioCerca = models.CharField(max_length=30, null=True, blank=True, verbose_name="Laboratotio (Cerca)")
-    gradoCercaOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado Cerca OD")
-    gradoCercaOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado Cerca OI")
-    prismaCercaOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma Cerca OD")
-    prismaCercaOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma Cerca OI")
-    adicionCercaOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición Cerca OD")
-    adicionCercaOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición Cerca OI")
-    tipoCristalCerca = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Cristal (Cerca)")
-    colorCristalCerca = models.CharField(max_length=20, null=True, blank=True, verbose_name="Color (Cerca)")
-    marcoCerca = models.CharField(max_length=25, null=True, blank=True, verbose_name="Marco (Cerca)")
-    valorMarcoCerca = models.IntegerField(null=True, blank=True, verbose_name="Valor Marco (Cerca)") 
-    valorCristalesCerca = models.IntegerField(null=True, blank=True, verbose_name="Valor Cristal (Cerca)") 
+    laboratorioCerca = models.CharField(max_length=30, null=True, blank=True, verbose_name="Laboratotio")
+    gradoCercaOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado")
+    gradoCercaOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Grado")
+    prismaCercaOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma")
+    prismaCercaOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Prisma")
+    adicionCercaOd = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición")
+    adicionCercaOi = models.CharField(max_length=10, null=True, blank=True, verbose_name="Adición")
+    tipoCristalCerca = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Cristal")
+    colorCristalCerca = models.CharField(max_length=20, null=True, blank=True, verbose_name="Color")
+    marcoCerca = models.CharField(max_length=25, null=True, blank=True, verbose_name="Marco")
+    valorMarcoCerca = models.IntegerField(null=True, blank=True, verbose_name="Valor Marco") 
+    valorCristalesCerca = models.IntegerField(null=True, blank=True, verbose_name="Valor Cristal") 
     totalCerca = models.IntegerField(null=True, blank=True, verbose_name="Total (Cerca)")     
-    totalOrdenTrabajo = models.IntegerField(null=True, blank=True, verbose_name="Total") 
+    totalOrdenTrabajo = models.IntegerField(null=True, blank=True, verbose_name="Total Orden de Trabajo") 
     tipoPago = models.CharField(max_length=25, null=True, blank=True, verbose_name="Tipo de Pago") 
     numeroVoucherOrdenTrabajo = models.IntegerField(null=True, blank=True, verbose_name="Número de Voucher")
     observacionOrdenTrabajo = models.CharField(max_length=300, null=True, blank=True, verbose_name="Observaciones")
@@ -200,18 +216,38 @@ class OrdenTrabajo(models.Model):
 
 class Abono(models.Model): 
     idAbono = models.AutoField(primary_key=True, verbose_name="ID Abono")
-    idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, verbose_name="ID Orden de Trabajo")
+    idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, related_name='abonos', verbose_name="ID Orden de Trabajo")
     rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Cliente") 
     fechaAbono = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Abono")
     valorAbono = models.IntegerField(null=True, blank=True, verbose_name="Valor Abono")
     saldoAnterior = models.IntegerField(null=True, blank=True, verbose_name="Saldo Anterior")
     saldo = models.IntegerField(null=True, blank=True, verbose_name="Saldo")
-    tipoPagoAbono = models.CharField(max_length=10, null=True, blank=True, verbose_name="Forma de pago")
+    tipoPagoAbono = models.CharField(max_length=20, choices=[('Efectivo', 'Efectivo'), ('Debito', 'Débito'), ('Credito', 'Crédito'), ('Cheque', 'Cheque')], verbose_name="Forma de pago del Abono")
     numeroVoucherAbono = models.IntegerField(null=True, blank=True, verbose_name="Número de Voucher")
-    numeroAbono = models.IntegerField(null=True, blank=True, verbose_name="Abono Número")
+    numeroAbono = models.PositiveIntegerField(verbose_name="Abono Número")
     
+    # def clean(self):
+    #     # Validar que valorAbono no sea mayor a totalOrdenTrabajo y no sea menor a 1
+    #     if self.valorAbono < 1:
+    #         raise ValidationError({'valorAbono': 'El valor del abono no puede ser menor a 1.'})
+    #     if self.valorAbono > self.idOrdenTrabajo.totalOrdenTrabajo:
+    #         raise ValidationError({'valorAbono': 'El valor del abono no puede ser mayor al total de la orden de trabajo.'})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Llama a full_clean para ejecutar las validaciones
+        # Calcular el saldo
+        if self.numeroAbono == 1:
+            self.saldo = self.idOrdenTrabajo.totalOrdenTrabajo - self.valorAbono
+        else:
+            abono_anterior = Abono.objects.filter(idOrdenTrabajo=self.idOrdenTrabajo, numeroAbono=self.numeroAbono - 1).first()
+            if abono_anterior:
+                self.saldo = abono_anterior.saldo - self.valorAbono
+            else:
+                raise ValidationError({'numeroAbono': 'No se encontró el abono anterior.'})
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.fechaAbono} {self.tipoPagoAbono}"
+        return f"Abono {self.numeroAbono} - Orden {self.idOrdenTrabajo.numeroOrdenTrabajo}"
     
     def delete_abono(self, idabono):
         Abono.objects.filter(idAbono=idabono).delete()

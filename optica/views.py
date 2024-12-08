@@ -1,3 +1,4 @@
+import json
 from django import forms
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -16,11 +17,11 @@ from django.utils import timezone
 from django.http import JsonResponse, FileResponse, HttpResponse
 from django.core.mail import EmailMessage
 from django.template import Context
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from xhtml2pdf import pisa
 from typing import Any
 import os
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import tempfile
 # Importaciones de rest_framework
 from rest_framework import viewsets
@@ -40,16 +41,25 @@ from django.http import JsonResponse
 User = get_user_model()
 
 
-# Funciones auxiliares
-# def get_profile_and_form(user):
-#     """Devuelve el perfil asociado al usuario y el formulario correspondiente."""
-#     if user.user_type == 1:
-#         return getattr(user, 'administrador', None), AdministradorChangeForm
-#     elif user.user_type == 2:
-#         return getattr(user, 'atendedor', None), AtendedorChangeForm
-#     elif user.user_type == 3:
-#         return getattr(user, 'tecnico', None), TecnicoChangeForm
-#     return None, None
+def abono_create(request):
+    if request.method == 'POST':
+        form = AbonoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('abono_list')  # Redirige a la lista de abonos después de guardar
+    else:
+        form = AbonoForm()
+        # Obtener el saldo del abono anterior si existe
+        id_orden_trabajo = request.GET.get('idOrdenTrabajo')
+        numero_abono = request.GET.get('numeroAbono')
+        saldo_anterior = 0
+        if id_orden_trabajo and numero_abono:
+            abono_anterior = Abono.objects.filter(idOrdenTrabajo=id_orden_trabajo, numeroAbono=int(numero_abono) - 1).first()
+            if abono_anterior:
+                saldo_anterior = abono_anterior.saldo
+
+    return render(request, 'abono_form.html', {'form': form, 'saldo_anterior': saldo_anterior})
+
 
 def editar_orden_trabajo(request, pk):
     orden_trabajo = get_object_or_404(OrdenTrabajo, pk=pk)
@@ -61,6 +71,16 @@ def editar_orden_trabajo(request, pk):
     else:
         form = OrdenTrabajoForm(instance=orden_trabajo)
     return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
+
+def certificado_new(request):
+    id_orden_trabajo = request.GET.get('id_orden_trabajo')
+    orden_trabajo = None
+    if id_orden_trabajo:
+        orden_trabajo = get_object_or_404(OrdenTrabajo, idOrdenTrabajo=id_orden_trabajo)
+    
+    return render(request, 'certificado_form.html', {
+        'orden_trabajo': orden_trabajo,
+    })
 
 def generar_certificado_pdf(request, id_orden_trabajo):
     # Obtener los datos necesarios de la base de datos
@@ -512,6 +532,42 @@ class EliminarRecetaView(SuccessMessageMixin, generic.DeleteView):
     success_message = "La receta se ha eliminado exitosamente."
 
 
+#ENVIAR RECETA A CLIENTE POR CORREO ELECTRÓNICO    
+
+def enviar_receta_por_correo(request, id_receta):
+    try:
+        receta = get_object_or_404(Receta, idReceta=id_receta)
+        cliente_email = receta.rutCliente.emailCliente
+        cliente_nombre = receta.rutCliente.nombreCliente
+        cliente_apellido = receta.rutCliente.apPaternoCliente
+
+        if not cliente_email:
+            return JsonResponse({'error': f'El cliente {cliente_nombre} {cliente_apellido} no tiene un correo electrónico registrado.'}, status=400)
+
+        # Renderizar el contenido del correo usando la plantilla
+        email_content = render_to_string('optica/receta_copy_email.html', {'receta': receta})
+
+        # Crear el correo electrónico
+        email = EmailMessage(
+            'Copia de Receta de Óptica Cruz',
+            email_content,
+            'Óptica Cruz <optica.cruz.sgo@gmail.com>',  # Nombre y correo del remitente
+            [cliente_email],
+        )
+
+        # Adjuntar la imagen de la receta
+        if receta.imagenReceta:
+            email.attach_file(receta.imagenReceta.path)
+
+        # Enviar el correo
+        email.content_subtype = 'html'  # Para enviar el correo en formato HTML
+        email.send()
+
+        return JsonResponse({'success': f'La receta ha sido enviada por correo electrónico a {cliente_nombre} {cliente_apellido} ({cliente_email}).'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    
 
 #ORDEN DE TRABAJO
 
@@ -897,7 +953,7 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
             'totalLejos': orden_trabajo.totalLejos if orden_trabajo else '',
             'totalCerca': orden_trabajo.totalCerca if orden_trabajo else '',
             # 'saldoAnterior': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
-            # 'saldo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
+            'saldo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else '',
             'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
         })    
 
@@ -979,3 +1035,78 @@ class CertificadoPdfView(View):
         if pisaStatus.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
         return response
+    
+    
+    # VISTA DEL DASHBOARD EN index.html
+def dashboard(request):
+    # Fechas relevantes
+    hoy = date.today()
+    proximos_3_dias = hoy + timedelta(days=3)
+
+    # Órdenes con diferentes condiciones
+    ot_hoy = OrdenTrabajo.objects.filter(
+        fechaEntregaOrdenTrabajo=hoy
+    ).exclude(estadoOrdenTrabajo__in=["OT ENTREGADA", "OT PARA RETIRO"]).order_by('horaEntregaOrdenTrabajo')
+
+    ot_vencidas = OrdenTrabajo.objects.filter(
+        fechaEntregaOrdenTrabajo__lt=hoy
+    ).exclude(estadoOrdenTrabajo__in=["OT ENTREGADA", "OT PARA RETIRO"]).order_by('fechaEntregaOrdenTrabajo')
+
+    ot_proximos_dias = OrdenTrabajo.objects.filter(
+        fechaEntregaOrdenTrabajo__range=[hoy + timedelta(days=1), proximos_3_dias]
+    ).exclude(estadoOrdenTrabajo__in=["OT ENTREGADA", "OT PARA RETIRO"]).order_by('fechaEntregaOrdenTrabajo', 'horaEntregaOrdenTrabajo')
+
+    # KPIs
+    total_creadas = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT CREADA").count()
+    total_en_proceso = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT EN PROCESO").count()
+    total_listas_para_retiro = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT PARA RETIRO").count()
+    total_entregadas = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT ENTREGADA").count()
+
+    # Contar órdenes pendientes (Atrasadas, Hoy, Próximos 3 Días)
+    total_pendientes = ot_vencidas.count() + ot_hoy.count() + ot_proximos_dias.count()
+
+    # Contar órdenes activas (Creadas, En Proceso, Para Retiro)
+    total_activas = total_creadas + total_en_proceso + total_listas_para_retiro
+
+    # Órdenes por estado
+    ot_creadas = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT CREADA").order_by('fechaEntregaOrdenTrabajo')
+    ot_en_proceso = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT EN PROCESO").order_by('fechaEntregaOrdenTrabajo')
+    ot_para_retiro = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT PARA RETIRO").order_by('fechaEntregaOrdenTrabajo')
+    ot_entregadas = OrdenTrabajo.objects.filter(estadoOrdenTrabajo="OT ENTREGADA").order_by('-fechaEntregaOrdenTrabajo')[:10]  # Últimas 10 entregadas
+
+    # Leer cambios de estado desde el archivo JSON
+    file_path = os.path.join(settings.BASE_DIR, 'cambios_estado.json')
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as file:
+            cambios_estado = json.load(file)
+    else:
+        cambios_estado = []
+
+    # Añadir cálculo de días transcurridos y fecha de cambio a "OT PARA RETIRO"
+    for orden in ot_para_retiro:
+        orden.dias_transcurridos = (hoy - orden.fechaEntregaOrdenTrabajo).days
+        cambio_estado = next((cambio for cambio in cambios_estado if cambio["idOrdenTrabajo"] == orden.idOrdenTrabajo), None)
+        if cambio_estado:
+            fecha_cambio = datetime.strptime(cambio_estado["fecha_cambio"], "%Y-%m-%d %H:%M:%S")
+            orden.fecha_cambio_estado = fecha_cambio.strftime("%d/%m/%Y")
+        else:
+            orden.fecha_cambio_estado = None
+
+    # Contexto para renderizado
+    context = {
+        "total_pendientes": total_pendientes,
+        "total_activas": total_activas,
+        "total_creadas": total_creadas,
+        "total_en_proceso": total_en_proceso,
+        "total_listas_para_retiro": total_listas_para_retiro,
+        "total_entregadas": total_entregadas,
+        "ot_hoy": ot_hoy,
+        "ot_vencidas": ot_vencidas,
+        "ot_proximos_dias": ot_proximos_dias,
+        "ot_creadas": ot_creadas,
+        "ot_en_proceso": ot_en_proceso,
+        "ot_para_retiro": ot_para_retiro,
+        "ot_entregadas": ot_entregadas,
+    }
+
+    return render(request, 'optica/index.html', context)

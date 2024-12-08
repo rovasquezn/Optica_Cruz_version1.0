@@ -1,17 +1,17 @@
 {% extends 'optica/base.html' %}
-{% load static crispy_forms_tags %}
+{% load crispy_forms_tags %}
+{% load static %}
 
 {% block content%}
 
 
 
 <!-- Page Content -->
-<div id="content" class="bg-grey w-100 fixed" style="overflow-y: auto; max-height: 100vh;">
+<div class="bg-grey w-100" style="max-height: 100vh;">
     <section class="bg-light py-3">
         <div class="container fixed">
-            <!-- <div class="row">
-                <div class="col-lg-9 col-md-8"> -->
-            <h1 class="font-weight-bold mb-0 fixed">
+
+            <h1 class="font-weight-bold mb-0">
                 {% if cliente %}
                 Editar Cliente
                 {% else %}
@@ -20,28 +20,31 @@
 
             </h1>
             <p class="lead text-muted">Ingrese los datos solicitados</p>
-            <!-- </div>
 
-            </div> -->
         </div>
     </section>
 
-    <div id="content" class="bg-grey w-100" style="overflow-y: auto; max-height: 100vh;">
-        <div style="display: flex; justify-content: center; align-items: center;" class="mt-3">
-            <div class="card border-success mt-2 mb-5" style="width: 60rem;">
-                <div class="card border border-1 shadow rounded p-3 ">
-                    <!-- <div class="scrollable-form"> -->
-                    <form action="" method="post" class="mt-3 mb-3 modal-condensed " enctype="multipart/form-data"
-                        novalidate>
+    <div id="content" style="background-color: #28404824" class="w-100">
+
+        <div style="display: flex; justify-content: center; align-items: center;" class="mt-2">
+            <div class="card border-success" style="width: 60rem;">
+                <div class="card border border-3 shadow rounded p-5 ">
+
+                    <form action="" method="post" class=" modal-condensed " enctype="multipart/form-data" novalidate>
 
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-12 text-center mt-3 font-weight-bold">
-                                <h3>Optica Cruz - Registro de Clientes</h3>
+                            <div class="col-md-12 text-center mb-3 font-weight-bold">
+                                <h5>Óptica Cruz - Registro de Clientes</h5>
+                                <div class="row">
+                                    <div class="col-md-12 text-center mb-3">
+                                        <hr style="width: 60%; border: 1px solid #5eb9a4;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row mt-5 ml-1 mr-1">
+                        <div class="row">
                             <div class="col-md-4">
                                 {{ form.nombreCliente|as_crispy_field }}
                             </div>
@@ -53,16 +56,19 @@
                             </div>
                         </div>
                         {% if not cliente %}
-                        <div class="row mt-2 ml-1 mr-1">
+                        <div class="row">
                             <div class="col-md-3">
                                 {{ form.rutCliente|as_crispy_field }}
                             </div>
-                            <div class=" col-md-1 mr-5 form-group">
+                            <div class="col-md-3 mr-5">
                                 {{ form.dvRutCliente|as_crispy_field }}
+                                <script>
+                                    document.getElementById('id_dvRutCliente').setAttribute('readonly', '');
+                                </script>
                             </div>
                         </div>
                         {% endif %}
-                        <div class="row mt-2 ml-1 mr-1">
+                        <div class="row">
                             <div class=" col-md-3">
                                 {{ form.telefonoCliente|as_crispy_field }}
                             </div>
@@ -76,7 +82,7 @@
 
 
                         </div>
-                        <div class="row mt-2 ml-1 mr-1">
+                        <div class="row">
                             <div class="col-md-12">
                                 {{ form.direccionCliente|as_crispy_field }}
                             </div>
@@ -105,4 +111,35 @@
 
 
 </div>
+
+<script>
+    function calcularDV(rut) {
+        var suma = 0;
+        var multiplo = 2;
+
+        for (var i = rut.length - 1; i >= 0; i--) {
+            suma += multiplo * rut.charAt(i);
+            multiplo = (multiplo == 7) ? 2 : multiplo + 1;
+        }
+
+        var dv = 11 - (suma % 11);
+        if (dv == 11) {
+            return '0';
+        } else if (dv == 10) {
+            return 'K';
+        } else {
+            return dv.toString();
+        }
+    }
+
+    document.getElementById('id_rutCliente').addEventListener('input', function () {
+        var rut = this.value.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+        if (rut.length > 0) {
+            var dv = calcularDV(rut);
+            document.getElementById('id_dvRutCliente').value = dv;
+        } else {
+            document.getElementById('id_dvRutCliente').value = '';
+        }
+    });
+</script>
 {% endblock content %}

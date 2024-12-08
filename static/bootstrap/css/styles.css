@@ -1,5 +1,5 @@
 :root {
-    --primary: #03aae7;
+    --primary: #127aa0;
     --light: #ffffff;
     --grey: #ccd3d631;
 }
@@ -37,12 +37,21 @@ a:hover {
     max-width: 70%; /* Puedes ajustar este valor según lo que necesites */
 }
 
+#titulo-modal {
+    color:rgb(0, 0, 0)
+}
+
 #texto-modal {
-    color:rgb(7, 85, 78)
+    color:rgb(6, 37, 35)
 }
 
 #letras-modal {
-    color:#103bd7
+    color:#094b58
+}
+
+.texto-certificado {
+    color:rgb(0, 0, 0);
+    font-weight: 30px;
 }
 
 #sidebar-container {

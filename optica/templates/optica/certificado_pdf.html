@@ -79,15 +79,16 @@
     <div class="content">
         <h1>CERTIFICADO</h1>
         <h4>
-            <p style="text-align: center"> Sociedad Óptica Cruz Limitada, certifica que nuestro cliente,
+            <p style="text-align: center"> Sociedad Óptica Cruz Limitada certifica que nuestro cliente
                 <strong>{{ orden_trabajo.idReceta.rutCliente.nombreCliente }}
                     {{ orden_trabajo.idReceta.rutCliente.apPaternoCliente }}
-                    {{ orden_trabajo.idReceta.rutCliente.apMaternoCliente|default:'' }}</strong>,
+                    {{ orden_trabajo.idReceta.rutCliente.apMaternoCliente|default:'' }}</strong>
                 RUN <strong>{{ orden_trabajo.idReceta.rutCliente.rutCliente|default:0 }}-
                     {{ orden_trabajo.idReceta.rutCliente.dvRutCliente }}</strong>,
             </p>
 
-            <p>con fecha <strong>{{ orden_trabajo.fechaOrdenTrabajo }}</strong>, solicitó la confección de lentes
+            <p>con fecha <strong>{{ orden_trabajo.fechaOrdenTrabajo|date:"d/m/Y" }}</strong>, solicitó la
+                confección de lentes
                 ópticos</p>
 
             <p> según receta médica N°
@@ -99,8 +100,8 @@
 
             <table>
                 <tr>
-                    <th>LEJOS</th>
-                    <th>CERCA</th>
+                    <th>LENTE DE LEJOS</th>
+                    <th>LENTE DE CERCA</th>
                 </tr>
                 <tr>
                     <td>Valor Marco: ${{ orden_trabajo.valorMarcoLejos|default:0 }}</td>
