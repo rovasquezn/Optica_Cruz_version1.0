@@ -81,46 +81,72 @@
 
                             </div>
                             <div class="row">
-                                <div class="col-md-12 text-center">
+                                <div class="col-md-12">
                                     <hr style="width: 50%; border: 1px solid #000000;">
                                 </div>
                             </div>
 
-                            <div class="col-md-10 mt-3 ml-5 texto-certificado">
+                            <div class="row mt-3 ml-5 texto-certificado">
 
-                                <div class="font-weight-bold" style="margin-right: 30px;">CLIENTE :
-
+                                <div class="col-md-5 font-weight-bold" style="margin-right: 30px;">CLIENTE :
+                                </div>
+                                <div class="col-md-6">
                                     {{ orden_trabajo.idReceta.rutCliente.nombreCliente }}
                                     {{orden_trabajo.idReceta.rutCliente.apPaternoCliente}}
                                     {{orden_trabajo.idReceta.rutCliente.apMaternoCliente |default:''}}
                                 </div>
 
 
-                                <p class="font-weight-bold" style="margin-right: 30px;">
+
+                                <div class="col-md-5 font-weight-bold" style="margin-right: 30px;">
                                     RUN:
+                                </div>
+                                <div class="col-md-6">
                                     {{orden_trabajo.idReceta.rutCliente.rutCliente|intcomma}}
                                     -{{orden_trabajo.idReceta.rutCliente.dvRutCliente}}
-                                </p>
+                                </div>
 
-                                <div class="font-weight-bold" style="margin-right: 30px;">
+
+                                <div class="col-md-5 font-weight-bold" style="margin-right: 30px;">
                                     FECHA DE ORDEN DE TRABAJO:
+                                </div>
+                                <div class="col-md-6">
                                     {{orden_trabajo.fechaOrdenTrabajo|date:'d/m/Y'}}
                                 </div>
 
 
-                                <div class="font-weight-bold" style="margin-right: 30px;">
+                                <div class=" col-md-5 font-weight-bold" style="margin-right: 30px;">
                                     RECETA MÉDICA N°:
+                                </div>
+                                <div class="col-md-6">
                                     {{ orden_trabajo.idReceta.numeroReceta|default:'-' }}
                                 </div>
 
-                                <div class="font-weight-bold" style="margin-right: 30px;">
-                                    ORDEN DE TRABAJO N°: {{orden_trabajo.numeroOrdenTrabajo}}
+
+
+                                <div class=" col-md-5 font-weight-bold" style="margin-right: 30px;">
+                                    ORDEN DE TRABAJO N°:
+                                </div>
+                                <div class="col-md-6 ">
+                                    {{orden_trabajo.numeroOrdenTrabajo}}
                                 </div>
 
-                                <br>
 
 
                             </div>
+
+
+
+
+
+
+
+
+
+                            <br>
+
+
+
 
 
 
@@ -150,9 +176,9 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Valor Marco: ${{ orden_trabajo.valorMarcoLejos|default:0|intcomma }}
+                                                <td>Valor Marco: ${{orden_trabajo.valorMarcoLejos|default:0|intcomma }}
                                                 </td>
-                                                <td>Valor Marco: ${{ orden_trabajo.valorMarcoCerca|default:0|intcomma }}
+                                                <td>Valor Marco: ${{orden_trabajo.valorMarcoCerca|default:0|intcomma }}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -164,13 +190,16 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>Sub-Total: ${{ orden_trabajo.totalLejos|default:0|intcomma }}</td>
-                                                <td>Sub-Total: ${{ orden_trabajo.totalCerca|default:0|intcomma }}</td>
+                                                <td>Sub-Total: ${{ orden_trabajo.totalLejos|default:0|intcomma }}
+                                                </td>
+                                                <td>Sub-Total: ${{ orden_trabajo.totalCerca|default:0|intcomma }}
+                                                </td>
                                             </tr>
 
                                             <tr>
                                                 <td class="font-weight-bold">
-                                                    VALOR TOTAL: ${{orden_trabajo.totalOrdenTrabajo|default:0|intcomma}}
+                                                    VALOR TOTAL:
+                                                    ${{orden_trabajo.totalOrdenTrabajo|default:0|intcomma}}
                                                 </td>
 
                                                 {% if orden_trabajo.numeroVoucherOrdenTrabajo %}

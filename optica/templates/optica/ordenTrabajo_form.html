@@ -117,7 +117,7 @@
                                 <input value="{{ receta.celularCliente |default:'' }}" readonly class="form-control">
                             </div>
                             <div class="col-md-4">
-                                <label for="telefonoCliente">Telefono</label>
+                                <label for="telefonoCliente">Teléfono</label>
                                 <input value="{{ receta.telefonoCliente |default:'' }}" readonly class="form-control">
                             </div>
                             <div class="col-md-2">
@@ -128,20 +128,7 @@
                                 <label for="dvRutCliente">Dígito</label>
                                 <input value="{{ receta.dvRutCliente  }}" readonly class="form-control">
                             </div>
-                            <!-- <div class="col-md-2">
-                                <label for="idReceta">ID de Receta</label>
-                                <input value="{{ receta.idReceta }}" readonly class="form-control">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="numeroReceta">Número de Receta</label>
-                                <input value="{{ receta.numeroReceta |default:'' }}" readonly class="form-control">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="fechaReceta">Fecha Receta</label>
-                                <input value="{{ receta.fechaReceta | date:'d/m/Y' |default:'' }}" readonly
-                                    class="form-control">
-                                </p>
-                            </div> -->
+
                         </div>
 
                         <div class="row">
@@ -466,7 +453,7 @@
                             </div>
 
                             <div class="col-md-2">
-                                <label for="totalLejos">Sub Total</label>
+                                <label for="totalLejos">Sub-Total</label>
                                 <input type="number" id="totalLejos" name="totalLejos" value="{{form.totalLejos.value}}"
                                     class=" form-control form-control-sm" readonly>
                             </div>
@@ -495,7 +482,7 @@
                                 {{ form.laboratorioCerca |as_crispy_field }}
                             </div>
                             <div class="col-md-2 ml-1">
-                                <label for="totalCerca">SubTotal</label>
+                                <label for="totalCerca">Sub-Total</label>
 
                                 <input type="number" id="totalCerca" name="totalCerca" value="{{form.totalCerca.value}}"
                                     class=" form-control form-control-sm" readonly>
@@ -541,9 +528,22 @@
                                 <br>
                                 <select class="form-select" id="estadoDelPago" name="estadoDelPago" required
                                     style="width: 200px; height: 32px;">
+                                    {% if form.estadoDelPago.value == 'Pago pendiente' %}
+                                    <option value="Pago pendiente" selected>PAGO PENDIENTE</option>
+                                    {% else %}
                                     <option value="Pago pendiente">PAGO PENDIENTE</option>
+                                    {% endif %}
+                                    {% if form.estadoDelPago.value == 'Pagado' %}
+                                    <option value="Pagado" selected>PAGADO</option>
+                                    {% else %}
                                     <option value="Pagado">PAGADO</option>
+                                    {% endif %}
+
+                                    {% if form.estadoDelPago.value == 'Abono' %}
+                                    <option value="Abono" selected>ABONADO</option>
+                                    {% else %}
                                     <option value="Abono">ABONADO</option>
+                                    {% endif %}
 
                                 </select>
 
@@ -553,13 +553,32 @@
                                 <label for="tipoPago" class="form-label ml-4" style="width: 200px;">FORMA DE
                                     PAGO</label>
                                 <br>
-                                <select class="form-select ml-4" id="tipoPago" name="tipoPago"
+                                <select class="form-select ml-4" id="tipoPago" name="tipoPago" required
                                     style="width: 200px; height: 32px;">
 
+                                    {% if form.tipoPago.value == 'Efectivo' %}
+                                    <option value="Efectivo" selected>EFECTIVO</option>
+                                    {% else %}
                                     <option value="Efectivo">EFECTIVO</option>
+                                    {% endif %}
+
+                                    {% if form.tipoPago.value == 'Debito' %}
+                                    <option value="Debito" selected>DÉBITO</option>
+                                    {% else %}
                                     <option value="Debito">DÉBITO</option>
+                                    {% endif %}
+
+                                    {% if form.tipoPago.value == 'Credito' %}
+                                    <option value="Credito" selected>CRÉDITO</option>
+                                    {% else %}
                                     <option value="Credito">CRÉDITO</option>
+                                    {% endif %}
+
+                                    {% if form.tipoPago.value == 'Cheque' %}
+                                    <option value="Cheque" selected>CHEQUE</option>
+                                    {% else %}
                                     <option value="Cheque">CHEQUE</option>
+                                    {% endif %}
                                 </select>
 
                             </div>
@@ -652,11 +671,26 @@
                                 <br>
                                 <select class="form-select" id="estadoOrdenTrabajo" name="estadoOrdenTrabajo" required
                                     style="width: 330px; height: 32px;">
+                                    {% if form.estadoOrdenTrabajo.value == 'OT CREADA' %}
+                                    <option value="OT CREADA" selected>ORDEN DE TRABAJO CREADA</option>
+                                    {% else %}
                                     <option value="OT CREADA">ORDEN DE TRABAJO CREADA</option>
+                                    {% endif %}
+                                    {% if form.estadoOrdenTrabajo.value == 'OT EN PROCESO' %}
+                                    <option value="OT EN PROCESO" selected>ORDEN DE TRABAJO EN PROCESO</option>
+                                    {% else %}
                                     <option value="OT EN PROCESO">ORDEN DE TRABAJO EN PROCESO</option>
+                                    {% endif %}
+                                    {% if form.estadoOrdenTrabajo.value == 'OT PARA RETIRO' %}
+                                    <option value="OT PARA RETIRO" selected>ORDEN DE TRABAJO LISTA PARA RETIRO</option>
+                                    {% else %}
                                     <option value="OT PARA RETIRO">ORDEN DE TRABAJO LISTA PARA RETIRO</option>
+                                    {% endif %}
+                                    {% if form.estadoOrdenTrabajo.value == 'OT ENTREGADA' %}
+                                    <option value="OT ENTREGADA" selected>ORDEN DE TRABAJO ENTREGADA</option>
+                                    {% else %}
                                     <option value="OT ENTREGADA">ORDEN DE TRABAJO ENTREGADA</option>
-
+                                    {% endif %}
                                 </select>
                             </div>
                         </div>

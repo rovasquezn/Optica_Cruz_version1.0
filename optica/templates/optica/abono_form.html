@@ -107,8 +107,8 @@
                             </div>
 
 
-                            <div class="col-md-4 ml-1 mt-3  ">
-                                <label for="numeroOrdenTrabajo">Numero de Orden de Trabajo</label>
+                            <div class="col-md-4 ml-1 mt-3">
+                                <label for="numeroOrdenTrabajo">Número de Orden de Trabajo</label>
                                 <input value="{{ numeroOrdenTrabajo }}" readonly class="form-control">
                             </div>
 
@@ -217,21 +217,21 @@
 
                         <div class="row mt-1 ml-5">
                             <div class="col-md-4">
-                                <!-- <label for="saldo">Saldo Pendiente</label> -->
+                                <label for="saldo">Saldo Pendiente</label>
+                                <input type="number" id="saldo" name="saldo" value="{{ form.saldo.value}}"
+                                    class="form-control" readonly>
 
 
 
-                                <!-- <input type="number" id="saldo" name="saldo" class="form-control"
-                                    value="{{ abono.saldo |default:'' }}" readonly>
- -->
-
-
-                                <div class=" mr-5">
+                                <!-- <div class=" mr-5">
                                     {{ form.saldo|as_crispy_field }}
                                     <script>
                                         document.getElementById('id_saldo').setAttribute('readonly', '');
                                     </script>
-                                </div>
+                                </div> -->
+
+
+
 
 
 
@@ -308,7 +308,11 @@
                         <div class="d-flex justify-content-center mt-3">
                             <a href="{% url 'abono_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
 
+                            {% if idOrdenTrabajo %}
                             <button type="submit" class="btn btn-success">Guardar Abono</button>
+                            {% else %}
+                            <p class="text-danger">No se ha ingresado un ID de orden de trabajo válido</p>
+                            {% endif %}
                             <script>
                                 document.getElementById('id_valorAbono').addEventListener('input', function () {
                                     var valorAbono = parseFloat(this.value);

@@ -49,6 +49,10 @@ a:hover {
     color:#094b58
 }
 
+#sidebar-footer {
+    color: #cbad00;
+}
+
 .texto-certificado {
     color:rgb(0, 0, 0);
     font-weight: 30px;

@@ -47,18 +47,24 @@ def abono_create(request):
         if form.is_valid():
             form.save()
             return redirect('abono_list')  # Redirige a la lista de abonos después de guardar
-    else:
-        form = AbonoForm()
-        # Obtener el saldo del abono anterior si existe
-        id_orden_trabajo = request.GET.get('idOrdenTrabajo')
-        numero_abono = request.GET.get('numeroAbono')
-        saldo_anterior = 0
-        if id_orden_trabajo and numero_abono:
-            abono_anterior = Abono.objects.filter(idOrdenTrabajo=id_orden_trabajo, numeroAbono=int(numero_abono) - 1).first()
-            if abono_anterior:
-                saldo_anterior = abono_anterior.saldo
+    # else:
+    #     form = AbonoForm()
+    #     # Obtener el saldo del abono anterior si existe
+    #     id_orden_trabajo = request.GET.get('idOrdenTrabajo')
+    #     numero_abono = request.GET.get('numeroAbono')
+    #     saldo_anterior = 0
+    #     if id_orden_trabajo and numero_abono:
+    #         abono_anterior = Abono.objects.filter(idOrdenTrabajo=id_orden_trabajo, numeroAbono=int(numero_abono) - 1).first()
+    #         if abono_anterior:
+    #             saldo_anterior = abono_anterior.saldo
 
-    return render(request, 'abono_form.html', {'form': form, 'saldo_anterior': saldo_anterior})
+    # return render(request, 'abono_form.html', {'form': form, 'saldo_anterior': saldo_anterior})
+
+    else:
+        id_orden_trabajo = request.GET.get('id_orden_trabajo')
+        orden_trabajo = get_object_or_404(OrdenTrabajo, idOrdenTrabajo=id_orden_trabajo)
+        form = AbonoForm(initial={'idOrdenTrabajo': orden_trabajo})
+    return render(request, 'abono_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
 
 
 def editar_orden_trabajo(request, pk):

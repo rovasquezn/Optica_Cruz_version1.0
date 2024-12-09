@@ -180,9 +180,9 @@
                                 </a>
                             </td>
                         </tr>
-
                         <!-- --MODAL PARA MOSTRAR EL DETALLE del Abono-->
-                        <div class="modal-condensed">
+                        <div class="modal-condensed"
+                            style="display: flex; justify-content: center; align-items: center;">
                             <div class="modal fade" id="abonoModal{{ abono.idAbono }}" tabindex="-1"
                                 aria-labelledby="abonoModalLabel{{ abono.idAbono }}" aria-hidden="true">
 
@@ -204,7 +204,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Cliente:</span>
-                                                        <span id="letras-modal">
+                                                        <span>
                                                             {{ abono.rutCliente.nombreCliente |upper }}
                                                             {{ abono.rutCliente.apPaternoCliente |upper }}
                                                             {{abono.rutCliente.apMaternoCliente|default:''|upper}}</span>
@@ -215,14 +215,14 @@
 
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">RUN:</span>
                                                         {{abono.rutCliente.rutCliente}}-{{abono.rutCliente.dvRutCliente}}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Fecha
                                                             Abono:</span>
                                                         {{ abono.fechaAbono |date:'d/m/Y' }}</p>
@@ -231,21 +231,21 @@
 
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Tipo de Pago del
                                                             Abono:</span>
                                                         {{ abono.tipoPagoAbono |default:'' }}</p>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Numero de
                                                             Voucher:</span>
                                                         {{ abono.numeroVoucherAbono |default:'' }}</p>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Monto
                                                             Total:</span>
                                                         {{ abono.idOrdenTrabajo.totalOrdenTrabajo |default:'' }}</p>
@@ -253,7 +253,7 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Monto
                                                             Abonado:</span>
                                                         {{ abono.valorAbono |default:'' }}</p>
@@ -261,7 +261,7 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Saldo
                                                             Anterior:</span>
                                                         {{ abono.saldoAnterior |default:'' }}</p>
@@ -269,7 +269,7 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <p><span class="font-weight-bold" id="texto-modal">Saldo
                                                             Pendiente:</span>
                                                         {{ abono.saldo |default:'' }}</p>

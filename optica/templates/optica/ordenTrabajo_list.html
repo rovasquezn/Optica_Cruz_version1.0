@@ -182,14 +182,14 @@
 
                                 <!-- --MODAL PARA MOSTRAR EL DETALLE -->
 
-                                <div class="modal-condensed">
+                                <div class="modal-condensed border-success">
                                     <div class="modal fade" id="ordenTrabajoModal{{ ordenTrabajo.idOrdenTrabajo }}"
                                         tabindex="-1"
                                         aria-labelledby="ordenTrabajoModalLabel{{ ordenTrabajo.idOrdenTrabajo }}"
                                         aria-hidden="true">
 
-                                        <div class="modal-dialog" style=" max-width: 53%;">
-                                            <div class="modal-content">
+                                        <div class="modal-dialog" style="max-width: 53%;">
+                                            <div class="modal-content" id="content">
                                                 <div class="modal-header mr-3">
                                                     <img src="{% static '/images/Optica_Cruz_Ojo_Celeste.png' %}"
                                                         alt="Descripción de la imagen"
@@ -225,14 +225,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold"
                                                                     id="texto-modal">RUN:</span>
                                                                 {{ ordenTrabajo.idReceta.rutCliente }}-
                                                                 {{ ordenTrabajo.idReceta.dvRutCliente }}
                                                             </p>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold"
                                                                     id="texto-modal">Nombre:</span>
                                                                 <span>
@@ -244,7 +244,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold"
                                                                     id="texto-modal">Celular:</span>
                                                                 {{ ordenTrabajo.idReceta.celularCliente |default:'--' }}
@@ -262,7 +262,7 @@
 
 
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold" id="texto-modal">Fecha de
                                                                     Entrega:</span>
                                                                 {{ordenTrabajo.fechaEntregaOrdenTrabajo|default:'--'}}
@@ -295,30 +295,29 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="row justify-content-center">
-
-                                                        <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold" id="texto-modal">NÚMERO DE
                                                                     RECETA:</span>
                                                                 {{ ordenTrabajo.idReceta.numeroReceta |default:'--' }}
                                                             </p>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <p><span class="font-weight-bold" id="texto-modal">ID DE
                                                                     RECETA:</span>
                                                                 {{ ordenTrabajo.idReceta.idReceta |default:'--' }}</p>
                                                         </div>
-
                                                     </div>
 
+
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold" id="texto-modal">Tipo de
                                                                     lente:</span>
                                                                 {{ ordenTrabajo.idReceta.tipoLente|default:"--"|upper }}
                                                             </p>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <p><span class="font-weight-bold"
                                                                     id="texto-modal">Altura:</span>
                                                                 {{ ordenTrabajo.altura|default:"--"|upper }}
@@ -327,13 +326,13 @@
                                                     </div>
 
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold"
                                                                     id="texto-modal">Institución:</span>
                                                                 {{ordenTrabajo.idReceta.institucion|default:"--"|upper}}
                                                             </p>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <p><span class="font-weight-bold" id="texto-modal">
                                                                     Doctor(a) Oftalmología:</span>
                                                                 {{ordenTrabajo.idReceta.doctorOftalmologo|default:"--"|upper}}
@@ -342,7 +341,7 @@
                                                     </div>
 
                                                     <div class="row">
-                                                        <div class="col-md-12">
+                                                        <div class="col-md-12 ml-4">
                                                             <p><span class="font-weight-bold padding-left 12px"
                                                                     id="texto-modal">Observaciones:</span>
                                                                 {{ordenTrabajo.idReceta.observacionReceta|default:"--"|upper}}
@@ -729,7 +728,7 @@
                                                     </div>
 
                                                     <div class="row">
-                                                        <div class="col-md-12">
+                                                        <div class="col-md-12 ml-4">
                                                             <p><span class="font-weight-bold">
                                                                     OBSERVACIONES: </span>
                                                                 {{ordenTrabajo.observacionOrdenTrabajo|default:'--' }}
@@ -744,13 +743,13 @@
                                                     </div>
 
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold">
                                                                     VALOR MARCO LEJOS: </span>
                                                                 ${{ordenTrabajo.valorMarcoLejos|default:0|intcomma }}
                                                             </p>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <p><span class="font-weight-bold">
                                                                     VALOR MARCO CERCA: </span>
                                                                 ${{ordenTrabajo.valorMarcoCerca|default:0|intcomma }}
@@ -758,13 +757,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold">
                                                                     VALOR CRISTALES LEJOS: </span>
                                                                 ${{ordenTrabajo.valorCristalesLejos|default:0|intcomma}}
                                                             </p>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <p><span class="font-weight-bold">
                                                                     VALOR CRISTALES CERCA: </span>
                                                                 ${{ordenTrabajo.valorCristalesCerca|default:0|intcomma}}
@@ -772,7 +771,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
 
                                                             <p>
                                                                 <span class="font-weight-bold">VALOR TOTAL (LEJOS):
@@ -781,7 +780,7 @@
                                                             </p>
 
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-5">
                                                             <p><span class="font-weight-bold">
                                                                     VALOR TOTAL (CERCA): </span>
                                                                 ${{ordenTrabajo.totalCerca|default:0|intcomma }}
@@ -792,7 +791,7 @@
                                                     <div class="row">
 
 
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold">
                                                                     TOTAL: </span>
                                                                 ${{ordenTrabajo.totalOrdenTrabajo|default:0|intcomma }}
@@ -800,7 +799,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 ml-4">
                                                             <p><span class="font-weight-bold">
                                                                     ESTADO DEL PAGO: </span>
                                                                 {{ordenTrabajo.estadoDelPago }}

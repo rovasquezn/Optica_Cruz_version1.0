@@ -109,7 +109,7 @@ class Receta(models.Model):
     dpCerca = models.CharField(max_length=10, null=True, blank=True, verbose_name="Distancia Pupilar")
    
     tipoLente = models.CharField(max_length=20, null=True, blank=True, verbose_name="Tipo de Lente")
-    institucion = models.CharField(max_length=20, null=True, blank=True, verbose_name="Institucion")
+    institucion = models.CharField(max_length=20, null=True, blank=True, verbose_name="Institución")
     doctorOftalmologo = models.CharField(max_length=40, null=True, blank=True, verbose_name="Médico Oftalmología")
     observacionReceta = models.CharField(max_length=300, null=True, blank=True, verbose_name="Observaciones")
 
@@ -216,10 +216,10 @@ class OrdenTrabajo(models.Model):
 
 class Abono(models.Model): 
     idAbono = models.AutoField(primary_key=True, verbose_name="ID Abono")
-    idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, related_name='abonos', verbose_name="ID Orden de Trabajo")
+    idOrdenTrabajo = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE, verbose_name="ID Orden de Trabajo")
     rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True, verbose_name="RUN Cliente") 
     fechaAbono = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Abono")
-    valorAbono = models.IntegerField(null=True, blank=True, verbose_name="Valor Abono")
+    valorAbono = models.IntegerField(verbose_name="Valor Abono")
     saldoAnterior = models.IntegerField(null=True, blank=True, verbose_name="Saldo Anterior")
     saldo = models.IntegerField(null=True, blank=True, verbose_name="Saldo")
     tipoPagoAbono = models.CharField(max_length=20, choices=[('Efectivo', 'Efectivo'), ('Debito', 'Débito'), ('Credito', 'Crédito'), ('Cheque', 'Cheque')], verbose_name="Forma de pago del Abono")
@@ -233,6 +233,30 @@ class Abono(models.Model):
     #     if self.valorAbono > self.idOrdenTrabajo.totalOrdenTrabajo:
     #         raise ValidationError({'valorAbono': 'El valor del abono no puede ser mayor al total de la orden de trabajo.'})
 
+    # def save(self, *args, **kwargs):
+    #     self.full_clean()  # Llama a full_clean para ejecutar las validaciones
+    #     # Calcular el saldo
+    #     if self.numeroAbono == 1:
+    #         self.saldo = self.idOrdenTrabajo.totalOrdenTrabajo - self.valorAbono
+    #     else:
+    #         abono_anterior = Abono.objects.filter(idOrdenTrabajo=self.idOrdenTrabajo, numeroAbono=self.numeroAbono - 1).first()
+    #         if abono_anterior:
+    #             self.saldo = abono_anterior.saldo - self.valorAbono
+    #         else:
+    #             raise ValidationError({'numeroAbono': 'No se encontró el abono anterior.'})
+    #     super().save(*args, **kwargs)
+
+    def clean(self):
+        # Validar que valorAbono no sea mayor a totalOrdenTrabajo y no sea menor a 1
+        if self.valorAbono < 1:
+            raise ValidationError({'valorAbono': 'El valor del abono no puede ser menor a 1.'})
+        if self.numeroAbono == 1 and self.valorAbono > self.idOrdenTrabajo.totalOrdenTrabajo:
+            raise ValidationError({'valorAbono': 'El valor del abono no puede ser mayor al total de la orden de trabajo.'})
+        elif self.numeroAbono > 1:
+            abono_anterior = Abono.objects.filter(idOrdenTrabajo=self.idOrdenTrabajo, numeroAbono=self.numeroAbono - 1).first()
+            if abono_anterior and self.valorAbono > abono_anterior.saldo:
+                raise ValidationError({'valorAbono': 'El valor del abono no puede ser mayor al saldo del abono anterior.'})
+
     def save(self, *args, **kwargs):
         self.full_clean()  # Llama a full_clean para ejecutar las validaciones
         # Calcular el saldo
@@ -245,7 +269,6 @@ class Abono(models.Model):
             else:
                 raise ValidationError({'numeroAbono': 'No se encontró el abono anterior.'})
         super().save(*args, **kwargs)
-
     def __str__(self):
         return f"Abono {self.numeroAbono} - Orden {self.idOrdenTrabajo.numeroOrdenTrabajo}"
     

@@ -255,13 +255,28 @@ class AbonoForm(forms.ModelForm):
             'saldo': forms.TextInput(attrs={'readonly': 'readonly'}),
         }
 
+    # def clean_valorAbono(self):
+    #     valorAbono = self.cleaned_data.get('valorAbono')
+    #     idOrdenTrabajo = self.cleaned_data.get('idOrdenTrabajo')
+    #     if valorAbono < 1:
+    #         raise forms.ValidationError('El valor del abono no puede ser menor a 1.')
+    #     if valorAbono > idOrdenTrabajo.totalOrdenTrabajo:
+    #         raise forms.ValidationError('El valor del abono no puede ser mayor al total de la orden de trabajo.')
+    #     return valorAbono
+    
     def clean_valorAbono(self):
         valorAbono = self.cleaned_data.get('valorAbono')
         idOrdenTrabajo = self.cleaned_data.get('idOrdenTrabajo')
+        if idOrdenTrabajo is None:
+            raise forms.ValidationError('La orden de trabajo no puede ser nula.')
         if valorAbono < 1:
             raise forms.ValidationError('El valor del abono no puede ser menor a 1.')
-        if valorAbono > idOrdenTrabajo.totalOrdenTrabajo:
+        if self.instance.numeroAbono == 1 and valorAbono > idOrdenTrabajo.totalOrdenTrabajo:
             raise forms.ValidationError('El valor del abono no puede ser mayor al total de la orden de trabajo.')
+        elif self.instance.numeroAbono > 1:
+            abono_anterior = Abono.objects.filter(idOrdenTrabajo=idOrdenTrabajo, numeroAbono=self.instance.numeroAbono - 1).first()
+            if abono_anterior and valorAbono > abono_anterior.saldo:
+                raise forms.ValidationError('El valor del abono no puede ser mayor al saldo del abono anterior.')
         return valorAbono
         
  

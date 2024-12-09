@@ -3,345 +3,455 @@
 {% block title %}Dashboard - Óptica Cruz{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="font-weight-bold mb-0">Dashboard</h1>
-    <p class="lead text-muted">Panel actualizado de órdenes de trabajo activas y para retiro</p>
+
+<!-- 
+<section class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-8">
+                <h1 class="font-weight-bold mb-0">Dashboard</h1>
+                <p class="lead text-muted">Panel actualizado de órdenes de trabajo activas y para retiro</p>
+            </div>
 
 
-    <style>
-        body {
-            overflow-y: auto;
-        }
+        </div>
+    </div>
+</section> -->
 
-        .container {
-            padding-bottom: 20px;
-        }
 
-        .card {
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            /* Margen entre tarjetas */
-            height: 100%;
-            /* Ajusta todas las tarjetas a la misma altura */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+<div class="w-100" style="background-color: #2840482f">
 
-        .card-header {
-            font-weight: bold;
-            font-size: 1rem;
-            text-align: center;
-        }
+    <section class="bg-light py-3">
+        <div class="container">
 
-        .card-body {
-            padding: 15px;
-        }
+            <div class="col-lg-9 col-md-12">
 
-        .table {
-            font-size: 0.7rem;
-            /* Reducir el tamaño general de los datos de la tabla */
-        }
+                <h1 class="font-weight-bold mb-0">Dashboard</h1>
+                <p class="lead text-muted">Panel actualizado de órdenes de trabajo activas y listas para retiro</p>
+            </div>
+        </div>
+    </section>
 
-        .table thead th {
-            font-size: 0.75rem;
-            /* Reducir encabezados */
-            padding: 3px;
-            /* Reducir el espacio entre celdas de los encabezados */
-        }
+    <div class="container mt-3">
+        <style>
+            body {
+                overflow-y: auto;
+            }
 
-        .table td {
-            text-align: center;
-            vertical-align: middle;
-            padding: 3px;
-            /* Reducir el espacio entre celdas de los datos */
-        }
+            .container {
+                padding-bottom: 20px;
+            }
 
-        .row {
-            margin-bottom: 20px;
-            /* Espacio entre filas */
-        }
-
-        /* Ajustes para dispositivos pequeños */
-        @media (max-width: 768px) {
-            .row {
+            .card {
+                border-radius: 8px;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+                /* Margen entre tarjetas */
+                height: 100%;
+                /* Ajusta todas las tarjetas a la misma altura */
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
-                /* Uniforma el espacio entre tarjetas */
+                justify-content: space-between;
             }
-        }
 
-        /* Tabla urgente */
-        .table-urgent {
-            color: red;
-            font-weight: bold;
-        }
+            .card-header {
+                font-weight: bold;
+                font-size: 1rem;
+                text-align: center;
+            }
 
-        .highlight-today {
-            background-color: #dc3545;
-            /* Rojo */
-            color: white;
-            padding: 2px 4px;
-            border-radius: 4px;
-            display: inline-block;
-            /* Asegura que se comporte como un badge */
-        }
+            .card-body {
+                padding: 15px;
+            }
 
-        .chart-container {
-            position: relative;
-            height: 300px;
-            /* Establece una altura fija para el contenedor del gráfico */
-            margin-bottom: 10px;
-            /* Reduce el margen inferior para separar del listado */
-            margin-right: 20px;
-            /* Añade margen derecho para separar del listado en disposición horizontal */
-        }
+            .table {
+                font-size: 0.7rem;
+                /* Reducir el tamaño general de los datos de la tabla */
+            }
 
-        .chart-container canvas {
-            height: 100% !important;
-            /* Asegura que el canvas ocupe toda la altura del contenedor */
-        }
+            .table thead th {
+                font-size: 0.75rem;
+                /* Reducir encabezados */
+                padding: 3px;
+                /* Reducir el espacio entre celdas de los encabezados */
+            }
 
-        /* Estilos para las tarjetas KPI */
-        .kpi-card {
-            height: 150px;
-            /* Reducir la altura de las tarjetas */
-        }
+            .table td {
+                text-align: center;
+                vertical-align: middle;
+                padding: 3px;
+                /* Reducir el espacio entre celdas de los datos */
+            }
 
-        .kpi-card .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+            .row {
+                margin-bottom: 20px;
+                /* Espacio entre filas */
+            }
 
-        .kpi-card .card-body h2 {
-            font-size: 2rem;
-            /* Mantener el tamaño del número */
-        }
+            /* Ajustes para dispositivos pequeños */
+            @media (max-width: 768px) {
+                .row {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    /* Uniforma el espacio entre tarjetas */
+                }
+            }
 
-        .kpi-card .card-body p {
-            font-size: 0.8rem;
-            /* Reducir el tamaño del texto */
-            margin: 0;
-            /* Eliminar margen */
-        }
-    </style>
+            /* Tabla urgente */
+            .table-urgent {
+                color: red;
+                font-weight: bold;
+            }
+
+            .highlight-today {
+                background-color: #dc3545;
+                /* Rojo */
+                color: white;
+                padding: 2px 4px;
+                border-radius: 4px;
+                display: inline-block;
+                /* Asegura que se comporte como un badge */
+            }
+
+            .chart-container {
+                position: relative;
+                height: 300px;
+                /* Establece una altura fija para el contenedor del gráfico */
+                margin-bottom: 10px;
+                /* Reduce el margen inferior para separar del listado */
+                margin-right: 20px;
+                /* Añade margen derecho para separar del listado en disposición horizontal */
+            }
+
+            .chart-container canvas {
+                height: 100% !important;
+                /* Asegura que el canvas ocupe toda la altura del contenedor */
+            }
+
+            /* Estilos para las tarjetas KPI */
+            .kpi-card {
+                height: 150px;
+                /* Reducir la altura de las tarjetas */
+            }
+
+            .kpi-card .card-body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .kpi-card .card-body h2 {
+                font-size: 2rem;
+                /* Mantener el tamaño del número */
+            }
+
+            .kpi-card .card-body p {
+                font-size: 0.8rem;
+                /* Reducir el tamaño del texto */
+                margin: 0;
+                /* Eliminar margen */
+            }
+        </style>
 
 
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card kpi-card">
-                <div class="card-header text-left">
-                    <i class="bi bi-calendar3"></i> Pendientes
-                </div>
-                <div class="card-body">
-                    <h2 class="text-center">{{ total_pendientes }}</h2>
-                    <p class="text-center">Atrasadas, Hoy, Próx. 3 Días</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card kpi-card">
-                <div class="card-header text-left">
-                    <i class="bi bi-clipboard-data"></i> Por Entregar
-                </div>
-                <div class="card-body">
-                    <h2 class="text-center">{{ total_activas }}</h2>
-                    <p class="text-center">Creadas, En Proceso, Para Retiro</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card kpi-card">
-                <div class="card-header text-left">
-                    <i class="bi bi-box-arrow-in-down"></i> Para Retiro
-                </div>
-                <div class="card-body">
-                    <h2 class="text-center">{{ total_listas_para_retiro }}</h2>
-                    <p class="text-center">Listas para Retiro</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card kpi-card">
-                <div class="card-header text-left">
-                    <i class="bi bi-check-circle"></i> Entregadas
-                </div>
-                <div class="card-body">
-                    <h2 class="text-center">{{ total_entregadas }}</h2>
-                    <p class="text-center">Últimas 10 Entregadas</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Fila 1: Órdenes para Entregar (Hoy, Próximos 3 Días y Vencidas) -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header text-left">
-                    <i class="bi bi-calendar3"></i> Órdenes de Trabajo Pendientes (Atrasadas, Hoy, Próximos 3 Días)
-                </div>
-                <div class="card-body">
-                    <table class="table table-condensed table-striped mb-0" id="tabla-ordenes-vencidas-proximas">
-                        <thead>
-                            <tr>
-                                <th>Prioridad</th>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Estado</th>
-                                <th>Fecha Entrega</th>
-                                <th>Hora</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Órdenes Vencidas -->
-                            {% for orden in ot_vencidas %}
-                            <tr>
-                                <td class="text-left"><span class="badge bg-danger text-white">ATRASADA</span></td>
-                                <td class="text-left" style="color: red;">{{ orden.idOrdenTrabajo }}</td>
-                                <td class="text-left" style="color: red;">
-                                    {{ orden.idReceta.rutCliente.nombreCliente|upper }}
-                                    {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
-                                <td class="text-left">
-                                    {% if orden.estadoOrdenTrabajo == 'OT CREADA' %}
-                                    <span class="badge" style="background-color: #007bff; color: white;">
-                                        {{ orden.estadoOrdenTrabajo|upper }}</span>
-                                    {% elif orden.estadoOrdenTrabajo == 'OT EN PROCESO' %}
-                                    <span class="badge" style="background-color: #ffc107; color: black;">
-                                        {{ orden.estadoOrdenTrabajo|upper }}</span>
-                                    {% else %}
-                                    {{ orden.estadoOrdenTrabajo }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-left" style="color: red;">
-                                    {{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                <td class="text-left" style="color: red;">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                            </tr>
-                            {% endfor %}
-
-                            <!-- Órdenes para Hoy -->
-                            {% for orden in ot_hoy %}
-                            <tr>
-                                <td class="text-left"><span class="badge"
-                                        style="background-color: orange; color: dark;">HOY</span></td>
-                                <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
-                                <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
-                                    {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
-                                <td class="text-left">
-                                    {% if orden.estadoOrdenTrabajo == 'OT CREADA' %}
-                                    <span class="badge" style="background-color: #007bff; color: white;">
-                                        {{ orden.estadoOrdenTrabajo|upper }}</span>
-                                    {% elif orden.estadoOrdenTrabajo == 'OT EN PROCESO' %}
-                                    <span class="badge" style="background-color: #ffc107; color: black;">
-                                        {{ orden.estadoOrdenTrabajo|upper }}</span>
-                                    {% else %}
-                                    {{ orden.estadoOrdenTrabajo }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                            </tr>
-                            {% endfor %}
-
-                            <!-- Próximos 3 días -->
-                            {% for orden in ot_proximos_dias %}
-                            <tr>
-                                <td class="text-left"><span class="badge bg-secondary text-white">PRÓXIMO</span></td>
-                                <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
-                                <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
-                                    {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
-                                <td class="text-left">
-                                    {% if orden.estadoOrdenTrabajo == 'OT CREADA' %}
-                                    <span class="badge" style="background-color: #007bff; color: white;">
-                                        {{ orden.estadoOrdenTrabajo|upper }}</span>
-                                    {% elif orden.estadoOrdenTrabajo == 'OT EN PROCESO' %}
-                                    <span class="badge" style="background-color: #ffc107; color: black;">
-                                        {{ orden.estadoOrdenTrabajo|upper }}</span>
-                                    {% else %}
-                                    {{ orden.estadoOrdenTrabajo }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Fila 2 -->
-    <div class="row">
-        <!-- KPI y Detalle de Órdenes de Trabajo Activas -->
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header text-left">
-                    <i class="bi bi-clipboard-data"></i> Órdenes de Trabajo por Entregar
-                </div>
-                <div class="card-body d-flex flex-wrap">
-                    <div class="col-md-6 p-0">
-                        <div class="chart-container">
-                            <canvas id="resumenGeneralChart"></canvas>
-                        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-calendar3"></i> Pendientes
                     </div>
-                    <div class="col-md-6 p-0">
-                        <table class="table table-condensed table-striped mb-0" id="tabla-detalle-ordenes">
+                    <div class="card-body">
+                        <h2 class="text-center">{{ total_pendientes }}</h2>
+                        <p class="text-center">Atrasadas, Hoy, Próx. 3 Días</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-clipboard-data"></i> Por Entregar
+                    </div>
+                    <div class="card-body">
+                        <h2 class="text-center">{{ total_activas }}</h2>
+                        <p class="text-center">Creadas, En Proceso, Para Retiro</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-box-arrow-in-down"></i> Para Retiro
+                    </div>
+                    <div class="card-body">
+                        <h2 class="text-center">{{ total_listas_para_retiro }}</h2>
+                        <p class="text-center">Listas para Retiro</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-check-circle"></i> Entregadas
+                    </div>
+                    <div class="card-body">
+                        <h2 class="text-center">{{ total_entregadas }}</h2>
+                        <p class="text-center">Últimas 10 Entregadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila 1: Órdenes para Entregar (Hoy, Próximos 3 Días y Vencidas) -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-calendar3"></i> Órdenes de Trabajo Pendientes (Atrasadas, Hoy, Próximos 3 Días)
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-condensed table-striped mb-0" id="tabla-ordenes-vencidas-proximas">
                             <thead>
                                 <tr>
+                                    <th>Prioridad</th>
                                     <th>ID</th>
-                                    <th>Estado</th>
                                     <th>Cliente</th>
+                                    <th>Estado</th>
                                     <th>Fecha Entrega</th>
-                                    {% comment %} <th>Hora</th> {% endcomment %}
+                                    <th>Hora</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Órdenes Creadas -->
-                                {% for orden in ot_creadas %}
+                                <!-- Órdenes Vencidas -->
+                                {% for orden in ot_vencidas %}
                                 <tr>
-                                    <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
-                                    <td class="text-left"><span class="badge"
-                                            style="background-color: #007bff; color: white;">
-                                            {{ orden.estadoOrdenTrabajo|upper }}</span></td>
-                                    <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
-                                        {{orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
-                                    <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                    {% comment %} <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                                    {% endcomment %}
+                                    <td class="text-left"><span class="badge bg-danger text-white">ATRASADA</span></td>
+                                    <td class="text-left" style="color: red;">{{ orden.idOrdenTrabajo }}</td>
+                                    <td class="text-left" style="color: red;">
+                                        {{ orden.idReceta.rutCliente.nombreCliente|upper }}
+                                        {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                    <td class="text-left">
+                                        {% if orden.estadoOrdenTrabajo == 'OT CREADA' %}
+                                        <span class="badge" style="background-color: #007bff; color: white;">
+                                            {{ orden.estadoOrdenTrabajo|upper }}</span>
+                                        {% elif orden.estadoOrdenTrabajo == 'OT EN PROCESO' %}
+                                        <span class="badge" style="background-color: #ffc107; color: black;">
+                                            {{ orden.estadoOrdenTrabajo|upper }}</span>
+                                        {% else %}
+                                        {{ orden.estadoOrdenTrabajo }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-left" style="color: red;">
+                                        {{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
+                                    <td class="text-left" style="color: red;">{{ orden.horaEntregaOrdenTrabajo }}</td>
                                 </tr>
                                 {% endfor %}
-                                <!-- Órdenes en Proceso -->
-                                {% for orden in ot_en_proceso %}
+
+                                <!-- Órdenes para Hoy -->
+                                {% for orden in ot_hoy %}
                                 <tr>
-                                    <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
                                     <td class="text-left"><span class="badge"
-                                            style="background-color: #ffc107; color: black;">
-                                            {{ orden.estadoOrdenTrabajo|upper }}</span></td>
+                                            style="background-color: orange; color: dark;">HOY</span></td>
+                                    <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
                                     <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
                                         {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                    <td class="text-left">
+                                        {% if orden.estadoOrdenTrabajo == 'OT CREADA' %}
+                                        <span class="badge" style="background-color: #007bff; color: white;">
+                                            {{ orden.estadoOrdenTrabajo|upper }}</span>
+                                        {% elif orden.estadoOrdenTrabajo == 'OT EN PROCESO' %}
+                                        <span class="badge" style="background-color: #ffc107; color: black;">
+                                            {{ orden.estadoOrdenTrabajo|upper }}</span>
+                                        {% else %}
+                                        {{ orden.estadoOrdenTrabajo }}
+                                        {% endif %}
+                                    </td>
                                     <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                    {% comment %} <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                                    {% endcomment %}
+                                    <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
                                 </tr>
                                 {% endfor %}
-                                <!-- Órdenes Listas para Retiro -->
+
+                                <!-- Próximos 3 días -->
+                                {% for orden in ot_proximos_dias %}
+                                <tr>
+                                    <td class="text-left"><span class="badge bg-secondary text-white">PRÓXIMO</span>
+                                    </td>
+                                    <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
+                                    <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
+                                        {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                    <td class="text-left">
+                                        {% if orden.estadoOrdenTrabajo == 'OT CREADA' %}
+                                        <span class="badge" style="background-color: #007bff; color: white;">
+                                            {{ orden.estadoOrdenTrabajo|upper }}</span>
+                                        {% elif orden.estadoOrdenTrabajo == 'OT EN PROCESO' %}
+                                        <span class="badge" style="background-color: #ffc107; color: black;">
+                                            {{ orden.estadoOrdenTrabajo|upper }}</span>
+                                        {% else %}
+                                        {{ orden.estadoOrdenTrabajo }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
+                                    <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila 2 -->
+        <div class="row">
+            <!-- KPI y Detalle de Órdenes de Trabajo Activas -->
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-clipboard-data"></i> Órdenes de Trabajo por Entregar
+                    </div>
+                    <div class="card-body d-flex flex-wrap">
+                        <div class="col-md-6 p-0">
+                            <div class="chart-container">
+                                <canvas id="resumenGeneralChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6 p-0">
+                            <table class="table table-condensed table-striped mb-0" id="tabla-detalle-ordenes">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Estado</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha Entrega</th>
+                                        {% comment %} <th>Hora</th> {% endcomment %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Órdenes Creadas -->
+                                    {% for orden in ot_creadas %}
+                                    <tr>
+                                        <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
+                                        <td class="text-left"><span class="badge"
+                                                style="background-color: #007bff; color: white;">
+                                                {{ orden.estadoOrdenTrabajo|upper }}</span></td>
+                                        <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
+                                            {{orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                        <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
+                                        {% comment %} <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
+                                        {% endcomment %}
+                                    </tr>
+                                    {% endfor %}
+                                    <!-- Órdenes en Proceso -->
+                                    {% for orden in ot_en_proceso %}
+                                    <tr>
+                                        <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
+                                        <td class="text-left"><span class="badge"
+                                                style="background-color: #ffc107; color: black;">
+                                                {{ orden.estadoOrdenTrabajo|upper }}</span></td>
+                                        <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
+                                            {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                        <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
+                                        {% comment %} <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
+                                        {% endcomment %}
+                                    </tr>
+                                    {% endfor %}
+                                    <!-- Órdenes Listas para Retiro -->
+                                    {% for orden in ot_para_retiro %}
+                                    <tr>
+                                        <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
+                                        <td class="text-left"><span class="badge"
+                                                style="background-color: #28a745; color: white;">
+                                                {{ orden.estadoOrdenTrabajo|upper }}</span></td>
+                                        <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
+                                            {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                        <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
+                                        {% comment %} <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
+                                        {% endcomment %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila 3 -->
+        <div class="row">
+            <!-- Órdenes listas para Retiro -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-box-arrow-in-down"></i> Órdenes de Trabajo para Retiro
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-condensed table-striped mb-0" id="tabla-ordenes-para-retiro">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Entrega</th>
+                                    <th>Hora</th>
+                                    <th>Días S/R</th> <!-- Nueva columna -->
+                                </tr>
+                            </thead>
+                            <tbody>
                                 {% for orden in ot_para_retiro %}
                                 <tr>
                                     <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
-                                    <td class="text-left"><span class="badge"
-                                            style="background-color: #28a745; color: white;">
-                                            {{ orden.estadoOrdenTrabajo|upper }}</span></td>
+                                    <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
+                                        {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
+                                    <td class="text-left">
+                                        {% if orden.dias_transcurridos < 1 %} <span class="badge"
+                                            style="background-color: purple; color: white;">ANTICIPADA</span>
+                                            {% else %}
+                                            <span class="badge" style="background-color: teal; color: white;">ESPERA
+                                                RETIRO</span>
+                                            {% endif %}
+
+                                    </td>
+                                    <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
+                                    <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
+                                    <td class="text-left">{% if orden.dias_transcurridos < 1 %} {% else %}
+                                            {{orden.dias_transcurridos}}{% endif %}</td>
+                                            <!-- Mostrar días transcurridos -->
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Órdenes Entregadas Recientemente -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-left">
+                        <i class="bi bi-check-circle"></i> Órdenes de Trabajo Entregadas Recientemente
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-condensed table-striped mb-0" id="tabla-ordenes-entregadas">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for orden in ot_entregadas %}
+                                <tr>
+                                    <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
                                     <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
                                         {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
                                     <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                    {% comment %} <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                                    {% endcomment %}
+                                    <td class="text-left">{{ orden.horaEntregaOrdenTrabajo|time:"H:i" }}</td>
+                                    <td class="text-left">{{ orden.observacionOrdenTrabajo|default:"" }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -351,90 +461,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Fila 3 -->
-    <div class="row">
-        <!-- Órdenes listas para Retiro -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-left">
-                    <i class="bi bi-box-arrow-in-down"></i> Órdenes de Trabajo para Retiro
-                </div>
-                <div class="card-body">
-                    <table class="table table-condensed table-striped mb-0" id="tabla-ordenes-para-retiro">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Estado</th>
-                                <th>Fecha Entrega</th>
-                                <th>Hora</th>
-                                <th>Días S/R</th> <!-- Nueva columna -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for orden in ot_para_retiro %}
-                            <tr>
-                                <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
-                                <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
-                                    {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
-                                <td class="text-left">
-                                    {% if orden.dias_transcurridos < 1 %} <span class="badge"
-                                        style="background-color: purple; color: white;">ANTICIPADA</span>
-                                        {% else %}
-                                        <span class="badge" style="background-color: teal; color: white;">ESPERA
-                                            RETIRO</span>
-                                        {% endif %}
-
-                                </td>
-                                <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                <td class="text-left">{{ orden.horaEntregaOrdenTrabajo }}</td>
-                                <td class="text-left">{% if orden.dias_transcurridos < 1 %} {% else %}
-                                        {{orden.dias_transcurridos}}{% endif %}</td> <!-- Mostrar días transcurridos -->
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Órdenes Entregadas Recientemente -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-left">
-                    <i class="bi bi-check-circle"></i> Órdenes de Trabajo Entregadas Recientemente
-                </div>
-                <div class="card-body">
-                    <table class="table table-condensed table-striped mb-0" id="tabla-ordenes-entregadas">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Fecha</th>
-                                <th>Hora</th>
-                                <th>Observación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for orden in ot_entregadas %}
-                            <tr>
-                                <td class="text-left">{{ orden.idOrdenTrabajo }}</td>
-                                <td class="text-left">{{ orden.idReceta.rutCliente.nombreCliente|upper }}
-                                    {{ orden.idReceta.rutCliente.apPaternoCliente|upper }}</td>
-                                <td class="text-left">{{ orden.fechaEntregaOrdenTrabajo|date:"d/m/Y" }}</td>
-                                <td class="text-left">{{ orden.horaEntregaOrdenTrabajo|time:"H:i" }}</td>
-                                <td class="text-left">{{ orden.observacionOrdenTrabajo|default:"" }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('resumenGeneralChart').getContext('2d');
@@ -447,9 +474,9 @@
                 data: [{{ total_creadas }}, {{ total_en_proceso }}, {{ total_listas_para_retiro }}],
     backgroundColor: ['#007bff', '#ffc107', '#28a745'],
         borderColor: ['#0056b3', '#d39e00', '#1e7e34'],
-            borderWidth : 1
-            }]
-        },
+            borderWidth: 1
+        }]
+    },
     options: {
         responsive: true,
             maintainAspectRatio: false,
