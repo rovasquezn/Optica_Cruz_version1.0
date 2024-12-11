@@ -26,7 +26,8 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-
+        extra_fields.setdefault('user_type', 1)
+        
         if extra_fields.get('is_staff') is not True:
             raise ValueError('El superusuario debe tener is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
@@ -145,7 +146,7 @@ class Receta(models.Model):
     
 
 class OrdenTrabajo(models.Model): 
-    idReceta = models.ForeignKey(Receta, null=True, blank=True, on_delete=models.CASCADE, verbose_name="ID Receta")
+    idReceta = models.ForeignKey(Receta, null = True, blank = True, on_delete=models.CASCADE, verbose_name="ID Receta")
     # rutCliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name="RUN Cliente") 
     idOrdenTrabajo = models.BigAutoField(primary_key=True, verbose_name="ID Orden de Trabajo")
     numeroOrdenTrabajo = models.IntegerField(verbose_name="Número de Orden de Trabajo") 

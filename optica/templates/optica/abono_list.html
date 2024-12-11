@@ -88,11 +88,12 @@
                             <th scope="col">Nombre Cliente</th>
                             <th scope="col">Fecha Abono</th>
                             <th scope="col">Tipo de Pago del abono</th>
+                            <th scope="col">Voucher</th>
                             <th scope="col">Valor Total</th>
                             <th scope="col">Monto Abonado</th>
                             <!-- <th scope="col">Saldo Anterior</th> -->
                             <th scope="col">Saldo</th>
-                            <th scope="col">Voucher</th>
+
                             <th></th>
 
                         </tr>
@@ -109,11 +110,12 @@
                                 {{ abono.rutCliente.apMaternoCliente |default:'' }}</td>
                             <td>{{ abono.fechaAbono |date:'d/m/Y' }}</td>
                             <td class="text-uppercase">{{ abono.tipoPagoAbono |default:'-' }}</td>
+                            <td>{{ abono.numeroVoucherAbono |default:'-' }}</td>
                             <td>{{ abono.idOrdenTrabajo.totalOrdenTrabajo |default:'-' }}</td>
                             <td>{{ abono.valorAbono |default:'-' }}</td>
                             <!-- <td>{{ abono.saldoAnterior |default:'-' }}</td> -->
                             <td>{{ abono.saldo |default:'-' }}</td>
-                            <td>{{ abono.numeroVoucherAbono |default:'-' }}</td>
+
 
 
 

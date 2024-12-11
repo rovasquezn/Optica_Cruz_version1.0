@@ -161,10 +161,24 @@
 
                             <div class="col-md-2 ml-2">
                                 <label for="fechaReceta">Fecha Receta</label>
-                                <div class="input-group">
-                                    <input type="date" class="form-control" id="fechaReceta" name="fechaReceta">
-                                </div>
+
+                                <input type="date" name="fechaReceta"
+                                    value="{% if form.fechaReceta.value %}{{ form.fechaReceta.value|date:'Y-m-d' }}{% else %}{{ receta.fechaReceta|date:'Y-m-d' }}{% endif %}"
+                                    class="form-control">
+
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
                             <div class="col-md-6 ml-2">
                                 {{ form.imagenReceta|as_crispy_field }}

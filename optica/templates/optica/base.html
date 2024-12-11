@@ -93,7 +93,7 @@
         }
 
         .navbar-custom {
-            background-color: #03aae7;
+            background-color: #206585;
         }
 
         .navbar-custom .navbar-nav .nav-link {
@@ -128,8 +128,10 @@
                 </a>
             </div>
             <div class="menu">
+                {% if user.is_authenticated and user.user_type == 1 %}
                 <a href="{% url 'usuario_list' %}" class="d-block text-light p-3 border-0"><i
                         class="icon ion-md-person lead mr-2"></i> Panel Usuarios</a>
+                {% endif %}
 
                 <a href="{% url 'index' %}" class="d-block text-light p-3 border-0"><i
                         class="icon ion-md-pie lead mr-2"></i> Dashboard</a>

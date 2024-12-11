@@ -130,52 +130,55 @@
                                     <!-- <a href="{% url 'cliente_delete' cliente.pk %}" class="btn btn-danger">
                                         <i class="bi bi-trash"></i> </a> -->
                                 </div>
-                            </td>
-                        </tr>
-
-                        <!-- --MODAL PARA ELIMINAR CLIENTE -->
-                        <a data-bs-toggle="modal" data-bs-target="#eliminarClienteModal{{ cliente.rutCliente }}">
-
-                            <div class="modal fade" id="eliminarClienteModal{{ cliente.rutCliente  }}" tabindex="-1"
-                                aria-labelledby="eliminarClienteModal{{ cliente.rutCliente }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title font-weight-bold"
-                                                id="eliminarClienteModalLabel{{ cliente.rutCliente }}">
-                                                Eliminar Cliente</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <span class="font-weight-bold text-center">
-                                                <h5>
-                                                    ¿Está seguro de eliminar al Cliente <br>
-                                                    {{ cliente.nombreCliente}} {{cliente.apPaternoCliente}}
-                                                    {{cliente.apMaternoCliente}}?</h5><br><br>
-                                                <h6>Se eliminarán todos los registros asociados a este cliente.
-                                                </h6>
-
-                                            </span>
-                                            <form method="post" class="mt-3 text-center"
-                                                action="{% url 'cliente_delete' cliente.rutCliente %}">
-                                                {% csrf_token %}
-                                                <a href="{% url 'cliente_list' %}"
-                                                    class="btn btn-secondary me-1">Cancelar</a>
 
 
-                                                <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
-                                                    data-bs-target="#eliminarClienteModal{{ cliente.rutCliente }}">
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                <!-- --MODAL PARA ELIMINAR CLIENTE -->
+                                <a data-bs-toggle="modal"
+                                    data-bs-target="#eliminarClienteModal{{ cliente.rutCliente }}">
 
+                                    <div class="modal fade" id="eliminarClienteModal{{ cliente.rutCliente  }}"
+                                        tabindex="-1" aria-labelledby="eliminarClienteModal{{ cliente.rutCliente }}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title font-weight-bold"
+                                                        id="eliminarClienteModalLabel{{ cliente.rutCliente }}">
+                                                        Eliminar Cliente</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <span class="font-weight-bold text-center">
+                                                        <h5>
+                                                            ¿Está seguro de eliminar al Cliente <br>
+                                                            {{ cliente.nombreCliente}} {{cliente.apPaternoCliente}}
+                                                            {{cliente.apMaternoCliente}}?</h5><br>
+                                                        <h6>Se eliminarán todos los registros asociados a este cliente.
+                                                        </h6>
+
+                                                    </span>
+                                                    <form method="post" class="mt-3 text-center"
+                                                        action="{% url 'cliente_delete' cliente.rutCliente %}">
+                                                        {% csrf_token %}
+                                                        <a href="{% url 'cliente_list' %}"
+                                                            class="btn btn-secondary me-1">Cancelar</a>
+
+
+                                                        <button type="submit" class="btn btn-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#eliminarClienteModal{{ cliente.rutCliente }}">
+                                                            Eliminar
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </a>
-
+                                </a>
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>

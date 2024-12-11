@@ -16,10 +16,11 @@ from . import views
 
 urlpatterns = [
     path('dashboard/', views.dashboard, name='index'),
+    # path('dashboard/', DashboardView.as_view(), name='index'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
-    path('', RedirectView.as_view(url='/home/', permanent=False)),  # Redirigir la raíz a /home/
+    path('', RedirectView.as_view(url='/login/', permanent=False)),  # Redirigir la raíz a /login/
 
     path('password_reset/', auth_views.PasswordResetView.as_view(
         template_name='optica/password_reset.html',
@@ -76,6 +77,7 @@ urlpatterns = [
     path('certificado_generar/<int:id_orden_trabajo>/', generar_certificado_pdf, name='generar_certificado_pdf'),
     path('certificado/pdf/<int:pk>/', views.CertificadoPdfView.as_view(), name='certificado_download'),
     path('certificado/enviar/<int:id_orden_trabajo>/', enviar_certificado_pdf, name='enviar_certificado_pdf'),
+ 
  
 ]
 

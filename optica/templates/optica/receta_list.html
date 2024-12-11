@@ -216,7 +216,7 @@
                         </tr>
 
                         <!-- --MODAL PARA MOSTRAR EL DETALLE de la Receta -->
-                        <div class="modal-condensed justify-content-center">
+                        <div class="modal-condensed justify-content-center" id="letras-modal">
                             <div class="modal fade" id="recetaModal{{ receta.idReceta }}" tabindex="-1"
                                 aria-labelledby="recetaModalLabel{{ receta.idReceta }}" aria-hidden="true">
 
@@ -224,7 +224,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" style="font-weight: bold;"
-                                                id="recetaModalLabel{{ receta.idReceta }} ">
+                                                id="recetaModalLabel letras-modal {{ receta.idReceta }} ">
                                                 Detalle de la Receta - ID {{ receta.idReceta |default:'' }}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.staticfiles.storage import staticfiles_storage
-from .models import Cliente, Receta, Abono, OrdenTrabajo, Certificado, CustomUser #, Atendedor, Tecnico, Administrador
+from .models import Cliente, Receta, Abono, OrdenTrabajo, Certificado, CustomUser 
 from .forms import AdminCustomUserChangeForm, CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.admin.models import LogEntry
 
@@ -42,6 +42,3 @@ admin.site.register(OrdenTrabajo)
 admin.site.register(Certificado)
 admin.site.register(LogEntry, LogEntryAdmin)
 
-# admin.site.register(Atendedor)
-# admin.site.register(Tecnico)
-# admin.site.register(Administrador)

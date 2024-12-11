@@ -345,7 +345,7 @@ class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteV
 
 
 # Create your views here.
-class ListarClienteView(generic.ListView):
+class ListarClienteView(LoginRequiredMixin, generic.ListView):
     model = Cliente
     paginate_by = 10
     ordering = ['-creacionCliente']  # Ordena por el campo 'creacionCliente' en orden descendente    
@@ -370,7 +370,7 @@ class ListarClienteView(generic.ListView):
         context['q'] = self.request.GET.get('q', '')  # Mantener el valor de la búsqueda en el contexto
         return context
 
-class CrearClienteView(SuccessMessageMixin, generic.CreateView):
+class CrearClienteView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Cliente
     fields = ('rutCliente', 
     'dvRutCliente', 
@@ -385,7 +385,7 @@ class CrearClienteView(SuccessMessageMixin, generic.CreateView):
     success_message = "El cliente se ha creado exitosamente."
 
 
-class EditarClienteView(SuccessMessageMixin, generic.UpdateView):
+class EditarClienteView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     model = Cliente
     fields = ('nombreCliente',
     'apPaternoCliente',
@@ -397,7 +397,7 @@ class EditarClienteView(SuccessMessageMixin, generic.UpdateView):
     success_url = reverse_lazy('cliente_list')
     success_message = "El cliente se ha editado exitosamente."
 
-class EliminarClienteView(SuccessMessageMixin, generic.DeleteView):
+class EliminarClienteView(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     model = Cliente
     success_url = reverse_lazy('cliente_list')
     success_message = "El cliente se ha eliminado exitosamente."
@@ -405,7 +405,7 @@ class EliminarClienteView(SuccessMessageMixin, generic.DeleteView):
 
 #RECETAS
 
-class ListarRecetaView(generic.ListView):
+class ListarRecetaView(LoginRequiredMixin, generic.ListView):
     model = Receta
     paginate_by = 10
     ordering = ['-creacionReceta']
@@ -421,7 +421,7 @@ class ListarRecetaView(generic.ListView):
             )
         return super().get_queryset()
 
-class CrearRecetaView(SuccessMessageMixin, generic.CreateView):
+class CrearRecetaView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Receta
     fields = ('idReceta',
     'rutCliente',
@@ -432,8 +432,8 @@ class CrearRecetaView(SuccessMessageMixin, generic.CreateView):
     'celularCliente',
     'telefonoCliente',
     # 'rutAdministrador', 
-    'rutTecnico', 
-    'rutAtendedor', 
+    # 'rutTecnico', 
+    # 'rutAtendedor', 
     'numeroReceta', 
     'fechaReceta', 
     'lejosOdEsfera', 
@@ -504,7 +504,7 @@ class CrearRecetaView(SuccessMessageMixin, generic.CreateView):
         return render(request, self.template_name, {'form': form})
     
 
-class EditarRecetaView(SuccessMessageMixin, generic.UpdateView):
+class EditarRecetaView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     model = Receta
     fields = ('numeroReceta', 
     'fechaReceta', 
@@ -532,7 +532,7 @@ class EditarRecetaView(SuccessMessageMixin, generic.UpdateView):
     success_message = "La receta se ha editado exitosamente."
 
 
-class EliminarRecetaView(SuccessMessageMixin, generic.DeleteView):
+class EliminarRecetaView(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     model = Receta
     success_url = reverse_lazy('receta_list')
     success_message = "La receta se ha eliminado exitosamente."
@@ -577,7 +577,7 @@ def enviar_receta_por_correo(request, id_receta):
 
 #ORDEN DE TRABAJO
 
-class ListarOrdenTrabajoView(generic.ListView):
+class ListarOrdenTrabajoView(LoginRequiredMixin, generic.ListView):
     model = OrdenTrabajo
     paginate_by = 10
     ordering = ['-fechaOrdenTrabajo']
@@ -592,14 +592,15 @@ class ListarOrdenTrabajoView(generic.ListView):
             )
         return super().get_queryset()
  
-    
+ 
+ 
 class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
     model = OrdenTrabajo
     fields = (
     'idReceta',
-    # 'rutAdministrador', 
-    'rutTecnico', 
-    'rutAtendedor', 
+    #'rutAdministrador', 
+    #'rutTecnico', 
+    #'rutAtendedor', 
     'idOrdenTrabajo',
     'numeroOrdenTrabajo',
     # 'fechaOrdenTrabajo'
@@ -698,7 +699,7 @@ class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
             'tipoLente': receta.tipoLente if receta else '',
             'institucion': receta.institucion if receta else '',
             'doctorOftalmologo': receta.doctorOftalmologo if receta else '',
-            'observacionReceta': receta.observacionReceta if receta else '',           
+             'observacionReceta': receta.observacionReceta if receta else '',           
             })
     
         return render(request, self.template_name, {'form': form, 'receta': receta})
@@ -802,7 +803,8 @@ def editar_orden_trabajo(request, pk):
     else:
         form = OrdenTrabajoForm(instance=orden_trabajo)
     return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
-
+ 
+ 
 def form_valid(self, form):
         # Aquí puedes agregar lógica si necesitas procesar el formulario
         return super().form_valid(form) 
@@ -811,6 +813,230 @@ class EliminarOrdenTrabajoView(SuccessMessageMixin, generic.DeleteView):
     # template_name = 'ordenTrabajo_delete'
     success_url = reverse_lazy('ordenTrabajo_list')
     success_message = "La Orden de Trabajo se ha eliminado exitosamente."
+ 
+ 
+ 
+ 
+    
+# class CrearOrdenTrabajoView(SuccessMessageMixin, generic.CreateView):
+#     model = OrdenTrabajo
+#     fields = (
+#     'idReceta',
+#     # 'rutAdministrador', 
+#     # 'rutTecnico', 
+#     # 'rutAtendedor', 
+#     'idOrdenTrabajo',
+#     'numeroOrdenTrabajo',
+#     # 'fechaOrdenTrabajo'
+#     'fechaEntregaOrdenTrabajo',
+#     'horaEntregaOrdenTrabajo',
+#     'laboratorioLejos',
+#     'gradoLejosOd',
+#     'gradoLejosOi',
+#     'prismaLejosOd',
+#     'prismaLejosOi',
+#     'adicionLejosOd', 
+#     'adicionLejosOi',
+#     'tipoCristalLejos',
+#     'colorCristalLejos',
+#     'marcoLejos',
+#     'valorMarcoLejos', 
+#     'valorCristalesLejos',
+#     'totalLejos',
+#     'altura',
+#     'laboratorioCerca',
+#     'gradoCercaOd',
+#     'gradoCercaOi',
+#     'prismaCercaOd',
+#     'prismaCercaOi',
+#     'adicionCercaOd',
+#     'adicionCercaOi',
+#     'tipoCristalCerca',
+#     'colorCristalCerca',
+#     'marcoCerca',
+#     'valorMarcoCerca',
+#     'valorCristalesCerca', 
+#     'totalCerca',
+#     'totalOrdenTrabajo',
+#     'tipoPago',
+#     'estadoDelPago',
+#     'numeroVoucherOrdenTrabajo',
+#     'observacionOrdenTrabajo',
+#     'estadoOrdenTrabajo',
+#     )
+    
+#     success_url = reverse_lazy('ordenTrabajo_list')
+#     success_message = "La Orden de Trabajo se ha creado exitosamente."
+#     template_name = 'optica/ordenTrabajo_form.html'  # Cambia esto al nombre de tu template
+    
+
+#     def generar_numero_orden(self):
+#         # Lógica para calcular el siguiente número de orden
+#         ultimo_valor = OrdenTrabajo.objects.aggregate(max_val=Max('numeroOrdenTrabajo'))['max_val']
+#         return (ultimo_valor + 1) if ultimo_valor and ultimo_valor >= 6000 else 6000
+
+#     def get(self, request):
+#         receta = None
+#         id_receta = request.GET.get('id_receta')
+
+#         if id_receta:
+#             try:
+#                 receta = Receta.objects.get(idReceta=id_receta)
+#                 messages.success(request, "Receta encontrada") 
+#             except Receta.DoesNotExist:
+#                 messages.error(request, "Receta no encontrada")
+
+#         numero_orden = self.generar_numero_orden()
+
+    
+    
+#         form = OrdenTrabajoForm(initial={  
+#             'numeroOrdenTrabajo': numero_orden,
+#             'idReceta': receta.idReceta if receta else '',
+                                   
+#             'rutCliente': receta.rutCliente if receta else '',
+#             'dvRutCliente': receta.dvRutCliente if receta else '',
+#             'nombreCliente': receta.nombreCliente if receta else '',
+#             'apPaternoCliente': receta.apPaternoCliente if receta else '',
+#             'apMaternoCliente': receta.apMaternoCliente if receta else '',
+#             'celularCliente': receta.celularCliente if receta else '',
+#             'telefonoCliente': receta.telefonoCliente if receta else '',
+#             # # 'rutAdministrador', 
+#             # # 'rutTecnico', 
+#             # # 'rutAtendedor', 
+#             'numeroReceta': receta.numeroReceta if receta else '', 
+#             'fechaReceta': receta.fechaReceta if receta else '', 
+#             'lejosOdEsfera': receta.lejosOdEsfera if receta else '', 
+#             'lejosOdCilindro': receta.lejosOdCilindro if receta else '', 
+#             'lejosOdEje': receta.lejosOdEje if receta else '', 
+#             'lejosOiEsfera': receta.lejosOiEsfera if receta else '', 
+#             'lejosOiCilindro': receta.lejosOiCilindro if receta else '',
+#             'lejosOiEje': receta.lejosOiEje if receta else '', 
+#             'dpLejos': receta.dpLejos if receta else '', 
+#             'cercaOdEsfera': receta.cercaOdEsfera if receta else '', 
+#             'cercaOdCilindro': receta.cercaOdCilindro if receta else '', 
+#             'cercaOdEje': receta.cercaOdEje if receta else '', 
+#             'cercaOiEsfera': receta.cercaOiEsfera if receta else '', 
+#             'cercaOiCilindro': receta.cercaOiCilindro if receta else '', 
+#             'cercaOiEje': receta.cercaOiEje if receta else '',
+#             'dpCerca': receta.dpCerca if receta else '', 
+#             'tipoLente': receta.tipoLente if receta else '',
+#             'institucion': receta.institucion if receta else '',
+#             'doctorOftalmologo': receta.doctorOftalmologo if receta else '',
+#             'observacionReceta': receta.observacionReceta if receta else '',           
+#             })
+    
+#         return render(request, self.template_name, {'form': form, 'receta': receta})
+    
+#     def post(self, request):
+#         form = OrdenTrabajoForm(request.POST)
+#         # form = self.form_class(request.POST)
+#         receta = None 
+#         id_receta = request.GET.get('id_receta')  # Captura el `id_receta` del parámetro de consulta
+
+#         if id_receta:
+#             try:
+#                 # Obtén la receta con el `id_receta` proporcionado
+#                 receta = Receta.objects.get(idReceta=id_receta)
+                
+#                 if form.is_valid():
+#                     orden_trabajo = form.save(commit=False)
+#                     orden_trabajo.idReceta = receta  # Asigna la receta a la orden de trabajo
+                    
+#                     # Manejo de los campos booleanos
+#                     tipo_pago = request.POST.get('tipoDePago')
+#                     if tipo_pago == 'esAbono':
+#                         orden_trabajo.esAbono = True
+#                         orden_trabajo.esPagoTotal = False
+#                     elif tipo_pago == 'esPagoTotal':
+#                         orden_trabajo.esAbono = False
+#                         orden_trabajo.esPagoTotal = True
+
+#                 # Manejo del campo estadoDelPago
+#                 estado_del_pago = form.cleaned_data['estadoDelPago']
+#                 orden_trabajo.estadoDelPago = estado_del_pago
+                    
+#                 orden_trabajo.save()  # Guarda la orden de trabajo
+                    
+#                 messages.success(request, "La Orden de Trabajo se ha creado exitosamente.")
+#                 return redirect(self.success_url)  # Redirige tras guardar
+                    
+#             except Receta.DoesNotExist:
+#                 messages.error(request, "Receta no encontrada.")
+#         else:
+#             messages.error(request, "No se proporcionó un ID de receta válido.")
+        
+#         # Si no es válido, muestra el formulario de nuevo con los mensajes de error
+#         return render(request, self.template_name, {'form': form, 'receta': receta})
+
+ 
+# class EditarOrdenTrabajoView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
+#     model = OrdenTrabajo
+#     fields = (
+#     'fechaEntregaOrdenTrabajo',
+#     'horaEntregaOrdenTrabajo',
+#     'laboratorioLejos',
+#     'gradoLejosOd',
+#     'gradoLejosOi',
+#     'prismaLejosOd',
+#     'prismaLejosOi',
+#     'tipoCristalLejos',
+#     'colorCristalLejos',
+#     'adicionLejosOd',
+#     'adicionLejosOi',
+#     'marcoLejos',
+#     'valorMarcoLejos', 
+#     'valorCristalesLejos',
+#     'altura',
+#     'laboratorioCerca',
+#     'gradoCercaOd',
+#     'gradoCercaOi',
+#     'prismaCercaOd',
+#     'prismaCercaOi',
+#     'adicionCercaOd',
+#     'adicionCercaOi',
+#     'tipoCristalCerca',
+#     'colorCristalCerca',
+#     'marcoCerca',
+#     'valorMarcoCerca',
+#     'valorCristalesCerca', 
+#     'estadoDelPago',
+#     'tipoPago',
+#     'numeroVoucherOrdenTrabajo',
+#     'observacionOrdenTrabajo',
+#     'estadoOrdenTrabajo',
+#     'totalLejos',
+#     'totalCerca',
+#     'totalOrdenTrabajo',
+#     )
+#     success_url = reverse_lazy('ordenTrabajo_list')
+#     success_message = "La Orden de Trabajo se ha editado exitosamente."
+
+# def get_initial(self):
+#         initial = super().get_initial()
+#         initial['numeroOrdenTrabajo'] = self.object.numeroOrdenTrabajo  # Valor del modelo
+#         return initial
+
+
+# def editar_orden_trabajo(request, pk):
+#     orden_trabajo = get_object_or_404(OrdenTrabajo, pk=pk)
+#     if request.method == "POST":
+#         form = OrdenTrabajoForm(request.POST, instance=orden_trabajo)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('orden_trabajo_list')
+#     else:
+#         form = OrdenTrabajoForm(instance=orden_trabajo)
+#     return render(request, 'ordenTrabajo_form.html', {'form': form, 'orden_trabajo': orden_trabajo})
+
+# def form_valid(self, form):
+#         # Aquí puedes agregar lógica si necesitas procesar el formulario
+#         return super().form_valid(form) 
+# class EliminarOrdenTrabajoView(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
+#     model = OrdenTrabajo
+#     # template_name = 'ordenTrabajo_delete'
+#     success_url = reverse_lazy('ordenTrabajo_list')
+#     success_message = "La Orden de Trabajo se ha eliminado exitosamente."
 
 
 # ABONOS
@@ -830,7 +1056,7 @@ class ListarAbonoView(generic.ListView):
         return super().get_queryset()
     
     
-class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
+class CrearAbonoView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Abono
     fields = (
         'idAbono',
@@ -963,7 +1189,7 @@ class CrearAbonoView(SuccessMessageMixin, generic.CreateView):
             'totalOrdenTrabajo': orden_trabajo.totalOrdenTrabajo if orden_trabajo else ''
         })    
 
-class EditarAbonoView(SuccessMessageMixin, generic.UpdateView):
+class EditarAbonoView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     model = Abono
     fields = ( 'valorAbono', 
     'tipoPagoAbono', 
@@ -995,7 +1221,7 @@ def form_valid(self, form):
         return super().form_valid(form) 
 
 
-class EliminarAbonoView(SuccessMessageMixin, generic.DeleteView):
+class EliminarAbonoView(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     model = Abono
     success_url = reverse_lazy('abono_list')
     success_message = "El abono se ha eliminado exitosamente."
@@ -1005,7 +1231,7 @@ class EliminarAbonoView(SuccessMessageMixin, generic.DeleteView):
 #CERTIFICADOS
     
 
-class CrearCertificadoView(CreateView):
+class CrearCertificadoView(LoginRequiredMixin, CreateView):
     template_name = 'optica/certificado_form.html'
 
     def get(self, request, *args, **kwargs):
@@ -1028,7 +1254,7 @@ class CrearCertificadoView(CreateView):
         
 
 
-class CertificadoPdfView(View):
+class CertificadoPdfView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         template = get_template('optica/certificado_pdf.html')  
         context = {'title': 'Certificado de Óptica Cruz'}
@@ -1044,6 +1270,7 @@ class CertificadoPdfView(View):
     
     
     # VISTA DEL DASHBOARD EN index.html
+
 def dashboard(request):
     # Fechas relevantes
     hoy = date.today()
@@ -1116,3 +1343,6 @@ def dashboard(request):
     }
 
     return render(request, 'optica/index.html', context)
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'optica/index.html'

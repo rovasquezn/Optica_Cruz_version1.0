@@ -201,7 +201,8 @@
 
 
 
-                        <div class="row mt-1 ml-5">
+                        <div class="row mt-2 ml-1">
+                            <div class="col-md-1"></div>
                             <!-- <div class="col-md-4">
                                 <label for="numeroVoucherAbono">Valor Abono</label>
                             </div>
@@ -215,31 +216,7 @@
                         </div>
 
 
-                        <div class="row mt-1 ml-5">
-                            <div class="col-md-4">
-                                <label for="saldo">Saldo Pendiente</label>
-                                <input type="number" id="saldo" name="saldo" value="{{ form.saldo.value}}"
-                                    class="form-control" readonly>
 
-
-
-                                <!-- <div class=" mr-5">
-                                    {{ form.saldo|as_crispy_field }}
-                                    <script>
-                                        document.getElementById('id_saldo').setAttribute('readonly', '');
-                                    </script>
-                                </div> -->
-
-
-
-
-
-
-
-                            </div>
-
-
-                        </div>
 
                         <!-- <script>
                             // Selecciona los campos de los valores
@@ -266,7 +243,7 @@
 
                                 <br>
                                 <select class="form-select" id="tipoPagoAbono" name="tipoPagoAbono" eequired
-                                    style="width: 200px; height: 35px;">
+                                    style="width: 200px; height: 38px;">
 
                                     <option value="Efectivo">Efectivo</option>
                                     <option value="Debito">Débito</option>
@@ -287,13 +264,27 @@
                                     }
                                 });
                             </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         </div>
 
-                        <div class="row mt-1 ml-5">
-                            <div class="col-md-4">
-                                <label for="numeroVoucherAbono">Número de Voucher Abono</label>
-                            </div>
+                        <div class="row mt-5 ml-5">
                             <div class="col-md-3">
+                                <label for="numeroVoucherAbono">Número de Voucher</label>
+                            </div>
+                            <div class="col-md-4">
                                 <input type="text" name="numeroVoucherAbono" class="form-control"
                                     value="{{ form.numeroVoucherAbono.value |default:'' }}" class="form-control">
                             </div>
@@ -308,11 +299,9 @@
                         <div class="d-flex justify-content-center mt-3">
                             <a href="{% url 'abono_list' %}" class="btn btn-secondary mr-3">Cancelar</a>
 
-                            {% if idOrdenTrabajo %}
+
                             <button type="submit" class="btn btn-success">Guardar Abono</button>
-                            {% else %}
-                            <p class="text-danger">No se ha ingresado un ID de orden de trabajo válido</p>
-                            {% endif %}
+
                             <script>
                                 document.getElementById('id_valorAbono').addEventListener('input', function () {
                                     var valorAbono = parseFloat(this.value);
